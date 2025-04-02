@@ -9,8 +9,8 @@ namespace Entity.Model
   public  class Document
     {
         public int Id { get; set; }
-        public string url { get; set; }
-        public string name { get; set; }        
+        public string Url { get; set; }
+        public string Name { get; set; }        
         public DateTime DeleteAt { get; set; }
         public DateTime CreateAt { get; set; }
 

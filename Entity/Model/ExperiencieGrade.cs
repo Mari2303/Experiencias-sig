@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Entity.Model
 {
-public class ExperienceGrade
+public class ExperiencieGrade
     {
         public int Id { get; set; }
                 
-        public int ExperienceId { get; set; }
-        public Experience Experience { get; set; }  
+        public int ExperiencieId { get; set; }
+        public Experiencie Experiencie { get; set; }  
 
         public int GradeId { get; set; }
         public Grade Grade { get; set; }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-    class ExperienceData
+public    class ExperiencieData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -16,7 +16,7 @@ namespace Data
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public ExperienceData(ApplicationDbContext context, ILogger logger)
+        public ExperiencieData(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;
@@ -27,22 +27,22 @@ namespace Data
         ///</summary>
         ///<returns> Lista de roles</returns>
 
-        public async Task<IEnumerable<Experience>> GetAllAsync()
+        public async Task<IEnumerable<Experiencie>> GetAllAsync()
         {
-            return await _context.Set<Experience>().ToListAsync();
+            return await _context.Set<Experiencie>().ToListAsync();
         }
 
         ///<summary> Obtiene un rol específico por su identificador.
 
-        public async Task<Experience?> GetByIdAsync(int id)
+        public async Task<Experiencie?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<Experience>().FindAsync(id);
+                return await _context.Set<Experiencie>().FindAsync(id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener ron con ID {ExperienceId}", id);
+                _logger.LogError(ex, "Error al obtener ron con ID {ExperiencieId}", id);
                 throw;//Re-lanza la excepción para que sea manejada en capas superiores
             }
         }
@@ -50,16 +50,16 @@ namespace Data
         ///<summary>
         ///Crea un nuevo rol en la base de datos.
         ///</summary>
-        ///<param name="experience">Instancia del rol a crear</param>
+        ///<param name="Experiencie">Instancia del rol a crear</param>
         ///<returns>El rol creado</returns>
 
-        public async Task<Experience> CreateAsync(Experience experience)
+        public async Task<Experiencie> CreateAsync(Experiencie Experiencie)
         {
             try
             {
-                await _context.Set<Experience>().AddAsync(experience);
+                await _context.Set<Experiencie>().AddAsync(Experiencie);
                 await _context.SaveChangesAsync();
-                return experience;
+                return Experiencie;
             }
             catch (Exception ex)
             {
@@ -71,14 +71,14 @@ namespace Data
         ///<summary>
         ///Actualiza un rol existente en la base de datos.
         ///</summary>
-        ///<param name="experience">Objeto con la información actualizada</param>
+        ///<param name="Experiencie">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdateAsync(Experience experience)
+        public async Task<bool> UpdateAsync(Experiencie Experiencie)
         {
             try
             {
-                _context.Set<Experience>().Update(experience);
+                _context.Set<Experiencie>().Update(Experiencie);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -99,11 +99,11 @@ namespace Data
         {
             try
             {
-                var experience = await _context.Set<Experience>().FindAsync(id);
-                if (experience == null)
+                var Experiencie = await _context.Set<Experiencie>().FindAsync(id);
+                if (Experiencie == null)
                     return false;
 
-                _context.Set<Experience>().Remove(experience);
+                _context.Set<Experiencie>().Remove(Experiencie);
                 await _context.SaveChangesAsync();
                 return true;
             }

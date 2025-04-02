@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Entity.DTOs
 {
-    class ExperienciedGradeDTO
+public    class ExperiencieGradeDTO
     {
         public int Id { get; set; }
-        public string grade1 { get; set; }
-        public string gade2 { get; set; }
+        public int GradeId { get; set; }
+        public int ExperiencieId { get; set; }
     }
 }

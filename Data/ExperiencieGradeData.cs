@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-    class ExperienceGradeData
+ public   class ExperiencieGradeData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -16,7 +16,7 @@ namespace Data
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public ExperienceGradeData(ApplicationDbContext context, ILogger logger)
+        public ExperiencieGradeData(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;
@@ -27,18 +27,18 @@ namespace Data
         ///</summary>
         ///<returns> Lista de roles</returns>
 
-        public async Task<IEnumerable<ExperienceGrade>> GetAllAsync()
+        public async Task<IEnumerable<ExperiencieGrade>> GetAllAsync()
         {
-            return await _context.Set<ExperienceGrade>().ToListAsync();
+            return await _context.Set<ExperiencieGrade>().ToListAsync();
         }
 
         ///<summary> Obtiene un rol específico por su identificador.
 
-        public async Task<ExperienceGrade?> GetByIdAsync(int id)
+        public async Task<ExperiencieGrade?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<ExperienceGrade>().FindAsync(id);
+                return await _context.Set<ExperiencieGrade>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -53,11 +53,11 @@ namespace Data
         ///<param name="experienciaGrade">Instancia del rol a crear</param>
         ///<returns>El rol creado</returns>
 
-        public async Task<ExperienceGrade> CreateAsync(ExperienceGrade experienceGrade)
+        public async Task<ExperiencieGrade> CreateAsync(ExperiencieGrade experienceGrade)
         {
             try
             {
-                await _context.Set<ExperienceGrade>().AddAsync(experienceGrade);
+                await _context.Set<ExperiencieGrade>().AddAsync(experienceGrade);
                 await _context.SaveChangesAsync();
                 return experienceGrade;
             }
@@ -74,11 +74,11 @@ namespace Data
         ///<param name="experienciaGrade">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdateAsync(ExperienceGrade experienceGrade)
+        public async Task<bool> UpdateAsync(ExperiencieGrade experienceGrade)
         {
             try
             {
-                _context.Set<ExperienceGrade>().Update(experienceGrade);
+                _context.Set<ExperiencieGrade>().Update(experienceGrade);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -99,11 +99,11 @@ namespace Data
         {
             try
             {
-                var experienceGrade = await _context.Set<ExperienceGrade>().FindAsync(id);
+                var experienceGrade = await _context.Set<ExperiencieGrade>().FindAsync(id);
                 if (experienceGrade == null)
                     return false;
 
-                _context.Set<ExperienceGrade>().Remove(experienceGrade);
+                _context.Set<ExperiencieGrade>().Remove(experienceGrade);
                 await _context.SaveChangesAsync();
                 return true;
             }

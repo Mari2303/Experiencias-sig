@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,18 +22,22 @@ namespace Business
         }
 
         // Método para obtener todas las evaluaciones como DTOs
-        public async Task<IEnumerable<EvaluationDto>> GetAllEvaluationsAsync()
+        public async Task<IEnumerable<EvaluationDTO>> GetAllEvaluationsAsync()
         {
             try
             {
                 var evaluations = await _evaluationData.GetAllAsync();
-                return evaluations.Select(eval => new EvaluationDto
+                return evaluations.Select(eval => new EvaluationDTO
                 {
-                    Id = eval.Id,
-                    Name = eval.Name,
-                    Description = eval.Description,
-                    CreatedAt = eval.CreatedAt,
-                    UpdatedAt = eval.UpdatedAt
+                  Id = eval.Id,
+                  TypeEvaluation = eval.TypeEvaluation,
+                  Comments = eval.Comments,
+                    DateTime = eval.DateTime,
+                    UserId = eval.UserId,
+                    StateId = eval.StateId,
+                    ExperiencieId = eval.ExperienceId
+
+
                 }).ToList();
             }
             catch (Exception ex)
@@ -44,12 +48,12 @@ namespace Business
         }
 
         // Método para obtener una evaluación por ID como DTO
-        public async Task<EvaluationDto> GetEvaluationByIdAsync(int id)
+        public async Task<EvaluationDTO> GetEvaluationByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener una evaluación con ID inválido: {EvaluationId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la evaluación debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID de la evaluación debe ser mayor que cero");
             }
 
             try
@@ -61,13 +65,15 @@ namespace Business
                     throw new EntityNotFoundException("Evaluation", id);
                 }
 
-                return new EvaluationDto
+                return new EvaluationDTO
                 {
                     Id = evaluation.Id,
-                    Name = evaluation.Name,
-                    Description = evaluation.Description,
-                    CreatedAt = evaluation.CreatedAt,
-                    UpdatedAt = evaluation.UpdatedAt
+                    TypeEvaluation = evaluation.TypeEvaluation,
+                    Comments = evaluation.Comments,
+                    DateTime = evaluation.DateTime,
+                    UserId = evaluation.UserId,
+                    StateId = evaluation.StateId,
+                    ExperiencieId = evaluation.ExperienceId
                 };
             }
             catch (Exception ex)
@@ -78,50 +84,55 @@ namespace Business
         }
 
         // Método para crear una evaluación desde un DTO
-        public async Task<EvaluationDto> CreateEvaluationAsync(EvaluationDto evaluationDto)
+        public async Task<EvaluationDTO> CreateEvaluationAsync(EvaluationDTO EvaluationDTO)
         {
             try
             {
-                ValidateEvaluation(evaluationDto);
+                ValidateEvaluation(EvaluationDTO);
 
                 var evaluation = new Evaluation
                 {
-                    Name = evaluationDto.Name,
-                    Description = evaluationDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                  
+                    TypeEvaluation = EvaluationDTO.TypeEvaluation,
+                    Comments = EvaluationDTO.Comments,
+                    DateTime = EvaluationDTO.DateTime,
+                    UserId = EvaluationDTO.UserId,
+                    StateId = EvaluationDTO.StateId,
+                    ExperienceId = EvaluationDTO.ExperiencieId
                 };
 
                 var createdEvaluation = await _evaluationData.CreateAsync(evaluation);
 
-                return new EvaluationDto
+                return new EvaluationDTO
                 {
-                    Id = createdEvaluation.Id,
-                    Name = createdEvaluation.Name,
-                    Description = createdEvaluation.Description,
-                    CreatedAt = createdEvaluation.CreatedAt,
-                    UpdatedAt = createdEvaluation.UpdatedAt
+                    Id = evaluation.Id,
+                    TypeEvaluation = evaluation.TypeEvaluation,
+                    Comments = evaluation.Comments,
+                    DateTime = evaluation.DateTime,
+                    UserId = evaluation.UserId,
+                    StateId = evaluation.StateId,
+                    ExperiencieId = evaluation.ExperienceId
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear una nueva evaluación: {EvaluationName}", evaluationDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear una nueva evaluación: {EvaluationName}", EvaluationDTO?.TypeEvaluation ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear la evaluación", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateEvaluation(EvaluationDto evaluationDto)
+        private void ValidateEvaluation(EvaluationDTO EvaluationDTO)
         {
-            if (evaluationDto == null)
+            if (EvaluationDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto evaluación no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto evaluación no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(evaluationDto.Name))
+            if (string.IsNullOrWhiteSpace(EvaluationDTO.TypeEvaluation))
             {
                 _logger.LogWarning("Se intentó crear/actualizar una evaluación con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name de la evaluación es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name de la evaluación es obligatorio");
             }
         }
     }

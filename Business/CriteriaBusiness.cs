@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,19 +22,16 @@ namespace Business
         }
 
         // Método para obtener todos los criterios como DTOs
-        public async Task<IEnumerable<CriteriaDto>> GetAllCriteriaAsync()
+        public async Task<IEnumerable<CriteriaDTO>> GetAllCriteriaAsync()
         {
             try
             {
                 var criteria = await _criteriaData.GetAllAsync();
-                return criteria.Select(criterion => new CriteriaDto
+                return criteria.Select(criterion => new CriteriaDTO
                 {
                     Id = criterion.Id,
                     Name = criterion.Name,
-                    Description = criterion.Description,
-                    Weight = criterion.Weight,
-                    CreatedAt = criterion.CreatedAt,
-                    UpdatedAt = criterion.UpdatedAt
+
                 }).ToList();
             }
             catch (Exception ex)
@@ -45,12 +42,12 @@ namespace Business
         }
 
         // Método para obtener un criterio por ID como DTO
-        public async Task<CriteriaDto> GetCriteriaByIdAsync(int id)
+        public async Task<CriteriaDTO> GetCriteriaByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un criterio con ID inválido: {CriteriaId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del criterio debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del criterio debe ser mayor que cero");
             }
 
             try
@@ -62,14 +59,11 @@ namespace Business
                     throw new EntityNotFoundException("Criteria", id);
                 }
 
-                return new CriteriaDto
+                return new CriteriaDTO
                 {
                     Id = criterion.Id,
                     Name = criterion.Name,
-                    Description = criterion.Description,
-                    Weight = criterion.Weight,
-                    CreatedAt = criterion.CreatedAt,
-                    UpdatedAt = criterion.UpdatedAt
+
                 };
             }
             catch (Exception ex)
@@ -80,58 +74,47 @@ namespace Business
         }
 
         // Método para crear un criterio desde un DTO
-        public async Task<CriteriaDto> CreateCriteriaAsync(CriteriaDto criteriaDto)
+        public async Task<CriteriaDTO> CreateCriteriaAsync(CriteriaDTO CriteriaDTO)
         {
             try
             {
-                ValidateCriteria(criteriaDto);
+                ValidateCriteria(CriteriaDTO);
 
                 var criterion = new Criteria
                 {
-                    Name = criteriaDto.Name,
-                    Description = criteriaDto.Description,
-                    Weight = criteriaDto.Weight,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Name = CriteriaDTO.Name,
+
                 };
 
                 var createdCriterion = await _criteriaData.CreateAsync(criterion);
 
-                return new CriteriaDto
+                return new CriteriaDTO
                 {
                     Id = createdCriterion.Id,
                     Name = createdCriterion.Name,
-                    Description = createdCriterion.Description,
-                    Weight = createdCriterion.Weight,
-                    CreatedAt = createdCriterion.CreatedAt,
-                    UpdatedAt = createdCriterion.UpdatedAt
+
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo criterio: {CriteriaName}", criteriaDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo criterio: {CriteriaName}", CriteriaDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el criterio", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateCriteria(CriteriaDto criteriaDto)
+        private void ValidateCriteria(CriteriaDTO CriteriaDTO)
         {
-            if (criteriaDto == null)
+            if (CriteriaDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto criterio no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto criterio no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(criteriaDto.Name))
+            if (string.IsNullOrWhiteSpace(CriteriaDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un criterio con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del criterio es obligatorio");
-            }
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del criterio es obligatorio");
 
-            if (criteriaDto.Weight <= 0)
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un criterio con Weight inválido");
-                throw new Utilities.Exceptions.ValidationException("Weight", "El Weight del criterio debe ser mayor que cero");
             }
         }
     }
