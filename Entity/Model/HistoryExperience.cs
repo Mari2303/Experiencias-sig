@@ -14,7 +14,8 @@ public class HistoryExperience
 
        public DateTime dateTime { get; set; }
 
-       public  int userId { get; set; }
+       public  int UserId { get; set; }
+        public User User { get; set; }
 
            public DateTime DeleteAt { get; set;  }     
             public DateTime CreateAt { get; set; }

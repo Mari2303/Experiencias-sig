@@ -30,11 +30,9 @@ namespace Business
                 return populations.Select(pop => new ExperiencePopulationDto
                 {
                     Id = pop.Id,
-                    Name = pop.Name,
-                    Description = pop.Description,
-                    CreatedAt = pop.CreatedAt,
-                    UpdatedAt = pop.UpdatedAt
-                }).ToList();
+                    
+                   
+                });
             }
             catch (Exception ex)
             {
@@ -64,10 +62,7 @@ namespace Business
                 return new ExperiencePopulationDto
                 {
                     Id = population.Id,
-                    Name = population.Name,
-                    Description = population.Description,
-                    CreatedAt = population.CreatedAt,
-                    UpdatedAt = population.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
@@ -86,10 +81,7 @@ namespace Business
 
                 var population = new ExperiencePopulation
                 {
-                    Name = populationDto.Name,
-                    Description = populationDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                  
                 };
 
                 var createdPopulation = await _experiencePopulationData.CreateAsync(population);
@@ -97,10 +89,7 @@ namespace Business
                 return new ExperiencePopulationDto
                 {
                     Id = createdPopulation.Id,
-                    Name = createdPopulation.Name,
-                    Description = createdPopulation.Description,
-                    CreatedAt = createdPopulation.CreatedAt,
-                    UpdatedAt = createdPopulation.UpdatedAt
+                  
                 };
             }
             catch (Exception ex)
