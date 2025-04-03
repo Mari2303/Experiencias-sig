@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,20 +22,29 @@ namespace Business
         }
 
         // Método para obtener todos los grados de población como DTOs
-        public async Task<IEnumerable<PopulationGradeDto>> GetAllPopulationGradesAsync()
+        public async Task<IEnumerable<PopulationGradeDTO>> GetAllPopulationGradesAsync()
         {
             try
             {
                 var grades = await _populationGradeData.GetAllAsync();
-                return grades.Select(grade => new PopulationGradeDto
+                var gradesDTO = new List<PopulationGradeDTO>();
+
+                foreach (var grade in grades)
                 {
-                    Id = grade.Id,
-                    Name = grade.Name,
-                    Description = grade.Description,
-                    CreatedAt = grade.CreatedAt,
-                    UpdatedAt = grade.UpdatedAt
-                }).ToList();
+                    gradesDTO.Add(new PopulationGradeDTO
+
+                    {
+
+                        Id = grade.Id,
+                        Name = grade.Name
+
+                    });
+                }
+
+
+                return gradesDTO;
             }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener todos los grados de población");
@@ -44,12 +53,12 @@ namespace Business
         }
 
         // Método para obtener un grado de población por ID como DTO
-        public async Task<PopulationGradeDto> GetPopulationGradeByIdAsync(int id)
+        public async Task<PopulationGradeDTO> GetPopulationGradeByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un grado de población con ID inválido: {GradeId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del grado de población debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del grado de población debe ser mayor que cero");
             }
 
             try
@@ -61,13 +70,11 @@ namespace Business
                     throw new EntityNotFoundException("PopulationGrade", id);
                 }
 
-                return new PopulationGradeDto
+                return new PopulationGradeDTO
                 {
                     Id = grade.Id,
                     Name = grade.Name,
-                    Description = grade.Description,
-                    CreatedAt = grade.CreatedAt,
-                    UpdatedAt = grade.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
@@ -78,7 +85,7 @@ namespace Business
         }
 
         // Método para crear un grado de población desde un DTO
-        public async Task<PopulationGradeDto> CreatePopulationGradeAsync(PopulationGradeDto gradeDto)
+        public async Task<PopulationGradeDTO> CreatePopulationGradeAsync(PopulationGradeDTO gradeDto)
         {
             try
             {
@@ -87,20 +94,16 @@ namespace Business
                 var grade = new PopulationGrade
                 {
                     Name = gradeDto.Name,
-                    Description = gradeDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    
                 };
 
                 var createdGrade = await _populationGradeData.CreateAsync(grade);
 
-                return new PopulationGradeDto
+                return new PopulationGradeDTO
                 {
                     Id = createdGrade.Id,
                     Name = createdGrade.Name,
-                    Description = createdGrade.Description,
-                    CreatedAt = createdGrade.CreatedAt,
-                    UpdatedAt = createdGrade.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
@@ -111,17 +114,17 @@ namespace Business
         }
 
         // Método para validar el DTO
-        private void ValidatePopulationGrade(PopulationGradeDto gradeDto)
+        private void ValidatePopulationGrade(PopulationGradeDTO gradeDto)
         {
             if (gradeDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto grado de población no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto grado de población no puede ser nulo");
             }
 
             if (string.IsNullOrWhiteSpace(gradeDto.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un grado de población con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del grado de población es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del grado de población es obligatorio");
             }
         }
     }

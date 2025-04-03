@@ -3,7 +3,8 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using System.Data;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,19 +23,25 @@ namespace Business
         }
 
         // Método para obtener todas las líneas temáticas como DTOs
-        public async Task<IEnumerable<LineThematicDto>> GetAllLineThematicsAsync()
+        public async Task<IEnumerable<LineThematicDTO>> GetAllLineThematicsAsync()
         {
             try
             {
-                var lineThematics = await _lineThematicData.GetAllAsync();
-                return lineThematics.Select(lineThematic => new LineThematicDto
+                var lineThematic = await _lineThematicData.GetAllAsync();
+                var lineThemaDTO = new List<LineThematicDTO>();
+
+
+                foreach (var LineThematic in lineThematic)
                 {
-                    Id = lineThematic.Id,
-                    Name = lineThematic.Name,
-                    Description = lineThematic.Description,
-                    CreatedAt = lineThematic.CreatedAt,
-                    UpdatedAt = lineThematic.UpdatedAt
-                }).ToList();
+                    lineThemaDTO.Add(new LineThematicDTO
+                    {
+                        Id = LineThematic.Id,
+                        Name = LineThematic.Name
+                    });
+                    
+                }
+
+                return lineThemaDTO;
             }
             catch (Exception ex)
             {
@@ -44,12 +51,12 @@ namespace Business
         }
 
         // Método para obtener una línea temática por ID como DTO
-        public async Task<LineThematicDto> GetLineThematicByIdAsync(int id)
+        public async Task<LineThematicDTO> GetLineThematicByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener una línea temática con ID inválido: {LineThematicId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la línea temática debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID de la línea temática debe ser mayor que cero");
             }
 
             try
@@ -61,13 +68,11 @@ namespace Business
                     throw new EntityNotFoundException("LineThematic", id);
                 }
 
-                return new LineThematicDto
+                return new LineThematicDTO
                 {
                     Id = lineThematic.Id,
-                    Name = lineThematic.Name,
-                    Description = lineThematic.Description,
-                    CreatedAt = lineThematic.CreatedAt,
-                    UpdatedAt = lineThematic.UpdatedAt
+                    Name = lineThematic.Name
+                 
                 };
             }
             catch (Exception ex)
@@ -78,50 +83,46 @@ namespace Business
         }
 
         // Método para crear una línea temática desde un DTO
-        public async Task<LineThematicDto> CreateLineThematicAsync(LineThematicDto lineThematicDto)
+        public async Task<LineThematicDTO> CreateLineThematicAsync(LineThematicDTO LineThematicDTO)
         {
             try
             {
-                ValidateLineThematic(lineThematicDto);
+                ValidateLineThematic(LineThematicDTO);
 
                 var lineThematic = new LineThematic
                 {
-                    Name = lineThematicDto.Name,
-                    Description = lineThematicDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Name = LineThematicDTO.Name,
+                    
                 };
 
                 var createdLineThematic = await _lineThematicData.CreateAsync(lineThematic);
 
-                return new LineThematicDto
+                return new LineThematicDTO
                 {
                     Id = createdLineThematic.Id,
                     Name = createdLineThematic.Name,
-                    Description = createdLineThematic.Description,
-                    CreatedAt = createdLineThematic.CreatedAt,
-                    UpdatedAt = createdLineThematic.UpdatedAt
+                    
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear una nueva línea temática: {LineThematicName}", lineThematicDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear una nueva línea temática: {LineThematicName}", LineThematicDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear la línea temática", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateLineThematic(LineThematicDto lineThematicDto)
+        private void ValidateLineThematic(LineThematicDTO LineThematicDTO)
         {
-            if (lineThematicDto == null)
+            if (LineThematicDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto línea temática no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto línea temática no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(lineThematicDto.Name))
+            if (string.IsNullOrWhiteSpace(LineThematicDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar una línea temática con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name de la línea temática es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name de la línea temática es obligatorio");
             }
         }
     }

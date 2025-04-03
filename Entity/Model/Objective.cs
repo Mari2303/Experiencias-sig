@@ -12,11 +12,11 @@ public  class Objective
          
          public string ObjectiveDescription { get; set; }
 
-         public string innovation { get; set; }
+         public string Innovation { get; set; }
 
-         public string results { get; set; }
+         public string Results { get; set; }
 
-         public string sustainability { get; set; }
+         public string Sustainability { get; set; }
 
          public int ExperienceId { get; set; }
         public DateTime DeleteAt { get; set; }

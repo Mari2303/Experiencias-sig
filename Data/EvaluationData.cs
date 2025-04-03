@@ -22,16 +22,16 @@ namespace Data
         }
 
         ///<summary>
-        ///Obtiene todos los roles almacenados en la base de datos.
+        ///Obtiene todos  almacenados en la base de datos.
         ///</summary>
-        ///<returns> Lista de roles</returns>
+        ///<returns> Lista </returns>
 
         public async Task<IEnumerable<Evaluation>> GetAllAsync()
         {
             return await _context.Set<Evaluation>().ToListAsync();
         }
 
-        ///<summary> Obtiene un rol específico por su identificador.
+        ///<summary> Obtiene específico por su identificador.
 
         public async Task<Evaluation?> GetByIdAsync(int id)
         {
@@ -47,10 +47,10 @@ namespace Data
         }
 
         ///<summary>
-        ///Crea un nuevo rol en la base de datos.
+        ///Crea un nuevo en la base de datos
         ///</summary>
         ///<param name="evaluation">Instancia del rol a crear</param>
-        ///<returns>El rol creado</returns>
+        ///<returns>El  creado</returns>
 
         public async Task<Evaluation> CreateAsync(Evaluation evaluation)
         {
@@ -68,7 +68,7 @@ namespace Data
         }
 
         ///<summary>
-        ///Actualiza un rol existente en la base de datos.
+        ///Actualiza existente en la base de datos.
         ///</summary>
         ///<param name="evaluation">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
@@ -89,9 +89,9 @@ namespace Data
         }
 
         ///<summary>
-        ///Elimina un rol de la base de datos.
+        ///Elimina  de la base de datos.
         ///</summary>
-        ///<param name="id">Identificador único del rol a eliminar</param>
+        ///<param name="id">Identificador único  eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
         public async Task<bool> DeleteAsync(int id)

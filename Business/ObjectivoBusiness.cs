@@ -3,7 +3,8 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using System.Data;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,21 +23,31 @@ namespace Business
         }
 
         // Método para obtener todos los objetivos como DTOs
-        public async Task<IEnumerable<ObjectiveDto>> GetAllObjectivesAsync()
+        public async Task<IEnumerable<ObjectiveDTO>> GetAllObjectivesAsync()
         {
             try
             {
                 var objectives = await _objectiveData.GetAllAsync();
-                var objectiveDTOs = objectives.Select(obj => new ObjectiveDto
-                {
-                    Id = obj.Id,
-                    Name = obj.Name,
-                    Description = obj.Description,
-                    CreatedAt = obj.CreatedAt,
-                    UpdatedAt = obj.UpdatedAt
-                }).ToList();
+                var objectiveDTO = new List<ObjectiveDTO>();
 
-                return objectiveDTOs;
+                foreach (var objective in objectives)
+
+                    objectiveDTO.Add(new ObjectiveDTO
+
+                    {
+                     Id = objective.Id,
+                     ObjetiveDescription = objective.ObjectiveDescription,
+                     Innovation = objective.Innovation,
+                     Results = objective.Results,
+                     Sustainability = objective.Sustainability,
+                     ExperienceId = objective.ExperienceId
+
+
+
+
+                    });
+
+                return objectiveDTO;
             }
             catch (Exception ex)
             {
@@ -46,12 +57,12 @@ namespace Business
         }
 
         // Método para obtener un objetivo por ID como DTO
-        public async Task<ObjectiveDto> GetObjectiveByIdAsync(int id)
+        public async Task<ObjectiveDTO> GetObjectiveByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un objetivo con ID inválido: {ObjectiveId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del objetivo debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del objetivo debe ser mayor que cero");
             }
 
             try
@@ -63,13 +74,14 @@ namespace Business
                     throw new EntityNotFoundException("Objective", id);
                 }
 
-                return new ObjectiveDto
+                return new ObjectiveDTO
                 {
                     Id = objective.Id,
-                    Name = objective.Name,
-                    Description = objective.Description,
-                    CreatedAt = objective.CreatedAt,
-                    UpdatedAt = objective.UpdatedAt
+                    ObjetiveDescription = objective.ObjectiveDescription,
+                    Innovation = objective.Innovation,
+                    Results = objective.Results,
+                    Sustainability = objective.Sustainability,
+                    ExperienceId = objective.ExperienceId
                 };
             }
             catch (Exception ex)
@@ -80,50 +92,53 @@ namespace Business
         }
 
         // Método para crear un objetivo desde un DTO
-        public async Task<ObjectiveDto> CreateObjectiveAsync(ObjectiveDto objectiveDto)
+        public async Task<ObjectiveDTO> CreateObjectiveAsync(ObjectiveDTO ObjectiveDTO)
         {
             try
             {
-                ValidateObjective(objectiveDto);
+                ValidateObjective(ObjectiveDTO);
 
                 var objective = new Objective
                 {
-                    Name = objectiveDto.Name,
-                    Description = objectiveDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Id = ObjectiveDTO.Id,
+                    ObjectiveDescription = ObjectiveDTO.ObjetiveDescription,
+                    Innovation = ObjectiveDTO.Innovation,
+                    Results = ObjectiveDTO.Results,
+                    Sustainability = ObjectiveDTO.Sustainability,
+                    ExperienceId = ObjectiveDTO.ExperienceId
                 };
 
                 var createdObjective = await _objectiveData.CreateAsync(objective);
 
-                return new ObjectiveDto
+                return new ObjectiveDTO
                 {
                     Id = createdObjective.Id,
-                    Name = createdObjective.Name,
-                    Description = createdObjective.Description,
-                    CreatedAt = createdObjective.CreatedAt,
-                    UpdatedAt = createdObjective.UpdatedAt
+                    ObjetiveDescription = createdObjective.ObjectiveDescription,
+                    Innovation = createdObjective.Innovation,
+                    Results = createdObjective.Results,
+                    Sustainability = createdObjective.Sustainability,
+                    ExperienceId = createdObjective.ExperienceId
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo objetivo: {ObjectiveName}", objectiveDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo objetivo: {ObjectiveName}", ObjectiveDTO?.ObjetiveDescription ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el objetivo", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateObjective(ObjectiveDto objectiveDto)
+        private void ValidateObjective(ObjectiveDTO ObjectiveDTO)
         {
-            if (objectiveDto == null)
+            if (ObjectiveDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto objetivo no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto objetivo no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(objectiveDto.Name))
+            if (string.IsNullOrWhiteSpace(ObjectiveDTO.ObjetiveDescription))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un objetivo con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del objetivo es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del objetivo es obligatorio");
             }
         }
     }

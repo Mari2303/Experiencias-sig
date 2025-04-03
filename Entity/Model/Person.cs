@@ -10,9 +10,9 @@ namespace Entity.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string Active { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public bool Active { get; set; }
        
         public DateTime DeleteAt { get; set; }
         public DateTime CreateAt { get; set; }

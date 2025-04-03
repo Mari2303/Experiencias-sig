@@ -10,17 +10,17 @@ public class Institucion
     {
         public int Id { get; set; }
     
-        public string name { get; set; } 
+        public string Name { get; set; } 
 
-        public string address { get; set; }
+        public string Address { get; set; }
 
-        public string phone { get; set; }
+        public string Phone { get; set; }
 
-        public string emailInstitution { get; set; }
+        public string EmailInstitution { get; set; }
 
-        public string department { get; set; }
+        public string Department { get; set; }
 
-        public string commune { get; set; }       
+        public string Commune { get; set; }       
         public DateTime DeleteAt { get; set; }
         public DateTime CreateAt { get; set; }
 

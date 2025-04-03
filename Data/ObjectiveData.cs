@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-    class ObjectiveData
+ public   class ObjectiveData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;

@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Entity.Model
 {
-    class RolPermissionDTO
+public    class RolPermissionDTO
     {
+        public readonly int PermisionId;
+
         public int Id { get; set; }
-        public string rolId1 { get; set; }
-        public string permisssionId1 { get; set; }
+        public int RolId { get; set; }
+        public int PermissionId { get; set; }
     }
 }

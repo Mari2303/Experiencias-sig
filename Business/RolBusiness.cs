@@ -1,5 +1,4 @@
 using Data;
-
 using Entity.Model;
 using Entity.DTOs;
 using Microsoft.Extensions.Logging;
@@ -84,7 +83,7 @@ namespace Business
         }
 
         // Método para crear un rol desde un DTO
-        public async Task<RolDTO> CreateRolAsync(RolDTO RolDTO)
+        public async Task<RolDTO> CreateRolAsync(RolDTO RolDTO) 
         {
             try
             {

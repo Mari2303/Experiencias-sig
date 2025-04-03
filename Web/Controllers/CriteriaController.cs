@@ -1,6 +1,8 @@
-﻿using Business;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Entity.DTOs;
+using Data;
+using Utilities.Exeptions;
 
 namespace Web
 {
@@ -59,7 +61,7 @@ namespace Web
         /// <response code="404">Criterio no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(CriteriaDto), 200)]
+        [ProducesResponseType(typeof(CriteriaDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]

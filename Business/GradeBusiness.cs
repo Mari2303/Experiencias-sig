@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,18 +22,16 @@ namespace Business
         }
 
         // Método para obtener todos los grados como DTOs
-        public async Task<IEnumerable<GradeDto>> GetAllGradesAsync()
+        public async Task<IEnumerable<GradeDTO>> GetAllGradesAsync()
         {
             try
             {
                 var grades = await _gradeData.GetAllAsync();
-                return grades.Select(grade => new GradeDto
+                return grades.Select(grade => new GradeDTO
                 {
                     Id = grade.Id,
                     Name = grade.Name,
-                    Level = grade.Level,
-                    CreatedAt = grade.CreatedAt,
-                    UpdatedAt = grade.UpdatedAt
+                    
                 }).ToList();
             }
             catch (Exception ex)
@@ -44,12 +42,12 @@ namespace Business
         }
 
         // Método para obtener un grado por ID como DTO
-        public async Task<GradeDto> GetGradeByIdAsync(int id)
+        public async Task<GradeDTO> GetGradeByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un grado con ID inválido: {GradeId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del grado debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del grado debe ser mayor que cero");
             }
 
             try
@@ -61,13 +59,11 @@ namespace Business
                     throw new EntityNotFoundException("Grade", id);
                 }
 
-                return new GradeDto
+                return new GradeDTO
                 {
                     Id = grade.Id,
                     Name = grade.Name,
-                    Level = grade.Level,
-                    CreatedAt = grade.CreatedAt,
-                    UpdatedAt = grade.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
@@ -78,57 +74,49 @@ namespace Business
         }
 
         // Método para crear un grado desde un DTO
-        public async Task<GradeDto> CreateGradeAsync(GradeDto gradeDto)
+        public async Task<GradeDTO> CreateGradeAsync(GradeDTO GradeDTO)
         {
             try
             {
-                ValidateGrade(gradeDto);
+                ValidateGrade(GradeDTO);
 
                 var grade = new Grade
                 {
-                    Name = gradeDto.Name,
-                    Level = gradeDto.Level,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Name = GradeDTO.Name,
+                   
                 };
 
                 var createdGrade = await _gradeData.CreateAsync(grade);
 
-                return new GradeDto
+                return new GradeDTO
                 {
                     Id = createdGrade.Id,
                     Name = createdGrade.Name,
-                    Level = createdGrade.Level,
-                    CreatedAt = createdGrade.CreatedAt,
-                    UpdatedAt = createdGrade.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo grado: {GradeName}", gradeDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo grado: {GradeName}", GradeDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el grado", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateGrade(GradeDto gradeDto)
+        private void ValidateGrade(GradeDTO GradeDTO)
         {
-            if (gradeDto == null)
+            if (GradeDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto grado no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto grado no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(gradeDto.Name))
+            if (string.IsNullOrWhiteSpace(GradeDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un grado con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del grado es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del grado es obligatorio");
             }
 
-            if (gradeDto.Level <= 0)
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un grado con Level inválido");
-                throw new Utilities.Exceptions.ValidationException("Level", "El Level del grado debe ser mayor que cero");
-            }
+           
         }
     }
 }

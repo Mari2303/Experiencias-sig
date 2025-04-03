@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-    class LineThematicData
+ public   class LineThematicData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;

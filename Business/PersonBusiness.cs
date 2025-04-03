@@ -2,8 +2,10 @@ using Data;
 using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
+using System;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using System.Numerics;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -12,34 +14,38 @@ namespace Business
     /// </summary>
     public class PersonBusiness
     {
-        private readonly PersonData _rolData;
+        private readonly PersonData _personData;
         private readonly ILogger _logger;
 
-        public PersonBusiness(PersonData PersonData, ILogger logger)
+        public PersonBusiness (PersonData PersonData, ILogger logger)
         {
-            _PersonData = PersonData;
+            _personData = PersonData;
+
             _logger = logger;
         }
 
         // Método para obtener todos los roles como DTOs
-        public async Task<IEnumerable<PersonDto>> GetAllRolesAsync()
+        public async Task<IEnumerable<PersonDTO>> GetAllPersonAsync()
         {
             try
             {
-                var person = await _PersonData.GetAllAsync();
-                var personDTO = new List<PersonDto>();
+                var person = await _personData.GetAllAsync();
+                var PersonDTO = new List<PersonDTO>();
 
-                foreach (var person in Person)
+                foreach (var Person in person)
                 {
-                    personDTO.Add(new PersonDto
+                    PersonDTO.Add(new PersonDTO
                     {
-                        Id = person.Id,
-                        Name = person.Name,
-                        Active = person.Active // Si existe en la entidad
+                        Id = Person.Id,
+                        Name = Person.Name,
+                        Email = Person.Email, // Si existe en la entidad
+                        Phone = Person.Phone,
+                        Active = Person.Active
+
                     });
                 }
 
-                return personDTO;
+                return PersonDTO;
             }
             catch (Exception ex)
             {
@@ -49,28 +55,31 @@ namespace Business
         }
 
         // Método para obtener un rol por ID como DTO
-        public async Task<PersonDto> GetRolByIdAsync(int id)
+        public async Task<PersonDTO> GetRolByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un person con ID inválido: {personId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del person debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del person debe ser mayor que cero");
             }
 
             try
             {
-                var person = await _rolData.GetByIdAsync(id);
+                var person = await _personData.GetByIdAsync(id);
                 if (person == null)
                 {
                     _logger.LogInformation("No se encontró ningún person con ID: {PersonId}", id);
                     throw new EntityNotFoundException("Person", id);
                 }
 
-                return new PersonDto
+                return new PersonDTO
                 {
                     Id = person.Id,
                     Name = person.Name,
-                    Active = person.Active 
+                    Email = person.Email, // Si existe en la entidad
+                    Phone = person.Phone,
+                    Active = person.Active
+
                 };
             }
             catch (Exception ex)
@@ -80,47 +89,58 @@ namespace Business
             }
         }
 
-        // Método para crear un rol desde un DTO
-        public async Task<PersonDto> CreateRolAsync(PersonDto PersonDto)
+        // Método desde un DTO
+        public async Task<PersonDTO> CreatePersonAsync(PersonDTO PersonDTO)
         {
             try
             {
-                ValidateRol(PersonDto);
+                ValidatePerson(PersonDTO);
 
-                var rol = new person
-                    Name = PersonDto.Name,
-                    Active = PersonDto.Active // Si existe en la entidad
+                var person = new Person
+                { 
+
+                    Name = PersonDTO.Name,
+                    Email = PersonDTO.Email, // Si existe en la entidad
+                    Phone = PersonDTO.Phone,
+                    Active = PersonDTO.Active
+
                 };
 
                 var personCreado = await _personData.CreateAsync(person);
 
-                return new PersonDto
+                return new PersonDTO
                 {
                     Id = personCreado.Id,
                     Name = personCreado.Name,
-                    Active = personCreado.Active // Si existe en la entidad
+                    Email = personCreado.Email, 
+                    Phone = personCreado.Phone,
+                    Active = personCreado.Active
                 };
             }
             catch (Exception ex)
+
             {
-                _logger.LogError(ex, "Error al crear nuevo rol: {RolNombre}", PersonDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo rol: {RolNombre}", PersonDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el person", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateRol(PersonDto PersonDto)
+        private void ValidatePerson(PersonDTO PersonDTO)
         {
-            if (PersonDto == null)
+            if (PersonDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto person no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto  puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(PersonDto.Name))
+            if (string.IsNullOrWhiteSpace(PersonDTO.Name))
             {
-                _logger.LogWarning("Se intentó crear/actualizar un person con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del person es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar con Name vacío");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name no es obligatorio");
             }
         }
     }
+}
+
+
 

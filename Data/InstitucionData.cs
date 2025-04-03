@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-    class InstitutionData
+ public   class InstitucionData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -16,7 +16,7 @@ namespace Data
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public      InstitutionData(ApplicationDbContext context, ILogger logger)
+        public      InstitucionData(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;
@@ -27,18 +27,18 @@ namespace Data
         ///</summary>
         ///<returns> Lista de roles</returns>
 
-        public async Task<IEnumerable<Institution>> GetAllAsync()
+        public async Task<IEnumerable<Institucion>> GetAllAsync()
         {
-            return await _context.Set<Institution>().ToListAsync();
+            return await _context.Set<Institucion>().ToListAsync();
         }
 
         ///<summary> Obtiene un rol específico por su identificador.
 
-        public async Task<Institution?> GetByIdAsync(int id)
+        public async Task<Institucion?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<Institution>().FindAsync(id);
+                return await _context.Set<Institucion>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -50,16 +50,16 @@ namespace Data
         ///<summary>
         ///Crea un nuevo rol en la base de datos.
         ///</summary>
-        ///<param name="institution">Instancia del rol a crear</param>
+        ///<param name="Institucion">Instancia del rol a crear</param>
         ///<returns>El rol creado</returns>
 
-        public async Task<Institution> CreateAsync(Institution institution)
+        public async Task<Institucion> CreateAsync(Institucion Institucion)
         {
             try
             {
-                await _context.Set<Institution>().AddAsync(institution);
+                await _context.Set<Institucion>().AddAsync(Institucion);
                 await _context.SaveChangesAsync();
-                return institution;
+                return Institucion;
             }
             catch (Exception ex)
             {
@@ -71,14 +71,14 @@ namespace Data
         ///<summary>
         ///Actualiza un rol existente en la base de datos.
         ///</summary>
-        ///<param name="institution">Objeto con la información actualizada</param>
+        ///<param name="Institucion">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdateAsync(Institution institution)
+        public async Task<bool> UpdateAsync(Institucion Institucion)
         {
             try
             {
-                _context.Set<Institution>().Update(institution);
+                _context.Set<Institucion>().Update(Institucion);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -99,11 +99,11 @@ namespace Data
         {
             try
             {
-                var institution = await _context.Set<Institution>().FindAsync(id);
-                if (institution == null)
+                var Institucion = await _context.Set<Institucion>().FindAsync(id);
+                if (Institucion == null)
                     return false;
 
-                _context.Set<Institution>().Remove(institution);
+                _context.Set<Institucion>().Remove(Institucion);
                 await _context.SaveChangesAsync();
                 return true;
             }

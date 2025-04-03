@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,19 +22,21 @@ namespace Business
         }
 
         // Método para obtener todo el historial de experiencias como DTOs
-        public async Task<IEnumerable<HistoryExperienceDto>> GetAllHistoryExperiencesAsync()
+        public async Task<IEnumerable<HistoryExperienceDTO>> GetAllHistoryExperiencesAsync()
         {
             try
             {
                 var histories = await _historyExperienceData.GetAllAsync();
-                return histories.Select(history => new HistoryExperienceDto
+                return histories.Select(history => new HistoryExperienceDTO
                 {
                     Id = history.Id,
-                    ExperienceId = history.ExperienceId,
+                    DateTime = history.DateTime,
                     UserId = history.UserId,
-                    Action = history.Action,
-                    Timestamp = history.Timestamp
-                }).ToList();
+                    TableName = history.TableName,
+                    Observation = history.Observation,
+                    Afected = history.Afected,
+                    Active = history.Active
+                });
             }
             catch (Exception ex)
             {
@@ -44,12 +46,12 @@ namespace Business
         }
 
         // Método para obtener un historial de experiencia por ID como DTO
-        public async Task<HistoryExperienceDto> GetHistoryExperienceByIdAsync(int id)
+        public async Task<HistoryExperienceDTO> GetHistoryExperienceByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un historial de experiencia con ID inválido: {HistoryId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del historial de experiencia debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del historial de experiencia debe ser mayor que cero");
             }
 
             try
@@ -61,13 +63,15 @@ namespace Business
                     throw new EntityNotFoundException("HistoryExperience", id);
                 }
 
-                return new HistoryExperienceDto
+                return new HistoryExperienceDTO
                 {
                     Id = history.Id,
-                    ExperienceId = history.ExperienceId,
+                    DateTime = history.DateTime,
                     UserId = history.UserId,
-                    Action = history.Action,
-                    Timestamp = history.Timestamp
+                    TableName = history.TableName,
+                    Observation = history.Observation,
+                    Afected = history.Afected,
+                    Active = history.Active
                 };
             }
             catch (Exception ex)
@@ -78,7 +82,7 @@ namespace Business
         }
 
         // Método para registrar una nueva entrada en el historial de experiencias
-        public async Task<HistoryExperienceDto> CreateHistoryExperienceAsync(HistoryExperienceDto historyDto)
+        public async Task<HistoryExperienceDTO> CreateHistoryExperienceAsync(HistoryExperienceDTO historyDto)
         {
             try
             {
@@ -86,48 +90,48 @@ namespace Business
 
                 var history = new HistoryExperience
                 {
-                    ExperienceId = historyDto.ExperienceId,
+                 
+                    DateTime = historyDto.DateTime,
                     UserId = historyDto.UserId,
-                    Action = historyDto.Action,
-                    Timestamp = DateTime.UtcNow
+                    TableName = historyDto.TableName,
+                    Observation = historyDto.Observation,
+                    Afected = historyDto.Afected,
+                    Active = historyDto.Active
                 };
 
                 var createdHistory = await _historyExperienceData.CreateAsync(history);
 
-                return new HistoryExperienceDto
+                return new HistoryExperienceDTO
                 {
                     Id = createdHistory.Id,
-                    ExperienceId = createdHistory.ExperienceId,
+                    DateTime = createdHistory.DateTime,
                     UserId = createdHistory.UserId,
-                    Action = createdHistory.Action,
-                    Timestamp = createdHistory.Timestamp
+                    TableName = createdHistory.TableName,
+                    Observation = createdHistory.Observation,
+                    Afected = createdHistory.Afected,
+                    Active = createdHistory.Active
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al registrar una nueva entrada en el historial de experiencias");
-                throw new ExternalServiceException("Base de datos", "Error al registrar el historial de experiencia", ex);
+                _logger.LogError(ex, "Error al crear nuevo : {HistoryExperienceNombre}", historyDto?.TableName ?? "null");
+                throw new ExternalServiceException("Base de datos", "Error al crear", ex);
             }
         }
 
+     
         // Método para validar el DTO
-        private void ValidateHistoryExperience(HistoryExperienceDto historyDto)
+        private void ValidateHistoryExperience(HistoryExperienceDTO HistoryExperienceDTO)
         {
-            if (historyDto == null)
+            if (HistoryExperienceDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto historial de experiencia no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto puede ser nulo");
             }
 
-            if (historyDto.ExperienceId <= 0)
+            if (string.IsNullOrWhiteSpace(HistoryExperienceDTO.TableName))
             {
-                _logger.LogWarning("Se intentó registrar un historial de experiencia con ExperienceId inválido");
-                throw new Utilities.Exceptions.ValidationException("ExperienceId", "El ExperienceId debe ser mayor que cero");
-            }
-
-            if (historyDto.UserId <= 0)
-            {
-                _logger.LogWarning("Se intentó registrar un historial de experiencia con UserId inválido");
-                throw new Utilities.Exceptions.ValidationException("UserId", "El UserId debe ser mayor que cero");
+                _logger.LogWarning("Se intentó crear/actualizar un rol con Name vacío");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
         }
     }
