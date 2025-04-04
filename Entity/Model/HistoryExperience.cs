@@ -17,8 +17,18 @@ public class HistoryExperience
         public int UserId { get; set; }
         public User User { get; set; }
 
+<<<<<<< HEAD
         public DateTime DeleteAt { get; set;  }     
         public DateTime CreateAt { get; set; }
+=======
+       public DateTime dateTime { get; set; }
+
+       public  int UserId { get; set; }
+        public User User { get; set; }
+
+           public DateTime DeleteAt { get; set;  }     
+            public DateTime CreateAt { get; set; }
+>>>>>>> 204fb42e073a15ddd1025a029cf0b0d571d41788
 
     }
 }

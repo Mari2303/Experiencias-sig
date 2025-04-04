@@ -27,6 +27,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj" />
     <ProjectReference Include="..\Data\Data.csproj" />
+<<<<<<< HEAD
+=======
+    <ProjectReference Include="..\Diagram\Diagram.csproj" />
+>>>>>>> 204fb42e073a15ddd1025a029cf0b0d571d41788
     <ProjectReference Include="..\Entity\Entity.csproj" />
     <ProjectReference Include="..\Utilities\Utilities.csproj" />
   </ItemGroup>

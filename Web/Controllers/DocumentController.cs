@@ -1,6 +1,9 @@
 ﻿using Business;
+using Entity.DTOs;
+using Data;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+using Entity.Model;
 
 namespace Web
 {
@@ -57,7 +60,7 @@ namespace Web
         /// <response code="404">Documento no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(DocumentDto), 200)]
+        [ProducesResponseType(typeof(DocumentDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -93,10 +96,10 @@ namespace Web
         /// <response code="400">Datos del documento no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(DocumentDto), 201)]
+        [ProducesResponseType(typeof(DocumentDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateDocument([FromBody] DocumentDto Document)
+        public async Task<IActionResult> CreateDocument([FromBody] DocumentDTO Document)
         {
             try
             {
