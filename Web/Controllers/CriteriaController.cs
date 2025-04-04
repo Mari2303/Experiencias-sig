@@ -1,6 +1,8 @@
 ﻿using Business;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Data;
+using Entity.DTOs;
+using Utilities.Exeptions;
 
 namespace Web
 {
@@ -12,7 +14,7 @@ namespace Web
     [Produces("application/json")]
     public class CriteriaController : ControllerBase
     {
-        private readonly CriteriaBusiness _criteriaBusiness;
+        private readonly CriteriaBusiness _criteriaBusiness;  // INYECION DE DEPENDENCIAS 
         private readonly ILogger<CriteriaController> _logger;
 
         /// <summary>
@@ -20,7 +22,7 @@ namespace Web
         /// </summary>
         /// <param name="criteriaBusiness">Capa de negocios de criterios.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public CriteriaController(CriteriaBusiness criteriaBusiness, ILogger<CriteriaController> logger)
+        public CriteriaController(CriteriaBusiness criteriaBusiness, ILogger<CriteriaController> logger)  // SE INYECTA A TRAVES DEL CONSTRUCTOR PARA QUE EL CONTROLADOR ACCEDER
         {
             _criteriaBusiness = criteriaBusiness;
             _logger = logger;
@@ -59,7 +61,7 @@ namespace Web
         /// <response code="404">Criterio no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(CriteriaDto), 200)]
+        [ProducesResponseType(typeof(CriteriaDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +98,10 @@ namespace Web
         /// <response code="400">Datos del criterio no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(CriteriaDto), 201)]
+        [ProducesResponseType(typeof(CriteriaDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateCriteria([FromBody] CriteriaDto criteria)
+        public async Task<IActionResult> CreateCriteria([FromBody] CriteriaDTO criteria)
         {
             try
             {
