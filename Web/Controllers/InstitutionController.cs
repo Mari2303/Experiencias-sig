@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
 
 namespace Web
 {
@@ -12,17 +15,17 @@ namespace Web
     [Produces("application/json")]
     public class InstitutionController : ControllerBase
     {
-        private readonly InstitutionBusiness _InstitutionBusiness;
+        private readonly InstitucionBusiness _InstitucionBusiness;
         private readonly ILogger<InstitutionController> _logger;
 
         /// <summary>
         /// Constructor controlador de instituciones.
         /// </summary>
-        /// <param name="InstitutionBusiness">Capa de negocios de instituciones.</param>
+        /// <param name="InstitucionBusiness">Capa de negocios de instituciones.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public InstitutionController(InstitutionBusiness InstitutionBusiness, ILogger<InstitutionController> logger)
+        public InstitutionController(InstitucionBusiness InstitucionBusiness, ILogger<InstitutionController> logger)
         {
-            _InstitutionBusiness = InstitutionBusiness;
+            _InstitucionBusiness = InstitucionBusiness;
             _logger = logger;
         }
 
@@ -33,13 +36,13 @@ namespace Web
         /// <response code="200">Lista de instituciones</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<InstitutionData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<InstitucionData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllInstitutions()
         {
             try
             {
-                var institutions = await _InstitutionBusiness.GetAllInstitutionsAsync();
+                var institutions = await _InstitucionBusiness.GetAllInstitucionesAsync();
                 return Ok(institutions);
             }
             catch (ExternalServiceException ex)
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Institución no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(InstitutionDto), 200)]
+        [ProducesResponseType(typeof(InstitucionDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -67,7 +70,7 @@ namespace Web
         {
             try
             {
-                var institution = await _InstitutionBusiness.GetInstitutionByIdAsync(id);
+                var institution = await _InstitucionBusiness.GetInstitucionByIdAsync(id);
                 return Ok(institution);
             }
             catch (ValidationException ex)
@@ -96,14 +99,14 @@ namespace Web
         /// <response code="400">Datos de la institución no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(InstitutionDto), 201)]
+        [ProducesResponseType(typeof(InstitucionDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateInstitution([FromBody] InstitutionDto institution)
+        public async Task<IActionResult> CreateInstitution([FromBody] InstitucionDTO institution)
         {
             try
             {
-                var createdInstitution = await _InstitutionBusiness.CreateInstitutionAsync(institution);
+                var createdInstitution = await _InstitucionBusiness.CreateInstitucionAsync(institution);
                 return CreatedAtAction(nameof(GetInstitutionById), new { id = createdInstitution.Id }, createdInstitution);
             }
             catch (ValidationException ex)

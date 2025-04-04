@@ -1,15 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
-using Entity.DTOs;
-using Data;
-=======
-using Data;
-using Entity.DTOs;
->>>>>>> 204fb42e073a15ddd1025a029cf0b0d571d41788
 using Utilities.Exeptions;
 
-namespace Web
+namespace WebApplication1
 {
     /// <summary>
     /// Controlador para la gestión de criterios en el sistema.
@@ -19,7 +14,7 @@ namespace Web
     [Produces("application/json")]
     public class CriteriaController : ControllerBase
     {
-        private readonly CriteriaBusiness _criteriaBusiness;  // INYECION DE DEPENDENCIAS 
+        private readonly CriteriaBusiness _criteriaBusiness;
         private readonly ILogger<CriteriaController> _logger;
 
         /// <summary>
@@ -27,7 +22,7 @@ namespace Web
         /// </summary>
         /// <param name="criteriaBusiness">Capa de negocios de criterios.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public CriteriaController(CriteriaBusiness criteriaBusiness, ILogger<CriteriaController> logger)  // SE INYECTA A TRAVES DEL CONSTRUCTOR PARA QUE EL CONTROLADOR ACCEDER
+        public CriteriaController(CriteriaBusiness criteriaBusiness, ILogger<CriteriaController> logger)
         {
             _criteriaBusiness = criteriaBusiness;
             _logger = logger;

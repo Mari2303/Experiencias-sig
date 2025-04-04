@@ -1,12 +1,16 @@
 
+using Data;
+using Entity.Model;
+using Entity.DTOs;
+using System.ComponentModel.DataAnnotations;
+using Utilities.Exeptions;
 using Microsoft.Extensions.Logging;
 
-namespace Business
-{
-    /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los estados en el sistema.
-    /// </summary>
-    public class StateBusiness
+
+/// <summary>
+/// Clase de negocio encargada de la lógica relacionada con los estados en el sistema.
+/// </summary>
+public class StateBusiness
     {
         private readonly StateData _stateData;
         private readonly ILogger _logger;
@@ -18,21 +22,32 @@ namespace Business
         }
 
         // Método para obtener todos los estados como DTOs
-        public async Task<IEnumerable<StateDto>> GetAllStatesAsync()
+        public async Task<IEnumerable<StateDTO>> GetAllStatesAsync()
         {
             try
             {
                 var states = await _stateData.GetAllAsync();
-                return states.Select(state => new StateDto
+                var statesDTO = new List<StateDTO>();
+
+
+            foreach (var state in states) {
                 {
-                    Id = state.Id,
-                    Name = state.Name,
-                    Description = state.Description,
-                    CreatedAt = state.CreatedAt,
-                    UpdatedAt = state.UpdatedAt
-                }).ToList();
+
+                    statesDTO.Add(new StateDTO {
+
+                        Id = state.Id,
+                        Name = state.Name,
+
+
+                    });
+
+                }
             }
-            catch (Exception ex)
+            return statesDTO;
+        }
+
+
+        catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener todos los estados");
                 throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de estados", ex);
@@ -40,12 +55,12 @@ namespace Business
         }
 
         // Método para obtener un estado por ID como DTO
-        public async Task<StateDto> GetStateByIdAsync(int id)
+        public async Task<StateDTO> GetStateByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un estado con ID inválido: {StateId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del estado debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID del estado debe ser mayor que cero");
             }
 
             try
@@ -57,13 +72,11 @@ namespace Business
                     throw new EntityNotFoundException("State", id);
                 }
 
-                return new StateDto
+                return new StateDTO
                 {
                     Id = state.Id,
                     Name = state.Name,
-                    Description = state.Description,
-                    CreatedAt = state.CreatedAt,
-                    UpdatedAt = state.UpdatedAt
+                   
                 };
             }
             catch (Exception ex)
@@ -74,51 +87,47 @@ namespace Business
         }
 
         // Método para crear un estado desde un DTO
-        public async Task<StateDto> CreateStateAsync(StateDto stateDto)
+        public async Task<StateDTO> CreateStateAsync(StateDTO StateDTO)
         {
             try
             {
-                ValidateState(stateDto);
+                ValidateState(StateDTO);
 
                 var state = new State
                 {
-                    Name = stateDto.Name,
-                    Description = stateDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                    Name = StateDTO.Name,
+                   
                 };
 
                 var createdState = await _stateData.CreateAsync(state);
 
-                return new StateDto
+                return new StateDTO
                 {
                     Id = createdState.Id,
                     Name = createdState.Name,
-                    Description = createdState.Description,
-                    CreatedAt = createdState.CreatedAt,
-                    UpdatedAt = createdState.UpdatedAt
+                 
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo estado: {StateName}", stateDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo estado: {StateName}", StateDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el estado", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateState(StateDto stateDto)
+        private void ValidateState(StateDTO StateDTO)
         {
-            if (stateDto == null)
+            if (StateDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto estado no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto estado no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(stateDto.Name))
+            if (string.IsNullOrWhiteSpace(StateDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un estado con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name del estado es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name del estado es obligatorio");
             }
         }
     }
-}
+

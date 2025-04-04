@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Evaluación no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(EvaluationDto), 200)]
+        [ProducesResponseType(typeof(EvaluationDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +99,10 @@ namespace Web
         /// <response code="400">Datos de la evaluación no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(EvaluationDto), 201)]
+        [ProducesResponseType(typeof(EvaluationDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateEvaluation([FromBody] EvaluationDto evaluation)
+        public async Task<IActionResult> CreateEvaluation([FromBody] EvaluationDTO evaluation)
         {
             try
             {

@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Experiencia histórica no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(HistoryExperienceDto), 200)]
+        [ProducesResponseType(typeof(HistoryExperienceDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +99,10 @@ namespace Web
         /// <response code="400">Datos de la experiencia histórica no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(HistoryExperienceDto), 201)]
+        [ProducesResponseType(typeof(HistoryExperienceDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateHistoryExperience([FromBody] HistoryExperienceDto experience)
+        public async Task<IActionResult> CreateHistoryExperience([FromBody] HistoryExperienceDTO experience)
         {
             try
             {

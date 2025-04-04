@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
 
 namespace Web
 {/// <summary>
@@ -58,7 +61,7 @@ namespace Web
         /// <response code="404">Objetivo no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ObjectiveDto), 200)]
+        [ProducesResponseType(typeof(ObjectiveDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -95,10 +98,10 @@ namespace Web
         /// <response code="400">Datos del objetivo no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ObjectiveDto), 201)]
+        [ProducesResponseType(typeof(ObjectiveDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateObjective([FromBody] ObjectiveDto objective)
+        public async Task<IActionResult> CreateObjective([FromBody] ObjectiveDTO objective)
         {
             try
             {

@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -12,7 +15,7 @@ namespace Web
     [Produces("application/json")]
     public class ExperienceLineThematicController : ControllerBase
     {
-        private readonly ExperienceLineThematicBusiness _ExperienceLineThematicBusiness;
+        private readonly ExperiencieLineThematicBusiness _ExperienceLineThematicBusiness;
         private readonly ILogger<ExperienceLineThematicController> _logger;
 
         /// <summary>
@@ -20,7 +23,7 @@ namespace Web
         /// </summary>
         /// <param name="ExperienceLineThematicBusiness">Capa de negocios de líneas temáticas de experiencias.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public ExperienceLineThematicController(ExperienceLineThematicBusiness ExperienceLineThematicBusiness, ILogger<ExperienceLineThematicController> logger)
+        public ExperienceLineThematicController(ExperiencieLineThematicBusiness ExperienceLineThematicBusiness, ILogger<ExperienceLineThematicController> logger)
         {
             _ExperienceLineThematicBusiness = ExperienceLineThematicBusiness;
             _logger = logger;
@@ -33,7 +36,7 @@ namespace Web
         /// <response code="200">Lista de líneas temáticas de experiencias</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ExperienceLineThematicData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ExperiencieLineThematicData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllExperienceLineThematics()
         {
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Línea temática de experiencia no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ExperienceLineThematicDto), 200)]
+        [ProducesResponseType(typeof(ExperiencieLineThematicDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +99,10 @@ namespace Web
         /// <response code="400">Datos de la línea temática de experiencia no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ExperienceLineThematicDto), 201)]
+        [ProducesResponseType(typeof(ExperiencieLineThematicDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateExperienceLineThematic([FromBody] ExperienceLineThematicDto experience)
+        public async Task<IActionResult> CreateExperienceLineThematic([FromBody] ExperiencieLineThematicDTO experience)
         {
             try
             {

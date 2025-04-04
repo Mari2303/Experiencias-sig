@@ -1,11 +1,9 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Utilities.Exceptions;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
 
 namespace Web.Controllers
 {
@@ -62,7 +60,7 @@ namespace Web.Controllers
         /// <response code="404">Permiso no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RolDto), 200)]
+        [ProducesResponseType(typeof(RolDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -98,14 +96,14 @@ namespace Web.Controllers
         /// <response code="400">Datos del permiso no validos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RolDto), 201)]
+        [ProducesResponseType(typeof(RolDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRol([FromBody] RolDto Rol)
+        public async Task<IActionResult> CreateRol([FromBody] RolDTO Rol)
         {
             try
             {
-                var createdRol = await _RolBusiness.CreateRolAsync(RolDto);
+                var createdRol = await _RolBusiness.CreateRolAsync(Rol);
                 return CreatedAtAction(nameof(GetRolById), new { id = createdRol.Id }, createdRol);
             }
             catch (ValidationException ex)

@@ -1,6 +1,8 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exceptions;
 
 namespace Web
 {/// <summary>
@@ -58,7 +60,7 @@ namespace Web
         /// <response code="404">Usuario no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(UserDto), 200)]
+        [ProducesResponseType(typeof(UserDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -66,7 +68,7 @@ namespace Web
         {
             try
             {
-                var user = await _UserBusiness.GetUserByIdAsync(id);
+                var user = await _UserBusiness.GetAllUsersAsync();
                 return Ok(user);
             }
             catch (ValidationException ex)
@@ -95,10 +97,10 @@ namespace Web
         /// <response code="400">Datos del usuario no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(UserDto), 201)]
+        [ProducesResponseType(typeof(UserDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto user)
+        public async Task<IActionResult> CreateUser([FromBody] UserDTO user)
         {
             try
             {

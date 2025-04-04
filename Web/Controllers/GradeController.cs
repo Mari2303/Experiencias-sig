@@ -1,11 +1,11 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Utilities.Exceptions;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
+
 
 namespace Web.Controllers
 {
@@ -64,7 +64,7 @@ namespace Web.Controllers
         /// <response code="404">Calificación no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(GradeDto), 200)]
+        [ProducesResponseType(typeof(GradeDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -101,10 +101,10 @@ namespace Web.Controllers
         /// <response code="400">Datos de la calificación no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(GradeDto), 201)]
+        [ProducesResponseType(typeof(GradeDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateGrade([FromBody] GradeDto Grade)
+        public async Task<IActionResult> CreateGrade([FromBody] GradeDTO Grade)
         {
             try
             {

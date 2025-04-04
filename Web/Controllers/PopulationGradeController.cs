@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+﻿using Business;
+using Data;
+using Entity.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Utilities.Exeptions;
+
 
 namespace Web
 {/// <summary>
@@ -8,17 +12,17 @@ namespace Web
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    public class PopulationGroupController : ControllerBase
+    public class PopulationGradeController : ControllerBase
     {
-        private readonly PopulationGroupBusiness _PopulationGroupBusiness;
-        private readonly ILogger<PopulationGroupController> _logger;
+        private readonly PopulationGradeBusiness _PopulationGroupBusiness;
+        private readonly ILogger<PopulationGradeController> _logger;
 
         /// <summary>
         /// Constructor controlador de grupos de población.
         /// </summary>
         /// <param name="PopulationGroupBusiness">Capa de negocios de grupos de población.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public PopulationGroupController(PopulationGroupBusiness PopulationGroupBusiness, ILogger<PopulationGroupController> logger)
+        public PopulationGradeController(PopulationGradeBusiness PopulationGroupBusiness, ILogger<PopulationGradeController> logger)
         {
             _PopulationGroupBusiness = PopulationGroupBusiness;
             _logger = logger;
@@ -31,13 +35,13 @@ namespace Web
         /// <response code="200">Lista de grupos de población</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<PopulationGroupData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PopulationGradeData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllPopulationGroups()
         {
             try
             {
-                var groups = await _PopulationGroupBusiness.GetAllPopulationGroupsAsync();
+                var groups = await _PopulationGroupBusiness.GetAllPopulationGradesAsync();
                 return Ok(groups);
             }
             catch (ExternalServiceException ex)
@@ -57,7 +61,7 @@ namespace Web
         /// <response code="404">Grupo de población no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PopulationGroupDto), 200)]
+        [ProducesResponseType(typeof(PopulationGradeDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -65,7 +69,7 @@ namespace Web
         {
             try
             {
-                var group = await _PopulationGroupBusiness.GetPopulationGroupByIdAsync(id);
+                var group = await _PopulationGroupBusiness.GetPopulationGradeByIdAsync(id);
                 return Ok(group);
             }
             catch (ValidationException ex)
@@ -94,14 +98,14 @@ namespace Web
         /// <response code="400">Datos del grupo de población no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(PopulationGroupDto), 201)]
+        [ProducesResponseType(typeof(PopulationGradeDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreatePopulationGroup([FromBody] PopulationGroupDto group)
+        public async Task<IActionResult> CreatePopulationGroup([FromBody] PopulationGradeDTO group)
         {
             try
             {
-                var createdGroup = await _PopulationGroupBusiness.CreatePopulationGroupAsync(group);
+                var createdGroup = await _PopulationGroupBusiness.CreatePopulationGradeAsync(group);
                 return CreatedAtAction(nameof(GetPopulationGroupById), new { id = createdGroup.Id }, createdGroup);
             }
             catch (ValidationException ex)

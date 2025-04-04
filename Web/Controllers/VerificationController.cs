@@ -1,6 +1,8 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exceptions;
 
 namespace Web
 {
@@ -57,7 +59,7 @@ namespace Web
         /// <response code="404">Verificación no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(VerificationDto), 200)]
+        [ProducesResponseType(typeof(VerificationDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -93,10 +95,10 @@ namespace Web
         /// <response code="400">Datos de la verificación no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(VerificationDto), 201)]
+        [ProducesResponseType(typeof(VerificationDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateVerification([FromBody] VerificationDto Verification)
+        public async Task<IActionResult> CreateVerification([FromBody] VerificationDTO Verification)
         {
             try
             {

@@ -1,12 +1,13 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Utilities.Exceptions;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
+
+
 
 namespace Web.Controllers
 {/// <summary>
@@ -64,7 +65,7 @@ namespace Web.Controllers
         /// <response code="404">Permiso no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PermissionDto), 200)]
+        [ProducesResponseType(typeof(PermissionDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -72,7 +73,7 @@ namespace Web.Controllers
         {
             try
             {
-                var permission = await _PermissionBusiness.GetPermissionByIdAsync(id);
+                var permission = await _PermissionBusiness.GetAllPermissionsAsync();
                 return Ok(permission);
             }
             catch (ValidationException ex)
@@ -101,14 +102,14 @@ namespace Web.Controllers
         /// <response code="400">Datos del permiso no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(PermissionDto), 201)]
+        [ProducesResponseType(typeof(PermissionDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreatePermission([FromBody] PermissionDto permission)
+        public async Task<IActionResult> CreatePermission([FromBody] PermissionDTO permission)
         {
             try
             {
-                var createdPermission = await _PermissionBusiness.CreatePermissionAsync(permission);
+                var createdPermission = await _PermissionBusiness.CreatePermisionAsync(permission);
                 return CreatedAtAction(nameof(GetPermissionById), new { id = createdPermission.Id }, createdPermission);
             }
             catch (ValidationException ex)

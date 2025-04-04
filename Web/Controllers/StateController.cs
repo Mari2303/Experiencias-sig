@@ -1,6 +1,10 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -59,7 +63,7 @@ namespace Web
         /// <response code="404">Estado no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(StateDto), 200)]
+        [ProducesResponseType(typeof(StateDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +100,10 @@ namespace Web
         /// <response code="400">Datos del estado no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(StateDto), 201)]
+        [ProducesResponseType(typeof(StateDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateState([FromBody] StateDto state)
+        public async Task<IActionResult> CreateState([FromBody] StateDTO state)
         {
             try
             {

@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -39,7 +42,7 @@ namespace Web
         {
             try
             {
-                var roles = await _UserRolBusiness.GetAllUserRolsAsync();
+                var roles = await _UserRolBusiness.GetAllUserRolesAsync();
                 return Ok(roles);
             }
             catch (ExternalServiceException ex)
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Rol de usuario no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(UserRolDto), 200)]
+        [ProducesResponseType(typeof(UserRolDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +99,10 @@ namespace Web
         /// <response code="400">Datos del rol de usuario no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(UserRolDto), 201)]
+        [ProducesResponseType(typeof(UserRolDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateUserRol([FromBody] UserRolDto rol)
+        public async Task<IActionResult> CreateUserRol([FromBody] UserRolDTO rol)
         {
             try
             {

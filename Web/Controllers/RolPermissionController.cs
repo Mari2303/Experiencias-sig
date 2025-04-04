@@ -1,8 +1,10 @@
 ﻿using Business;
 using Data;
+using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 
 namespace Web.Controllers
@@ -15,7 +17,7 @@ namespace Web.Controllers
     [Produces("application/json")]
     public class RolPermissionController : ControllerBase
     {
-        private readonly RolPermissionBusiness _RolPermissionBusiness;
+        private readonly RolPermisionBusiness _RolPermissionBusiness;
         private readonly ILogger<RolPermissionController> _logger;
 
         /// <summary>
@@ -23,7 +25,7 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="RolPermissionBusiness">Capa de negocios de permisos.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public RolPermissionController(RolPermissionBusiness RolPermissionBusiness, ILogger<RolPermissionController> logger)
+        public RolPermissionController(RolPermisionBusiness RolPermissionBusiness, ILogger<RolPermissionController> logger)
         {
             _RolPermissionBusiness = RolPermissionBusiness;
             _logger = logger;
@@ -42,7 +44,7 @@ namespace Web.Controllers
         {
             try
             {
-                var RolPermissions = await _RolPermissionBusiness.GetAllRolesAsync();
+                var RolPermissions = await _RolPermissionBusiness.GetAllRolPermissionsAsync();
                 return Ok(RolPermissions);
             }
             catch (ExternalServiceException ex)
@@ -62,7 +64,7 @@ namespace Web.Controllers
         /// <response code="404">Permiso no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RolPermissionDto), 200)]
+        [ProducesResponseType(typeof(RolPermissionData), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -70,7 +72,7 @@ namespace Web.Controllers
         {
             try
             {
-                var RolPermission = await _RolPermissionBusiness.GetRolByIdAsync(id);
+                var RolPermission = await _RolPermissionBusiness.GetAllRolPermissionsAsync();
                 return Ok(RolPermission);
             }
             catch (ValidationException ex)
@@ -99,14 +101,14 @@ namespace Web.Controllers
         /// <response code="400">Datos del permiso no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RolPermissionDto), 201)]
+        [ProducesResponseType(typeof(RolPermissionData), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRolPermission([FromBody] RolPermissionDto RolPermission)
+        public async Task<IActionResult> CreateRolPermission([FromBody] RolPermissionDTO RolPermission)
         {
             try
             {
-                var createdRolPermission = await _RolPermissionBusiness.CreateRolAsync(RolPermission);
+                var createdRolPermission = await _RolPermissionBusiness.CreateRolPermisionAsync(RolPermission);
                 return CreatedAtAction(nameof(GetRolPermissionById), new { id = createdRolPermission.Id }, createdRolPermission);
             }
             catch (ValidationException ex)

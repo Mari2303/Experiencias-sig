@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+﻿using Business;
+using Data;
+using Entity.DTOs;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace Web
 {/// <summary>
@@ -10,7 +13,7 @@ namespace Web
     [Produces("application/json")]
     public class ExperiencePopulationGroupController : ControllerBase
     {
-        private readonly ExperiencePopulationGroupBusiness _ExperiencePopulationGroupBusiness;
+        private readonly ExperiencePopulationBusiness _ExperiencePopulationGroupBusiness;
         private readonly ILogger<ExperiencePopulationGroupController> _logger;
 
         /// <summary>
@@ -18,7 +21,7 @@ namespace Web
         /// </summary>
         /// <param name="ExperiencePopulationGroupBusiness">Capa de negocios de grupos de población con experiencia.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public ExperiencePopulationGroupController(ExperiencePopulationGroupBusiness ExperiencePopulationGroupBusiness, ILogger<ExperiencePopulationGroupController> logger)
+        public ExperiencePopulationGroupController(ExperiencePopulationBusiness ExperiencePopulationGroupBusiness, ILogger<ExperiencePopulationGroupController> logger)
         {
             _ExperiencePopulationGroupBusiness = ExperiencePopulationGroupBusiness;
             _logger = logger;
@@ -31,13 +34,13 @@ namespace Web
         /// <response code="200">Lista de grupos de población con experiencia</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ExperiencePopulationGroupData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ExperiencePopulationData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllExperiencePopulationGroups()
         {
             try
             {
-                var groups = await _ExperiencePopulationGroupBusiness.GetAllExperiencePopulationGroupsAsync();
+                var groups = await _ExperiencePopulationGroupBusiness.GetAllExperiencePopulationsAsync();
                 return Ok(groups);
             }
             catch (ExternalServiceException ex)
@@ -57,7 +60,7 @@ namespace Web
         /// <response code="404">Grupo de población con experiencia no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ExperiencePopulationGroupDto), 200)]
+        [ProducesResponseType(typeof(ExperiencePopulationGroupDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -65,7 +68,7 @@ namespace Web
         {
             try
             {
-                var group = await _ExperiencePopulationGroupBusiness.GetExperiencePopulationGroupByIdAsync(id);
+                var group = await _ExperiencePopulationGroupBusiness.GetExperiencePopulationByIdAsync(id);
                 return Ok(group);
             }
             catch (ValidationException ex)
@@ -94,14 +97,14 @@ namespace Web
         /// <response code="400">Datos del grupo de población con experiencia no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ExperiencePopulationGroupDto), 201)]
+        [ProducesResponseType(typeof(ExperiencePopulationGroupDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateExperiencePopulationGroup([FromBody] ExperiencePopulationGroupDto group)
+        public async Task<IActionResult> CreateExperiencePopulationGroup([FromBody] ExperiencePopulationGroupDTO group)
         {
             try
             {
-                var createdGroup = await _ExperiencePopulationGroupBusiness.CreateExperiencePopulationGroupAsync(group);
+                var createdGroup = await _ExperiencePopulationGroupBusiness.CreateExperiencePopulationAsync(group);
                 return CreatedAtAction(nameof(GetExperiencePopulationGroupById), new { id = createdGroup.Id }, createdGroup);
             }
             catch (ValidationException ex)

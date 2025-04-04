@@ -1,6 +1,9 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -59,7 +62,7 @@ namespace Web
         /// <response code="404">Línea temática no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(LineThematicDto), 200)]
+        [ProducesResponseType(typeof(LineThematicDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -96,10 +99,10 @@ namespace Web
         /// <response code="400">Datos de la línea temática no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(LineThematicDto), 201)]
+        [ProducesResponseType(typeof(LineThematicDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateLineThematic([FromBody] LineThematicDto lineThematic)
+        public async Task<IActionResult> CreateLineThematic([FromBody] LineThematicDTO lineThematic)
         {
             try
             {

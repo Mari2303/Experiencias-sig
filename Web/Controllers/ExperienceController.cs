@@ -1,11 +1,10 @@
 ﻿using Business;
-using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Utilities.Exceptions;
+using Data;
 using Entity.DTOs;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using Utilities.Exeptions;
+
+
 
 
 namespace Web
@@ -17,7 +16,7 @@ namespace Web
     [Produces("application/json")]
     public class ExperienceController : ControllerBase
     {
-        private readonly ExperienceBusiness _ExperienceBusiness;
+        private readonly ExperiencieBusiness _ExperienceBusiness;
         private readonly ILogger<ExperienceController> _logger;
 
         /// <summary>
@@ -25,7 +24,7 @@ namespace Web
         /// </summary>
         /// <param name="ExperienceBusiness">Capa de negocios de calificaciones.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public ExperienceController(ExperienceBusiness ExperienceBusiness, ILogger<ExperienceController> logger)
+        public ExperienceController(ExperiencieBusiness ExperienceBusiness, ILogger<ExperienceController> logger)
         {
             _ExperienceBusiness = ExperienceBusiness;
             _logger = logger;
@@ -38,7 +37,7 @@ namespace Web
         /// <response code="200">Lista de experiencias</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ExperienceData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ExperiencieData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllExperiences()
         {
@@ -64,7 +63,7 @@ namespace Web
         /// <response code="404">Experiencia no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ExperienceDto), 200)]
+        [ProducesResponseType(typeof(ExperiencieDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -72,7 +71,7 @@ namespace Web
         {
             try
             {
-                var grade = await _ExperienceBusiness.GetExperineceByIdAsync(id);
+                var grade = await _ExperienceBusiness.GetExperienceByIdAsync(id);
                 return Ok(grade);
             }
             catch (ValidationException ex)
@@ -101,10 +100,10 @@ namespace Web
         /// <response code="400">Datos de la experiencia no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ExperienceDto), 201)]
+        [ProducesResponseType(typeof(ExperiencieDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateExperience([FromBody] ExperienceDto Grade)
+        public async Task<IActionResult> CreateExperience([FromBody] ExperiencieDTO Grade)
         {
             try
             {

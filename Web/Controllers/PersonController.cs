@@ -1,6 +1,10 @@
 ﻿using Business;
+using Data;
+using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Utilities.Exeptions;
+
 
 namespace Web
 {
@@ -39,7 +43,7 @@ namespace Web
         {
             try
             {
-                var persons = await _personBusiness.GetAllPersonsAsync();
+                var persons = await _personBusiness.GetAllPersonAsync();
                 return Ok(persons);
             }
             catch (ExternalServiceException ex)
@@ -59,7 +63,7 @@ namespace Web
         /// <response code="404">Persona no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PersonDto), 200)]
+        [ProducesResponseType(typeof(PersonDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -67,7 +71,7 @@ namespace Web
         {
             try
             {
-                var person = await _personBusiness.GetPersonByIdAsync(id);
+                var person = await _personBusiness.GetAllPersonAsync();
                 return Ok(person);
             }
             catch (ValidationException ex)
@@ -96,10 +100,10 @@ namespace Web
         /// <response code="400">Datos de la persona no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(PersonDto), 201)]
+        [ProducesResponseType(typeof(PersonDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreatePerson([FromBody] PersonDto person)
+        public async Task<IActionResult> CreatePerson([FromBody] PersonDTO person)
         {
             try
             {

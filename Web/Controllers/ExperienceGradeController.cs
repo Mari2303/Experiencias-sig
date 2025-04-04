@@ -1,11 +1,8 @@
 ﻿using Business;
-using Microsoft.AspNetCore.Mvc;
-using static BusinessException.BusinessRuleException;
+using Data;
 using Entity.DTOs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Utilities.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using Utilities.Exeptions;
 
 namespace Web
 {/// <summary>
@@ -37,7 +34,7 @@ namespace Web
         /// <response code="200">Lista de calificaciones de experiencia</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ExperienceGradeData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ExperiencieGradeData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllExperienceGrades()
         {
@@ -63,7 +60,7 @@ namespace Web
         /// <response code="404">Calificación de experiencia no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ExperienceGradeDto), 200)]
+        [ProducesResponseType(typeof(ExperiencieGradeDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -100,14 +97,14 @@ namespace Web
         /// <response code="400">Datos de la calificación de experiencia no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ExperienceGradeDto), 201)]
+        [ProducesResponseType(typeof(ExperiencieGradeDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateExperienceGrade([FromBody] ExperienceGradeDto Grade)
+        public async Task<IActionResult> CreateExperienceGrade([FromBody] ExperiencieGradeDTO Grade)
         {
             try
             {
-                var createdGrade = await _ExperienceGradeBusiness.CreateExperienceGradeAsync(Grade);
+                var createdGrade = await _ExperienceGradeBusiness.CreateExperiencieGradeAsync(Grade);
                 return CreatedAtAction(nameof(GetExperienceGradeById), new { id = createdGrade.Id }, createdGrade);
             }
             catch (ValidationException ex)

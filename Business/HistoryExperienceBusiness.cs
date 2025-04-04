@@ -33,9 +33,8 @@ namespace Business
                     DateTime = history.DateTime,
                     UserId = history.UserId,
                     TableName = history.TableName,
-                    Observation = history.Observation,
-                    Afected = history.Afected,
-                    Active = history.Active
+                    ExperienceId = history.ExperiencieId,
+                    Action = history.Action
                 });
             }
             catch (Exception ex)
@@ -69,9 +68,8 @@ namespace Business
                     DateTime = history.DateTime,
                     UserId = history.UserId,
                     TableName = history.TableName,
-                    Observation = history.Observation,
-                    Afected = history.Afected,
-                    Active = history.Active
+                    ExperiencieId = history.ExperiencieId,
+                    Action = history.Action
                 };
             }
             catch (Exception ex)
@@ -94,9 +92,9 @@ namespace Business
                     DateTime = historyDto.DateTime,
                     UserId = historyDto.UserId,
                     TableName = historyDto.TableName,
-                    Observation = historyDto.Observation,
-                    Afected = historyDto.Afected,
-                    Active = historyDto.Active
+                    ExperiencieId = historyDto.ExperiencieId,
+                    Action = historyDto.Action
+                    
                 };
 
                 var createdHistory = await _historyExperienceData.CreateAsync(history);
@@ -107,9 +105,8 @@ namespace Business
                     DateTime = createdHistory.DateTime,
                     UserId = createdHistory.UserId,
                     TableName = createdHistory.TableName,
-                    Observation = createdHistory.Observation,
-                    Afected = createdHistory.Afected,
-                    Active = createdHistory.Active
+                    ExperiencieId = createdHistory.ExperiencieId,
+                    Action = createdHistory.Action
                 };
             }
             catch (Exception ex)
