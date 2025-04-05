@@ -29,17 +29,13 @@ namespace Business
             try
             {
                 var roles = await _rolData.GetAllAsync();
-                var rolesDTO = new List<RolDTO>();
 
-                foreach (var rol in roles)
-                {
-                    rolesDTO.Add(new RolDTO
-                    {
-                        Id = rol.Id,
-                        name = rol.name,
-                        Active = rol.Active // Si existe en la entidad
-                    });
-                }
+
+
+                return MapToDTOList(roles);
+                
+
+
 
                 return rolesDTO;
             }
@@ -68,12 +64,12 @@ namespace Business
                     throw new EntityNotFoundException("Rol", id);
                 }
 
-                return new RolDTO
-                {
-                    Id = rol.Id,
-                    name = rol.name,
-                    Active = rol.Active 
-                };
+
+
+                return MapToDTO(rol);
+
+
+
             }
             catch (Exception ex)
             {
@@ -83,26 +79,21 @@ namespace Business
         }
 
         // Método para crear un rol desde un DTO
-        public async Task<RolDTO> CreateRolAsync(RolDTO RolDTO) 
+        public async Task<RolDTO> CreateRolAsync(RolDTO RolDTO)
         {
             try
             {
                 ValidateRol(RolDTO);
 
-                var rol = new Rol
-                {
-                    name = RolDTO.name,
-                    Active = RolDTO.Active // Si existe en la entidad
-                };
+                var rol = MapToEntity(RolDTO);
+
+
 
                 var rolCreado = await _rolData.CreateAsync(rol);
 
-                return new RolDTO
-                {
-                    Id = rolCreado.Id,
-                    name = rolCreado.name,
-                    Active = rolCreado.Active // Si existe en la entidad
-                };
+                return MapToDTO(rolCreado);
+            
+
             }
             catch (Exception ex)
             {
@@ -124,6 +115,41 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar un rol con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
+        }
+
+        // Método para mapear de Rol a RolDTO
+        private RolDTO MapToDTO(Rol rol)
+        {
+            return new RolDTO
+            {
+                Id = rol.Id,
+                Nombre = rol.Nombre,
+                typeRol = rol.typeRol, // Si existe en la entidad
+                Active = rol.Active
+            };
+        }
+
+        // Método para mapear de RolDTO a Rol
+        private Rol MapToEntity(RolDTO rolDTO)
+        {
+            return new Rol
+            {
+                Id = rolDTO.Id,
+                Nombre = rolDTO.Nombre,
+                typeRol = rolDTO.typeRol, // Si existe en la entidad
+                Active = rolDTO.Active
+            };
+        }
+
+        // Método para mapear una lista de Rol a una lista de RolDTO
+        private IEnumerable<RolDTO> MapToDTOList(IEnumerable<Rol> roles)
+        {
+            var rolesDTO = new List<RolDTO>();
+            foreach (var rol in roles)
+            {
+                rolesDTO.Add(MapToDTO(rol));
+            }
+            return rolesDTO;
         }
     }
 }

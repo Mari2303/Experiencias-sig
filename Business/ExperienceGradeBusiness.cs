@@ -26,14 +26,12 @@ namespace Business
         {
             try
             {
-                var experienceGrades = await _experienceGradeData.GetAllAsync();
-                return experienceGrades.Select(experienceGrade => new ExperiencieGradeDTO
-                {
-                    Id = experienceGrade.Id,
-                    GradeId = experienceGrade.GradeId,
-                    ExperiencieId = experienceGrade.ExperiencieId
 
-                }).ToList();
+                var experienceGrades = await _experienceGradeData.GetAllAsync();
+
+                return MapToDTOList(experienceGrades);
+
+                return experienceGradesDTO;
             }
             catch (Exception ex)
             {

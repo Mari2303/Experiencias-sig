@@ -110,19 +110,19 @@ namespace Business
         }
 
         // Método para validar el DTO
-        private void ValidateUser(UserDto UserDto)
+        private void ValidateUser(UserDTO UserDTO)
         {
-            if (UserDto == null)
+            if (UserDTO == null)
     
                 throw new Utilities.Exceptions.ValidationException("El objeto User no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(UserDto.Name))
+            if (string.IsNullOrWhiteSpace(UserDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un User con Name vacío");
 
                 throw new Utilities.Exceptions.ValidationException("Name", "El Name del User es obligatorio");
             }
         }
-    }
+    
 

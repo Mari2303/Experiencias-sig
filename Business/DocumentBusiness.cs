@@ -27,18 +27,8 @@ namespace Business
             try
             {
                 var documents = await _documentData.GetAllAsync();
-                var DocumentDTOs = new List<DocumentDTO>();
-
-                foreach (var document in documents)
-                {
-                    DocumentDTOs.Add(new DocumentDTO
-                    {
-                        Id = document.Id,
-                        Name = document.Name,
-                        Url = document.Url,
-                       
-                    });
-                }
+               
+                return MapToDTOList(documents);
 
                 return DocumentDTOs;
             }
@@ -67,13 +57,9 @@ namespace Business
                     throw new EntityNotFoundException("Document", id);
                 }
 
-                return new DocumentDTO
-                {
-                    Id = document.Id,
-                    Name = document.Name,
-                    Url = document.Url,
-
-                };
+                return MapToDTO(document);
+              
+                
             }
             catch (Exception ex)
             {
@@ -87,25 +73,18 @@ namespace Business
         {
             try
             {
+
+
                 ValidateDocument(DocumentDTO);
 
-                var document = new Document
-                {
-                    Name = DocumentDTO.Name,
-                    Url= DocumentDTO.Url,
-                   
-                };
+               var document = MapToDTO(DocumentDTO);
 
-                var documentCreated = await _documentData.CreateAsync(document);
+                var documentCreate = await _documentData.CreateAsync(document);
 
-                return new DocumentDTO
-                {
-                   
-                    Id = documentCreated.Id,
-                    Name = documentCreated.Name,
-                    Url = documentCreated.Url,
+                return MapToDTO(documentCreate);
 
-                };
+
+
             }
             catch (Exception ex)
             {
@@ -127,6 +106,47 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar un documento con Title vacío");
                 throw new Utilities.Exeptions.ValidationException("Title", "El Title del documento es obligatorio");
             }
+        }
+        // Metodo para mapear de document a documentDTO 
+
+        private DocumentDTO MapToDTO( Document document)
+        {
+            return new DocumentDTO
+            {
+
+                Id = document.Id,
+                Name = document.Name,
+                Url = document.Url
+
+            };
+        }
+
+        // Metodo para mapear de DocumentDTO a Document 
+
+        private Document MapToEntity(DocumentDTO documentDTO)
+        {
+
+            return new documentDTO
+            {
+
+                Id = documentDTO.Id,
+                Name = documentDTO.Name,
+                Url = documentDTO.Url
+            };
+        }
+
+        // Metodo para mapear una lista de Rol a una lista de RolDTO 
+
+        private IEnumerable<DocuentDTO>MapToDTOList(IEnumerable<Document> documents)
+        {
+            var documentsDTO = new List<Document>();
+            foreach (var document in documents)
+            {
+                documentsDTO.Add(MapToDTO(document));
+            }
+
+            return documentsDTO;
+
         }
     }
 }

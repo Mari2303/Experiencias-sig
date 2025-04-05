@@ -26,13 +26,8 @@ namespace Business
         {
             try
             {
-                var populations = await _experiencePopulationData.GetAllAsync();
-                return populations.Select(pop => new ExperiencePopulationDto
-                {
-                    Id = pop.Id,
-                    
-                   
-                });
+                var Experienciepopulations = await _experiencePopulationData.GetAllAsync();
+                
             }
             catch (Exception ex)
             {

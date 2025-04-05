@@ -29,21 +29,8 @@ namespace Business
             try
             {
                 var evaluationCri = await _EvaluationCriteriaData.GetAllAsync();
-                var evaluationCriDTO = new List<EvaluationCriteriaDTO>();
-
-                foreach (var EvaluationCriteria in evaluationCri)
-                {
-                    evaluationCriDTO.Add(new EvaluationCriteriaDTO
-                    {
-                        Id = evaluationCriteria.Id,
-                        Score = evaluationCriteria.Score,
-                        CriteriaId = evaluationCriteria.CriteriaId,
-                        EvaluationId = evaluationCriteria.EvaluationId
-
-
-
-                    });
-                }
+               
+                return MapToDTOList(evaluationCri);
 
                 return evaluationCriDTO;
             }
@@ -72,13 +59,8 @@ namespace Business
                     throw new EntityNotFoundException("EvaluationCriteria", id);
                 }
 
-                return new EvaluationCriteriaDTO
-                {
-                    Id = evaluationCriteria.Id,
-                    Score = evaluationCriteria.Score,
-                    CriteriaId = evaluationCriteria.CriteriaId,
-                    EvaluationId = evaluationCriteria.EvaluationId
-                };
+                return MapToDTO(evaluationCriteria);
+                
             }
             catch (Exception ex)
             {
@@ -92,27 +74,21 @@ namespace Business
         {
             try
             {
-                ValidateEvaluationCriteria(EvaluationCriteriaDTO, EvaluationCriteriaDTO);
 
-                var evaluationCriteria = new EvaluationCriteria
-                {
 
-                    Score = EvaluationCriteriaDTO.Score,
-                    CriteriaId = EvaluationCriteriaDTO.CriteriaId,
-                    EvaluationId = EvaluationCriteriaDTO.EvaluationId
-                    // Si existe en la entidad
-                };
+                ValidateEvaluationCriteria(EvaluationCriteriaDTO);
 
-                var EvaluationCririaCreado = await _EvaluationCriteriaData.CreateAsync(evaluationCriteria);
+                var evaluationCriteria = MapToEntity(EvaluationCriteriaDTO);
 
-                return new EvaluationCriteriaDTO
-                {
-                    Id = EvaluationCririaCreado.Id,
-                    Score = EvaluationCririaCreado.Score,
-                    CriteriaId = EvaluationCririaCreado.CriteriaId,
-                    EvaluationId = EvaluationCririaCreado.EvaluationId // Si existe en la entidad
-                };
+                var evaluationCriteriaCreated = await _evaluationCriteriaData.CreateAsync();
+
+                return MapToDTO(evaluationCriteriaCreated);
+
             }
+             
+
+
+            
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al crear nuevo : {EvaluationCririaNombre}", EvaluationCriteriaDTO?.Score ?? "null");
@@ -133,6 +109,57 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar un rol con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
+        }
+
+
+
+
+
+
+
+
+        //Metodo para mapear de EvaluationCriteria a EvaluationCriteriaDTO
+
+        private EvaluationCriteriaDTO MapToDTO(EvaluationCriteria evaluationCriteria)
+        {
+
+            return new EvaluationCriteriaDTO
+            {
+                Id = evaluationCriteria.Id,
+                Score = evaluationCriteria.Score,
+                CriteriaId = evaluationCriteria.CriteriaId,
+                EvaluationId = evaluationCriteria.EvaluationId
+
+            };
+        }
+
+
+        // Metodo para maper de EvaluationDTO a Evaluation
+
+        private EvaluationCriteria MapToEntity(EvaluationCriteriaDTO evaluationCriteriaDTO)
+        {
+
+            return new EvaluationCriteria
+            {
+
+                Id = evaluationCriteriaDTO.Id,
+                Score = evaluationCriteriaDTO.Score,
+                CriteriaId = evaluationCriteriaDTO.CriteriaId,
+                EvaluationId = evaluationCriteriaDTO.EvaluationId
+            };
+        }
+
+        //Metodo para mapear una lista de EvaluationCriteria a una lista de EvaluationCriteriaDTO
+
+        private IEnumerable<EvaluationCriteriaDTO> MapToDTOList(IEnumerable<EvaluationCriteria> evaluationCriteria)
+        {
+            var EvaluationCriteriaDTO = new List<EvaluationCriteria>();
+            foreach (var evaluationCriteria in evaluationCriteria)
+            {
+                evaluationCriteriaDTO.Add(MapToDTO(evaluationCriteria));
+            }
+
+            return EvaluationCriteriaDTO;
         }
     }
 }

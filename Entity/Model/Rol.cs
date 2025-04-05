@@ -8,9 +8,10 @@ namespace Entity.Model
 {
     public class Rol
     {
-        public string name;
+        
 
         public int Id { get; set; }
+        public string Name { get; set; }
        public string typeRol { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }

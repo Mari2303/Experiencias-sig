@@ -27,18 +27,13 @@ namespace Business
             try
             {
                 var evaluations = await _evaluationData.GetAllAsync();
-                return evaluations.Select(eval => new EvaluationDTO
-                {
-                  Id = eval.Id,
-                  TypeEvaluation = eval.TypeEvaluation,
-                  Comments = eval.Comments,
-                    DateTime = eval.DateTime,
-                    UserId = eval.UserId,
-                    StateId = eval.StateId,
-                    ExperiencieId = eval.ExperienceId
+                
+                 return MapToDTOs(evaluations);
+
+                return EvaluationDTO;
 
 
-                }).ToList();
+
             }
             catch (Exception ex)
             {
@@ -65,16 +60,12 @@ namespace Business
                     throw new EntityNotFoundException("Evaluation", id);
                 }
 
-                return new EvaluationDTO
-                {
-                    Id = evaluation.Id,
-                    TypeEvaluation = evaluation.TypeEvaluation,
-                    Comments = evaluation.Comments,
-                    DateTime = evaluation.DateTime,
-                    UserId = evaluation.UserId,
-                    StateId = evaluation.StateId,
-                    ExperiencieId = evaluation.ExperienceId
-                };
+
+
+                return MapToDTO(evaluation);
+
+
+
             }
             catch (Exception ex)
             {
@@ -90,29 +81,16 @@ namespace Business
             {
                 ValidateEvaluation(EvaluationDTO);
 
-                var evaluation = new Evaluation
-                {
-                  
-                    TypeEvaluation = EvaluationDTO.TypeEvaluation,
-                    Comments = EvaluationDTO.Comments,
-                    DateTime = EvaluationDTO.DateTime,
-                    UserId = EvaluationDTO.UserId,
-                    StateId = EvaluationDTO.StateId,
-                    ExperienceId = EvaluationDTO.ExperiencieId
-                };
 
-                var createdEvaluation = await _evaluationData.CreateAsync(evaluation);
+               var evaluation = EvaluationDTO;
 
-                return new EvaluationDTO
-                {
-                    Id = evaluation.Id,
-                    TypeEvaluation = evaluation.TypeEvaluation,
-                    Comments = evaluation.Comments,
-                    DateTime = evaluation.DateTime,
-                    UserId = evaluation.UserId,
-                    StateId = evaluation.StateId,
-                    ExperiencieId = evaluation.ExperienceId
-                };
+                var evaluationCreado = await _evaluationData.CreateEvaluationAsync(evaluation);
+
+                return MapToDTO(evaluationCreado);
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -135,5 +113,71 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la evaluación es obligatorio");
             }
         }
+
+
+
+
+        
+
+
+
+
+
+        // Metodo para mapear de Evaluation a RolDTO 
+
+        private RolDTO MapToDTO(Evaluation evaluation)
+        {
+            return new RolDTO
+            {
+                Id = evaluation.Id,
+                TypeEvaluation = evaluation.TypeEvaluation,
+                Comments = evaluation.Comments,
+                DateTime = evaluation.DateTime,
+                UserId = evaluation.UserId,
+                ExperiencieId = evaluation.ExperimentId,
+                StateId = evaluation.StateId
+
+            };
+        }
+
+        // Metodo para mapear de Document a Document 
+        private Evaluation MapToEntity(EvaluationDTO evaluationDTO)
+        {
+            return new Evaluation
+            {
+
+                Id = evaluationDTO.Id,
+                TypeDocument = evaluationDTO.TypeDocument,
+                Comments = evaluationDTO.Comments,
+                DateTime = evaluationDTO.DateTime,
+                UserId = evaluationDTO.UserId,
+                ExperiencieId = evaluationDTO.ExperimentId,
+                StateId = evaluationDTO.StateId
+
+            };
+        }
+
+        // Metodo para mapear una lista de Document a una lista de  DocumentDTO
+
+        private IEnumerable<EvaluationDTO>MapToDTOList(IEnumerable<Evaluation> Evaluation)
+        {
+            var evaluationDTO = new List<EvaluationDTO>();
+            foreach (var evaluation in Evaluation)
+            {
+                evaluationDTO.Add(MapToDTO(evaluation));
+
+            }
+            return evaluationDTO;
+
+
+        }
+
+
+
+
+
+
+
+
     }
 }
