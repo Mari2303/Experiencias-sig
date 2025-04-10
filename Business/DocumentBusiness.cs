@@ -1,9 +1,12 @@
+
 using Data;
 using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+
+
+
 
 namespace Business
 {
@@ -27,10 +30,12 @@ namespace Business
             try
             {
                 var documents = await _documentData.GetAllAsync();
-               
+
                 return MapToDTOList(documents);
 
-                return DocumentDTOs;
+
+
+
             }
             catch (Exception ex)
             {
@@ -58,8 +63,8 @@ namespace Business
                 }
 
                 return MapToDTO(document);
-              
-                
+
+
             }
             catch (Exception ex)
             {
@@ -77,7 +82,7 @@ namespace Business
 
                 ValidateDocument(DocumentDTO);
 
-               var document = MapToDTO(DocumentDTO);
+                var document = MapToEntity(DocumentDTO);
 
                 var documentCreate = await _documentData.CreateAsync(document);
 
@@ -88,7 +93,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo documento: {DocumentTitle}", DocumentDTO?.Name?? "null");
+                _logger.LogError(ex, "Error al crear nuevo documento: {DocumentTitle}", DocumentDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el documento", ex);
             }
         }
@@ -109,7 +114,7 @@ namespace Business
         }
         // Metodo para mapear de document a documentDTO 
 
-        private DocumentDTO MapToDTO( Document document)
+        private DocumentDTO MapToDTO(Document document)
         {
             return new DocumentDTO
             {
@@ -126,7 +131,7 @@ namespace Business
         private Document MapToEntity(DocumentDTO documentDTO)
         {
 
-            return new documentDTO
+            return new Document
             {
 
                 Id = documentDTO.Id,
@@ -137,16 +142,17 @@ namespace Business
 
         // Metodo para mapear una lista de Rol a una lista de RolDTO 
 
-        private IEnumerable<DocuentDTO>MapToDTOList(IEnumerable<Document> documents)
+        private IEnumerable<DocumentDTO> MapToDTOList(IEnumerable<Document> documents)
         {
-            var documentsDTO = new List<Document>();
+            var documentsDTO = new List<DocumentDTO>(); // Cambiado a List<DocumentDTO>
             foreach (var document in documents)
             {
-                documentsDTO.Add(MapToDTO(document));
+                documentsDTO.Add(MapToDTO(document)); // Pasar 'document' en lugar de 'documents'
             }
 
             return documentsDTO;
-
         }
+
     }
 }
+

@@ -1,6 +1,7 @@
 using Data;
 using Entity.DTOs;
 using Entity.Model;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
@@ -29,9 +30,13 @@ namespace Business
 
                 var experienceGrades = await _experienceGradeData.GetAllAsync();
 
+
+
+
                 return MapToDTOList(experienceGrades);
 
-                return experienceGradesDTO;
+
+               
             }
             catch (Exception ex)
             {
@@ -58,13 +63,14 @@ namespace Business
                     throw new EntityNotFoundException("ExperienceGrade", id);
                 }
 
-                return new ExperiencieGradeDTO
-                {
-                    Id = experienceGrade.Id,
-                    GradeId = experienceGrade.GradeId,
-                    ExperiencieId = experienceGrade.ExperiencieId
-                };
+
+               return MapTopDTO(experienceGrade);
+
+
             }
+
+
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener el grado de experiencia con ID: {ExperienceGradeId}", id);
@@ -79,21 +85,11 @@ namespace Business
             {
                 ValidateExperienceGrade(ExperiencieGradeDTO);
 
-                var experiencieGrade = new ExperiencieGrade
-                {
-                    
-                    GradeId = ExperiencieGradeDTO.GradeId,
-                    ExperiencieId = ExperiencieGradeDTO.ExperiencieId
-                    
-                };
+                var experienceGrade = MapToEntity(ExperiencieGradeDTO);
+                var createdExperienceGrade = await _experienceGradeData.CreateAsync(experienceGrade);
+                return MapTopDTO(createdExperienceGrade);
 
-                var createdExperiencieGrade = await  _experienceGradeData.CreateAsync(experiencieGrade);
-                return new ExperiencieGradeDTO
-                {
-                    Id = createdExperiencieGrade.Id,
-                    GradeId = createdExperiencieGrade.GradeId,
-                    ExperiencieId = createdExperiencieGrade.ExperiencieId
-                };
+
             }
             catch (Exception ex)
             {

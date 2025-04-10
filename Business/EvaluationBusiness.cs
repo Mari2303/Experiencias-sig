@@ -28,9 +28,9 @@ namespace Business
             {
                 var evaluations = await _evaluationData.GetAllAsync();
                 
-                 return MapToDTOs(evaluations);
+                 return MapToDTO(evaluations);
 
-                return EvaluationDTO;
+                
 
 
 

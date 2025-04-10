@@ -32,7 +32,7 @@ namespace Business
                
                 return MapToDTOList(evaluationCri);
 
-                return evaluationCriDTO;
+                
             }
             catch (Exception ex)
             {
@@ -59,7 +59,11 @@ namespace Business
                     throw new EntityNotFoundException("EvaluationCriteria", id);
                 }
 
+
+
                 return MapToDTO(evaluationCriteria);
+
+
                 
             }
             catch (Exception ex)
@@ -154,6 +158,7 @@ namespace Business
         private IEnumerable<EvaluationCriteriaDTO> MapToDTOList(IEnumerable<EvaluationCriteria> evaluationCriteria)
         {
             var EvaluationCriteriaDTO = new List<EvaluationCriteria>();
+
             foreach (var evaluationCriteria in evaluationCriteria)
             {
                 evaluationCriteriaDTO.Add(MapToDTO(evaluationCriteria));
