@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
- public   class VerificationData
+    public class UserData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -16,7 +16,7 @@ namespace Data
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public VerificationData(ApplicationDbContext context, ILogger logger)
+        public UserData(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;
@@ -27,18 +27,18 @@ namespace Data
         ///</summary>
         ///<returns> Lista de roles</returns>
 
-        public async Task<IEnumerable<Verification>> GetAllAsync()
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Set<Verification>().ToListAsync();
+            return await _context.Set<User>().ToListAsync();
         }
 
         ///<summary> Obtiene un rol específico por su identificador.
 
-        public async Task<Verification?> GetByIdAsync(int id)
+        public async Task<User?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<Verification>().FindAsync(id);
+                return await _context.Set<User>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -50,16 +50,16 @@ namespace Data
         ///<summary>
         ///Crea un nuevo rol en la base de datos.
         ///</summary>
-        ///<param name="verification">Instancia del rol a crear</param>
+        ///<param name="user">Instancia del rol a crear</param>
         ///<returns>El rol creado</returns>
 
-        public async Task<Verification> CreateAsync(Verification verification)
+        public async Task<User> CreateAsync(User user)
         {
             try
             {
-                await _context.Set<Verification>().AddAsync(verification);
+                await _context.Set<User>().AddAsync(user);
                 await _context.SaveChangesAsync();
-                return verification;
+                return user;
             }
             catch (Exception ex)
             {
@@ -71,14 +71,14 @@ namespace Data
         ///<summary>
         ///Actualiza un rol existente en la base de datos.
         ///</summary>
-        ///<param name="verification">Objeto con la información actualizada</param>
+        ///<param name="user">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdateAsync(Verification verification)
+        public async Task<bool> UpdateAsync(User user)
         {
             try
             {
-                _context.Set<Verification>().Update(verification);
+                _context.Set<User>().Update(user);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -99,11 +99,11 @@ namespace Data
         {
             try
             {
-                var verification = await _context.Set<Verification>().FindAsync(id);
-                if (verification == null)
+                var user = await _context.Set<User>().FindAsync(id);
+                if (user == null)
                     return false;
 
-                _context.Set<Verification>().Remove(verification);
+                _context.Set<User>().Remove(user);
                 await _context.SaveChangesAsync();
                 return true;
             }

@@ -1,4 +1,6 @@
 using Dapper;
+using Entity.Model;
+using Entity.ModelExperience;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +31,36 @@ namespace Entity.Context
         {
             _configuration = configuration;
         }
+        ///
+        /// DB SETS
+        /// 
+        public DbSet<Rol> Rol { get; set; }
+        public DbSet<RolPermission> RolPermissions { get; set; }
+        public DbSet<Permission> Permission { get; set; }
+        public DbSet<User> User { get; set; }
+        public DbSet<UserRol> UserRol { get; set; }
+        public DbSet<Person> Person { get; set; }
+        public DbSet<Experiencie> Experience { get; set; }
+        public DbSet<HistoryExperience> HistoryExperience { get; set; }
+        public DbSet<Institucion> Institution { get; set; }
+        public DbSet<Document> Document { get; set; }
+        public DbSet<Objective> Objective { get; set; }
+        public DbSet<ExperiencieLineThematic> ExperienceLineThematic { get; set; }
+        public DbSet<ExperiencePopulation> ExperiencePopulation { get; set; }
+        public DbSet<ExperiencieGrade> ExperiencieGrade { get; set; }
+        public DbSet<LineThematic> LineThematic { get; set; }
+        public DbSet<PopulationGrade> PopulationGrade { get; set; }
+        public DbSet<Grade> Grade { get; set; }
+        public DbSet<Verification> Verification { get; set; }
+        public DbSet<State> State { get; set; }
+        public DbSet<Criteria> Criteria { get; set; }
+        public DbSet<Evaluation> Evaluation { get; set; }
+        public DbSet<EvaluationCriteria> EvaluationCriteria { get; set; }
+
+
+
+
+
 
         /// <summary>
         /// Configura los modelos de la base de datos aplicando configuraciones desde ensamblados.
@@ -36,10 +68,13 @@ namespace Entity.Context
         /// <param name="modelBuilder">Constructor del modelo de base de datos.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Person>()
+            .HasOne(p => p.User)
+            .WithOne(u => u.Person)
+            .HasForeignKey<User>(u => u.PersonId);
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>
@@ -113,6 +148,29 @@ namespace Entity.Context
             using var command = new DapperEFCoreCommand(this, text, parameters, timeout, type, CancellationToken.None);
             var connection = this.Database.GetDbConnection();
             return await connection.QueryFirstOrDefaultAsync<T>(command.Definition);
+        }
+
+        //SobreCarga
+        //public async Task<int> QueryFirstOrDefaultAsync(string text, object parameters = null, int? timeout = null, CommandType? type = null)
+        //{
+        //    using var command = new DapperEFCoreCommand(this, text, parameters, timeout, type, CancellationToken.None);
+        //    var connection = this.Database.GetDbConnection();
+        //    return await connection.QueryFirstOrDefaultAsync<int>(command.Definition);
+        //}
+
+        public async Task<int> ExecuteAsync(string text, object parameters = null, int? timeout = null, CommandType? type = null)
+        {
+            using var command = new DapperEFCoreCommand(this, text, parameters, timeout, type, CancellationToken.None);
+            var connection = this.Database.GetDbConnection();
+            return await connection.ExecuteAsync(command.Definition);
+        }
+
+        //Debolver Objeto
+        public async Task<T> ExecuteScalarAsync<T>(string text, object parameters = null, int? timeout = null, CommandType? type = null)
+        {
+            using var command = new DapperEFCoreCommand(this, text, parameters, timeout, type, CancellationToken.None);
+            var connection = this.Database.GetDbConnection();
+            return await connection.ExecuteScalarAsync<T>(command.Definition);
         }
 
         /// <summary>

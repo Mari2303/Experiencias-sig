@@ -13,7 +13,9 @@ namespace Entity.Model
         public string Email { get; set; }
         public string Phone { get; set; }
         public bool Active { get; set; }
-       
+        public int UserId { get; set; }
+        public User User { get; set; }
+
         public DateTime DeleteAt { get; set; }
         public DateTime CreateAt { get; set; }
 
