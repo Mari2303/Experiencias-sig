@@ -28,16 +28,21 @@ namespace Business
         {
             try
             {
+
                 var roles = await _rolData.GetAllAsync();
-
-
 
                 return MapToDTOList(roles);
                 
+<<<<<<< HEAD
 
 
 
                 
+=======
+                return rolesDTO;
+
+
+>>>>>>> f5ce09471c86ba4e1e3cfbbe1bb586327b40ed59
             }
             catch (Exception ex)
             {
@@ -87,11 +92,9 @@ namespace Business
 
                 var rol = MapToEntity(RolDTO);
 
+                var rolCreate = await _rolData.CreateAsync(rol);
 
-
-                var rolCreado = await _rolData.CreateAsync(rol);
-
-                return MapToDTO(rolCreado);
+                return MapToDTO(rolCreate);
             
 
             }
@@ -116,6 +119,12 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
         }
+
+
+
+
+
+
 
         // Método para mapear de Rol a RolDTO
         private RolDTO MapToDTO(Rol rol)
