@@ -33,16 +33,10 @@ namespace Business
 
                 return MapToDTOList(roles);
                 
-<<<<<<< HEAD
 
 
 
-                
-=======
-                return rolesDTO;
 
-
->>>>>>> f5ce09471c86ba4e1e3cfbbe1bb586327b40ed59
             }
             catch (Exception ex)
             {
@@ -95,6 +89,8 @@ namespace Business
                 var rolCreate = await _rolData.CreateAsync(rol);
 
                 return MapToDTO(rolCreate);
+            
+
             
 
             }
