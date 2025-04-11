@@ -13,7 +13,7 @@ namespace Web
     [Produces("application/json")]
     public class ExperienceGradeController : ControllerBase
     {
-        private readonly ExperienceGradeBusiness _ExperienceGradeBusiness;
+        private readonly ExperiencieGradeBusiness _ExperienceGradeBusiness;
         private readonly ILogger<ExperienceGradeController> _logger;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace Web
         /// </summary>
         /// <param name="ExperienceGradeBusiness">Capa de negocios de calificaciones.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public ExperienceGradeController(ExperienceGradeBusiness ExperienceGradeBusiness, ILogger<ExperienceGradeController> logger)
+        public ExperienceGradeController(ExperiencieGradeBusiness ExperienceGradeBusiness, ILogger<ExperienceGradeController> logger)
         {
             _ExperienceGradeBusiness = ExperienceGradeBusiness;
             _logger = logger;

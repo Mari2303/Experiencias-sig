@@ -2,6 +2,7 @@
 using Data;
 using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Utilities.Exeptions;
 
 
 namespace Web
@@ -60,7 +61,7 @@ namespace Web
         /// <response code="404">Grupo de población con experiencia no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ExperiencePopulationGroupDTO), 200)]
+        [ProducesResponseType(typeof(ExperiencePopulationDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -97,10 +98,11 @@ namespace Web
         /// <response code="400">Datos del grupo de población con experiencia no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ExperiencePopulationGroupDTO), 201)]
+        [ProducesResponseType(typeof(ExperiencePopulationDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateExperiencePopulationGroup([FromBody] ExperiencePopulationGroupDTO group)
+        public async Task<IActionResult> CreateExperienciePopulationDTO([FromBody] ExperienciePopulationDTO group)
+
         {
             try
             {

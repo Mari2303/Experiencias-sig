@@ -83,9 +83,9 @@ namespace Business
 
                 var lineThematic = MapToEntity(ExperiencieLineThematicDTO);
 
-                var lineThematicCreate = await _ExperiencieLineThematicData.CreateAsync(rol);
+                var lineThematicCreate = await _ExperiencieLineThematicData.CreateAsync(lineThematic);
 
-                return MapToDTO(lineThematicCreate);
+                return MapToDTO(lineThematicCreate);  
 
 
 
@@ -95,7 +95,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nueva línea temática de experiencia: {ExperienceLineThematicName}", ExperiencieLineThematicDTO?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nueva línea temática de experiencia: {ExperienceLineThematicName}", ExperiencieLineThematicDTO?.LineThematicId);
                 throw new ExternalServiceException("Base de datos", "Error al crear la línea temática de experiencia", ex);
             }
         }
@@ -108,9 +108,9 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("El objeto línea temática de experiencia no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(ExperiencieLineThematicDTO.Name))
+            if (ExperiencieLineThematicDTO.LineThematicId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar una línea temática de experiencia con Name vacío");
+                _logger.LogWarning("Se intentó crear/actualizar una línea temática de LineThematicId con Name vacío: {LineThematicId}", ExperiencieLineThematicDTO.LineThematicId);
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la línea temática de experiencia es obligatorio");
             }
         }

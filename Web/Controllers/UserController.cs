@@ -1,8 +1,10 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using Utilities.Exceptions;
+
+using Utilities.Exeptions;
 
 namespace Web
 {/// <summary>
@@ -40,7 +42,7 @@ namespace Web
         {
             try
             {
-                var users = await _UserBusiness.GetAllUsersAsync();
+                var users = await _UserBusiness.GetAllUserAsync();
                 return Ok(users);
             }
             catch (ExternalServiceException ex)
@@ -68,7 +70,7 @@ namespace Web
         {
             try
             {
-                var user = await _UserBusiness.GetAllUsersAsync();
+                var user = await _UserBusiness.GetAllUserAsync();
                 return Ok(user);
             }
             catch (ValidationException ex)
@@ -104,7 +106,7 @@ namespace Web
         {
             try
             {
-                var createdUser = await _UserBusiness.CreateUserAsync(user);
+                var createdUser = await _UserBusiness.CreateUserlAsync(user);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (ValidationException ex)

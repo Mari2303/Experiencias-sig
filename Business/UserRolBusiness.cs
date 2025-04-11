@@ -30,19 +30,12 @@ namespace Business
             try
             {
                 var userRoles = await _userRolData.GetAllAsync();
-                var userRolesDTO = new List<UserRolDTO>();
+             
 
-                foreach (var userRol in userRoles)
-                {
-                    userRolesDTO.Add(new UserRolDTO
-                    {
-                        Id = userRol.Id,
-                        RolId = userRol.RolId,
-                        UserId = userRol.UserId
-                    });
-                }
+                return MapToDTOList(userRoles);
 
-                return userRolesDTO;
+
+
             }
             catch (Exception ex)
             {
@@ -69,12 +62,10 @@ namespace Business
                     throw new EntityNotFoundException("UserRol", id);
                 }
 
-                return new UserRolDTO
-                {
-                    Id = userRol.Id,
-                    RolId = userRol.RolId,
-                    UserId = userRol.UserId
-                };
+                
+                return MapToDTO(userRol);
+
+
             }
             catch (Exception ex)
             {
@@ -90,25 +81,20 @@ namespace Business
             {
                 ValidateUserRol(UserRolDTO);
 
-                var userRol = new UserRol
-                {
-                 
-                    RolId = UserRolDTO.RolId,
-                    UserId = UserRolDTO.UserId
-                };
 
-                var userRolCreado = await _userRolData.CreateAsync(userRol);
+                var UserRol = MapToEntity(UserRolDTO);
 
-                return new UserRolDTO
-                {
-                    Id = userRolCreado.Id,
-                    RolId = userRolCreado.RolId,
-                    UserId = userRolCreado.UserId
-                };
+                var CreatedUserRol = await _userRolData.CreateAsync(UserRol);
+
+              return MapToDTO(CreatedUserRol);
+
+
+
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo rol de usuario: {UserRolNombre}", UserRolDTO?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo rol de usuario: {UserRolNombre}", UserRolDTO?.RolId);
                 throw new ExternalServiceException("Base de datos", "Error al crear el rol de usuario", ex);
             }
         }
@@ -121,12 +107,49 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("El objeto rol de usuario no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(UserRolDTO.Name))
+            if (UserRolDTO.RolId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar un rol de usuario con Name vacío");
+                _logger.LogWarning("Se intentó crear/actualizar un RolId con Name vacío:{RolId}", UserRolDTO.RolId);
 
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol de usuario es obligatorio");
             }
         }
+
+        // Metodo para mapear la entidad a DTO
+
+        private UserRolDTO MapToDTO(UserRol userRol)
+        {
+            return new UserRolDTO
+            {
+                Id = userRol.Id,
+                RolId = userRol.RolId,
+                UserId = userRol.UserId
+            };
+        }
+
+        // Método para mapear el DTO a la entidad
+
+        private UserRol MapToEntity(UserRolDTO userRolDTO)
+        {
+            return new UserRol
+            {
+                Id = userRolDTO.Id,
+                RolId = userRolDTO.RolId,
+                UserId = userRolDTO.UserId
+            };
+        }
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+
+        private List<UserRolDTO> MapToDTOList(IEnumerable<UserRol> userRoles)
+        {
+            var userRolesDTO = new List<UserRolDTO>();
+            foreach (var userRol in userRoles)
+            {
+                userRolesDTO.Add(MapToDTO(userRol));
+            }
+            return userRolesDTO;
+        }
+
     }
 }

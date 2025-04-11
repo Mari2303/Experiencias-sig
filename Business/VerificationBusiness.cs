@@ -120,5 +120,50 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la verificación es obligatorio");
             }
         }
+
+        // Metodo para mapear una entidad a DTO
+
+        private VerificationDTO MapToDTO(Verification verification)
+        {
+            return new VerificationDTO
+            {
+                Id = verification.Id,
+                Name = verification.Name,
+                Description = verification.Description
+            };
+        }
+
+
+        // Método para mapear un DTO a una entidad
+
+        private Verification MapToEntity(VerificationDTO verificationDTO)
+        {
+            return new Verification
+            {
+                Id = verificationDTO.Id,
+                Name = verificationDTO.Name,
+                Description = verificationDTO.Description
+            };
+        }
+
+
+        // Metodo para listar los DTOs
+
+        private IEnumerable<VerificationDTO> MapToDTOs(IEnumerable<Verification> verifications)
+        {
+           var verificationDTOs = new List<VerificationDTO>();
+            foreach (var verification in verifications)
+            {
+                verificationDTOs.Add(MapToDTO(verification));
+            }
+            return verificationDTOs;
+
+
+
+        }
+
+
+
+
     }
 }

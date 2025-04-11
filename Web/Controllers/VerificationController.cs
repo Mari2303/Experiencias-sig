@@ -1,8 +1,10 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-using Utilities.Exceptions;
+
+using Utilities.Exeptions;
 
 namespace Web
 {

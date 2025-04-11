@@ -95,7 +95,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo grado de experiencia: {ExperienceGradeName}", ExperiencieGradeDTO?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo grado de experiencia: {ExperienceGradeName}", ExperiencieGradeDTO?.GradeId);
                 throw new ExternalServiceException("Base de datos", "Error al crear el grado de experiencia", ex);
             }
         }
@@ -108,9 +108,9 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("El objeto grado de experiencia no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(ExperiencieGradeDTO.Name))
+            if (ExperiencieGradeDTO.GradeId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar un grado de experiencia con Name vacío");
+                _logger.LogWarning("Se intentó crear/actualizar un grado de GradeId con Name vacío{GradeId}",  ExperiencieGradeDTO.GradeId);
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del grado de experiencia es obligatorio");
             }
             

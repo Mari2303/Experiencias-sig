@@ -89,22 +89,22 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear una nueva población de experiencia: {PopulationName}", populationDTO?.PopulationGradeName ?? "null");
+                _logger.LogError(ex, "Error al crear una nueva población de experiencia: {PopulationName}", populationDTO?.ExperiencieId);
                 throw new ExternalServiceException("Base de datos", "Error al crear la población de experiencia", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateExperiencePopulation(ExperienciePopulationDTO populationDto)
+        private void ValidateExperiencePopulation(ExperienciePopulationDTO populationDTO)
         {
-            if (populationDto == null)
+            if (populationDTO == null)
             {
                 throw new Utilities.Exeptions.ValidationException("El objeto población de experiencia no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(populationDto.ExperiencieName))
+            if (populationDTO.ExperiencieId <=0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar una población de experiencia con Name vacío");
+                _logger.LogWarning("Se intentó crear/actualizar una población de experiencia con ExperiencieId inválido: {ExperiencieId}", populationDTO.ExperiencieId);
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la población de experiencia es obligatorio");
             }
         }
