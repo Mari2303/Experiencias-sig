@@ -8,14 +8,14 @@ namespace Data
   public  class EvaluationData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<Evaluation> _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public EvaluationData(ApplicationDbContext context, ILogger logger)
+        public EvaluationData(ApplicationDbContext context, ILogger<Evaluation> logger)
         {
             _context = context;
             _logger = logger;

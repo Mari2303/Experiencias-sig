@@ -13,9 +13,9 @@ namespace Business
     public class ExperiencieGradeBusiness
     {
         private readonly ExperiencieGradeData _experienceGradeData;
-        private readonly ILogger _logger;
+        private readonly ILogger<ExperiencieGrade> _logger;
 
-        public ExperiencieGradeBusiness(ExperiencieGradeData experienceGradeData, ILogger logger)
+        public ExperiencieGradeBusiness(ExperiencieGradeData experienceGradeData, ILogger<ExperiencieGrade> logger)
         {
             _experienceGradeData = experienceGradeData;
             _logger = logger;

@@ -13,9 +13,9 @@ namespace Business
     public class CriteriaBusiness
     {
         private readonly CriteriaData _criteriaData;
-        private readonly ILogger _logger;
+        private readonly ILogger< Criteria> _logger;
 
-        public CriteriaBusiness(CriteriaData criteriaData, ILogger logger)
+        public CriteriaBusiness(CriteriaData criteriaData, ILogger<Criteria> logger)
         {
             _criteriaData = criteriaData;
             _logger = logger;

@@ -16,9 +16,9 @@ namespace Business
     public class DocumentBusiness
     {
         private readonly DocumentData _documentData;
-        private readonly ILogger _logger;
+        private readonly ILogger<Document> _logger;
 
-        public DocumentBusiness(DocumentData documentData, ILogger logger)
+        public DocumentBusiness(DocumentData documentData, ILogger<Document> logger)
         {
             _documentData = documentData;
             _logger = logger;

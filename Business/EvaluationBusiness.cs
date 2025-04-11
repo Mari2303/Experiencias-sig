@@ -13,9 +13,9 @@ namespace Business
     public class EvaluationBusiness
     {
         private readonly EvaluationData _evaluationData;
-        private readonly ILogger _logger;
+        private readonly ILogger<Evaluation> _logger;
 
-        public EvaluationBusiness(EvaluationData evaluationData, ILogger logger)
+        public EvaluationBusiness(EvaluationData evaluationData, ILogger<Evaluation> logger)
         {
             _evaluationData = evaluationData;
             _logger = logger;

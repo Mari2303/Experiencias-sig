@@ -15,9 +15,9 @@ namespace Business
     public class EvaluationCriteriaBusiness
     {
         private readonly EvaluationCriteriaData _EvaluationCriteriaData;
-        private readonly ILogger _logger;
+        private readonly ILogger<EvaluationCriteria> _logger;
 
-        public EvaluationCriteriaBusiness(EvaluationCriteriaData evaluationCriteriaData, ILogger logger)
+        public EvaluationCriteriaBusiness(EvaluationCriteriaData evaluationCriteriaData, ILogger<EvaluationCriteria> logger)
         {
             _EvaluationCriteriaData = evaluationCriteriaData;
             _logger = logger;

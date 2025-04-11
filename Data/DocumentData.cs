@@ -8,14 +8,14 @@ namespace Data
  public   class DocumentData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<Document> _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public DocumentData(ApplicationDbContext context, ILogger logger)
+        public DocumentData(ApplicationDbContext context, ILogger<Document> logger)
         {
             _context = context;
             _logger = logger;
