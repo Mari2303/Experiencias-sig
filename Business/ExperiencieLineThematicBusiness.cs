@@ -27,20 +27,12 @@ namespace Business
             try
             {
                 var experienceLineThematics = await _ExperiencieLineThematicData.GetAllAsync();
-                var ExperiencieLineThematicDTOs = new List<ExperiencieLineThematicDTO>();
+                
 
-                foreach (var lineThematic in experienceLineThematics)
-                {
-                    ExperiencieLineThematicDTOs.Add(new ExperiencieLineThematicDTO
-                    {
-                        Id = lineThematic.Id,
-                       LineThematicId = lineThematic.LineThematicId,
-                       ExperiencieId = lineThematic.ExperiencieId
+                return MapToDTOList(experienceLineThematics);
 
-                    });
-                }
 
-                return ExperiencieLineThematicDTOs;
+           
             }
             catch (Exception ex)
             {
@@ -67,12 +59,13 @@ namespace Business
                     throw new EntityNotFoundException("ExperienceLineThematic", id);
                 }
 
-                return new ExperiencieLineThematicDTO
-                {
-                    Id = lineThematic.Id,
-                    LineThematicId = lineThematic.LineThematicId,
-                    ExperiencieId = lineThematic.ExperiencieId
-                };
+              
+                return MapToDTO(lineThematic);
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -88,23 +81,17 @@ namespace Business
             {
                 ValidateExperienceLineThematic(ExperiencieLineThematicDTO);
 
-                var lineThematic = new ExperiencieLineThematic
-                {
-                    LineThematicId = ExperiencieLineThematicDTO.LineThematicId,
-                    ExperiencieId = ExperiencieLineThematicDTO.ExperiencieId
-                 
-                };
+                var lineThematic = MapToEntity(ExperiencieLineThematicDTO);
 
-                var lineThematicCreated = await _ExperiencieLineThematicData.CreateAsync(lineThematic);
+                var lineThematicCreate = await _ExperiencieLineThematicData.CreateAsync(rol);
 
-                return new ExperiencieLineThematicDTO
-                {
+                return MapToDTO(lineThematicCreate);
 
-                    Id = lineThematicCreated.Id,
-                    LineThematicId = lineThematicCreated.LineThematicId,
-                    ExperiencieId = lineThematicCreated.ExperiencieId
 
-                };
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -127,5 +114,53 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la línea temática de experiencia es obligatorio");
             }
         }
+
+
+        // Método para mapear una entidad a un DTO
+
+
+        private ExperiencieLineThematicDTO MapToDTO(ExperiencieLineThematic lineThematic)
+        {
+            return new ExperiencieLineThematicDTO
+            {
+                Id = lineThematic.Id,
+                LineThematicId = lineThematic.LineThematicId,
+                ExperiencieId = lineThematic.ExperiencieId,
+                
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+
+        private ExperiencieLineThematic MapToEntity(ExperiencieLineThematicDTO lineThematicDTO)
+        {
+            return new ExperiencieLineThematic
+            {
+                Id = lineThematicDTO.Id,
+                LineThematicId = lineThematicDTO.LineThematicId,
+                ExperiencieId = lineThematicDTO.ExperiencieId,
+
+            };
+        }
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+
+        private IEnumerable<ExperiencieLineThematicDTO> MapToDTOList(IEnumerable<ExperiencieLineThematic> lineThematics)
+        {
+          var lineThematicDTOs = new List<ExperiencieLineThematicDTO>();
+            foreach (var lineThematic in lineThematics)
+            {
+                lineThematicDTOs.Add(MapToDTO(lineThematic));
+            }
+            return lineThematicDTOs;
+
+
+
+        }
+
+
+
+
+
     }
 }

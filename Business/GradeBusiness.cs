@@ -27,12 +27,12 @@ namespace Business
             try
             {
                 var grades = await _gradeData.GetAllAsync();
-                return grades.Select(grade => new GradeDTO
-                {
-                    Id = grade.Id,
-                    Name = grade.Name,
-                    
-                }).ToList();
+               
+
+                return MapToDTOList(grades);
+
+
+
             }
             catch (Exception ex)
             {
@@ -59,12 +59,12 @@ namespace Business
                     throw new EntityNotFoundException("Grade", id);
                 }
 
-                return new GradeDTO
-                {
-                    Id = grade.Id,
-                    Name = grade.Name,
-                   
-                };
+
+
+                return MapToDTO(grade);
+
+
+
             }
             catch (Exception ex)
             {
@@ -80,20 +80,18 @@ namespace Business
             {
                 ValidateGrade(GradeDTO);
 
-                var grade = new Grade
-                {
-                    Name = GradeDTO.Name,
-                   
-                };
+                var grade= MapToEntity(GradeDTO);
 
-                var createdGrade = await _gradeData.CreateAsync(grade);
+                var gradeCreate = await _gradeData.CreateAsync(grade);
 
-                return new GradeDTO
-                {
-                    Id = createdGrade.Id,
-                    Name = createdGrade.Name,
-                   
-                };
+                return MapToDTO(gradeCreate);
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -118,5 +116,44 @@ namespace Business
 
            
         }
+
+        //  Metodo para mapear de entidad a DTO 
+
+        private GradeDTO MapToDTO(Grade grade)
+        {
+            return new GradeDTO
+            {
+                Id = grade.Id,
+                Name = grade.Name,
+                
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+        private Grade MapToEntity(GradeDTO gradeDTO)
+        {
+            return new Grade
+            {
+                Id = gradeDTO.Id,
+                Name = gradeDTO.Name,
+              
+            };
+        }
+
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+        private IEnumerable<GradeDTO> MapToDTOList(IEnumerable<Grade> grades)
+        {
+           var gradeDTOs = new List<GradeDTO>();
+            foreach (var grade in grades)
+            {
+                gradeDTOs.Add(MapToDTO(grade));
+            }
+            return gradeDTOs;
+        }
+
+
+
+
     }
 }

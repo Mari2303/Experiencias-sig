@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,19 +22,18 @@ namespace Business
         }
 
         // Método para obtener todas las verificaciones como DTOs
-        public async Task<IEnumerable<VerificationDto>> GetAllVerificationsAsync()
+        public async Task<IEnumerable<VerificationDTO>> GetAllVerificationsAsync()
         {
             try
             {
                 var verifications = await _verificationData.GetAllAsync();
-                return verifications.Select(verification => new VerificationDto
+                return verifications.Select(verification => new VerificationDTO
                 {
                     Id = verification.Id,
                     Name = verification.Name,
-                    Description = verification.Description,
-                    CreatedAt = verification.CreatedAt,
-                    UpdatedAt = verification.UpdatedAt
-                }).ToList();
+                    Description = verification.Description
+                });
+
             }
             catch (Exception ex)
             {
@@ -44,12 +43,12 @@ namespace Business
         }
 
         // Método para obtener una verificación por ID como DTO
-        public async Task<VerificationDto> GetVerificationByIdAsync(int id)
+        public async Task<VerificationDTO> GetVerificationByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener una verificación con ID inválido: {VerificationId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la verificación debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID de la verificación debe ser mayor que cero");
             }
 
             try
@@ -61,13 +60,12 @@ namespace Business
                     throw new EntityNotFoundException("Verification", id);
                 }
 
-                return new VerificationDto
+                return new VerificationDTO
                 {
                     Id = verification.Id,
                     Name = verification.Name,
-                    Description = verification.Description,
-                    CreatedAt = verification.CreatedAt,
-                    UpdatedAt = verification.UpdatedAt
+                    Description = verification.Description
+                   
                 };
             }
             catch (Exception ex)
@@ -78,7 +76,7 @@ namespace Business
         }
 
         // Método para crear una verificación desde un DTO
-        public async Task<VerificationDto> CreateVerificationAsync(VerificationDto verificationDto)
+        public async Task<VerificationDTO> CreateVerificationAsync(VerificationDTO verificationDto)
         {
             try
             {
@@ -88,19 +86,17 @@ namespace Business
                 {
                     Name = verificationDto.Name,
                     Description = verificationDto.Description,
-                    CreatedAt = DateTime.UtcNow,
-                    UpdatedAt = DateTime.UtcNow
+                   
                 };
 
                 var createdVerification = await _verificationData.CreateAsync(verification);
 
-                return new VerificationDto
+                return new VerificationDTO
                 {
                     Id = createdVerification.Id,
                     Name = createdVerification.Name,
                     Description = createdVerification.Description,
-                    CreatedAt = createdVerification.CreatedAt,
-                    UpdatedAt = createdVerification.UpdatedAt
+                    
                 };
             }
             catch (Exception ex)
@@ -111,17 +107,17 @@ namespace Business
         }
 
         // Método para validar el DTO
-        private void ValidateVerification(VerificationDto verificationDto)
+        private void ValidateVerification(VerificationDTO   verificationDTO)
         {
-            if (verificationDto == null)
+            if (verificationDTO == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto verificación no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto verificación no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(verificationDto.Name))
+            if (string.IsNullOrWhiteSpace(verificationDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar una verificación con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name de la verificación es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name de la verificación es obligatorio");
             }
         }
     }

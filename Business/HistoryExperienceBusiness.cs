@@ -27,15 +27,11 @@ namespace Business
             try
             {
                 var histories = await _historyExperienceData.GetAllAsync();
-                return histories.Select(history => new HistoryExperienceDTO
-                {
-                    Id = history.Id,
-                    DateTime = history.DateTime,
-                    UserId = history.UserId,
-                    TableName = history.TableName,
-                    ExperienceId = history.ExperiencieId,
-                    Action = history.Action
-                });
+                
+
+                return MapToDTOList(histories);
+
+
             }
             catch (Exception ex)
             {
@@ -62,15 +58,12 @@ namespace Business
                     throw new EntityNotFoundException("HistoryExperience", id);
                 }
 
-                return new HistoryExperienceDTO
-                {
-                    Id = history.Id,
-                    DateTime = history.DateTime,
-                    UserId = history.UserId,
-                    TableName = history.TableName,
-                    ExperiencieId = history.ExperiencieId,
-                    Action = history.Action
-                };
+
+
+                return MapToDTO(history);
+
+
+
             }
             catch (Exception ex)
             {
@@ -80,38 +73,27 @@ namespace Business
         }
 
         // Método para registrar una nueva entrada en el historial de experiencias
-        public async Task<HistoryExperienceDTO> CreateHistoryExperienceAsync(HistoryExperienceDTO historyDto)
+        public async Task<HistoryExperienceDTO> CreateHistoryExperienceAsync(HistoryExperienceDTO HistoryDTO)
         {
             try
             {
-                ValidateHistoryExperience(historyDto);
 
-                var history = new HistoryExperience
-                {
-                 
-                    DateTime = historyDto.DateTime,
-                    UserId = historyDto.UserId,
-                    TableName = historyDto.TableName,
-                    ExperiencieId = historyDto.ExperiencieId,
-                    Action = historyDto.Action
-                    
-                };
 
-                var createdHistory = await _historyExperienceData.CreateAsync(history);
 
-                return new HistoryExperienceDTO
-                {
-                    Id = createdHistory.Id,
-                    DateTime = createdHistory.DateTime,
-                    UserId = createdHistory.UserId,
-                    TableName = createdHistory.TableName,
-                    ExperiencieId = createdHistory.ExperiencieId,
-                    Action = createdHistory.Action
-                };
+                ValidateHistoryExperience(HistoryDTO);
+
+                var history = MapToEntity(HistoryDTO);
+
+                var historyCreate = await _historyExperienceData.CreateAsync(history);
+
+                return MapToDTO(historyCreate);
+
+
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo : {HistoryExperienceNombre}", historyDto?.TableName ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo : {HistoryExperienceNombre}", HistoryDTO?.TableName ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear", ex);
             }
         }
@@ -131,5 +113,50 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
         }
+
+
+        // Método para mapear una lista de entidades a DTOs
+        private HistoryExperienceDTO MapToDTO(HistoryExperience history)
+        {
+            return new HistoryExperienceDTO
+            {
+                Id = history.Id,
+                DateTime = history.DateTime,
+                UserId = history.UserId,
+                TableName = history.TableName,
+                ExperiencieId = history.ExperiencieId,
+                Action = history.Action
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+
+        private HistoryExperience MapToEntity(HistoryExperienceDTO historyDTO)
+        {
+            return new HistoryExperience
+            {
+                Id = historyDTO.Id,
+                DateTime = historyDTO.DateTime,
+                UserId = historyDTO.UserId,
+                TableName = historyDTO.TableName,
+                ExperiencieId = historyDTO.ExperiencieId,
+                Action = historyDTO.Action
+            };
+        }
+
+
+
+        // Método para mapear una lista de entidades a DTOs
+
+        private IEnumerable<HistoryExperienceDTO> MapToDTOList(IEnumerable<HistoryExperience> histories)
+        {
+         var historyDTOs = new List<HistoryExperienceDTO>();
+            foreach (var history in histories)
+            {
+                historyDTOs.Add(MapToDTO(history));
+            }
+            return historyDTOs;
+        }
+
     }
 }

@@ -115,7 +115,7 @@ namespace Business
         }
 
         // Método para mapear un DTO a una entidad
-        private CriteriaDTO MapToEntity(Criteria criteria)
+        private CriteriaDTO MapToDTO(Criteria criteria)
         {
             return new CriteriaDTO
             {
@@ -138,15 +138,15 @@ namespace Business
         }
 
         // Método para mapear una lista de entidades a una lista de DTOs
-        private IEnumerable<CriteriaDTO> MapToDTOList(IEnumerable<Criteria> criteriaList)
+        private IEnumerable<CriteriaDTO> MapToDTOList(IEnumerable<Criteria> criteria)
         {
 
-            var criteriaDTOList = new List<CriteriaDTO>();
-            foreach (var criteria in criteriaList)
+            var criteriaDTO = new List<CriteriaDTO>();
+            foreach (var Criteria in criteria)
             {
-                criteriaDTOList.Add(MapToDTO(criteria));
+                criteriaDTO.Add(MapToDTO(Criteria));
             }
-            return criteriaDTOList;
+            return criteriaDTO;
 
         }
     }

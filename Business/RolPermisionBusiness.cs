@@ -27,20 +27,12 @@ namespace Business
             try
             {
                 var rolPermissions = await _rolPermisionData.GetAllAsync();
-                var rolPermissionsDTO = new List<RolPermissionDTO>();
+           
 
-                foreach (var rolper in rolPermissionsDTO)
-                {
-                    rolPermissionsDTO.Add(new RolPermissionDTO
+                return MapToDTOList(rolPermissions);
 
-                    {
-                        Id = rolper.Id,
-                        RolId = rolper.RolId,
-                        PermissionId = rolper.PermissionId
 
-                    });
-                }
-                return rolPermissionsDTO;
+           
 
             }
             catch (Exception ex)
@@ -68,12 +60,13 @@ namespace Business
                     throw new EntityNotFoundException("RolPermision", id);
                 }
 
-                return new RolPermissionDTO
-                {
-                   Id = rolPermision.Id,
-                  RolId = rolPermision.RolId,
-                  PermissionId = rolPermision.PermissionId
-                };
+
+
+                return MapToDTO(rolPermision);
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -89,42 +82,83 @@ namespace Business
             {
                 ValidateRolPermissionDTO(RolPermissionDTO);
 
-                var rolPermision = new RolPermission
-                {
-                    RolId = RolPermissionDTO.RolId,
-                    PermissionId = RolPermissionDTO.PermisionId
-                };
+                var rolPermission = MapToEntity(RolPermissionDTO);
+                   
+               var createdRolPermission = await _rolPermisionData.CreateAsync(rolPermission);
 
-                var createdRolPermision = await _rolPermisionData.CreateAsync(rolPermision);
+              return MapToDTO(createdRolPermission);
+ 
 
-                return new RolPermissionDTO
-                {
-                    Id = createdRolPermision.Id,
-                    RolId = createdRolPermision.RolId,
-                    PermissionId = createdRolPermision.PermissionId
-                };
-            }
+
+    }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo : {Nombre}", RolPermissionDTO?.name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo : {Nombre}", RolPermissionDTO?.RolId );
                 throw new ExternalServiceException("Base de datos", "Error al crear ", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateRolPermissionDTO(RolPermissionDTO rolPermissionDTO)
+        private void ValidateRolPermissionDTO(RolPermissionDTO RolPermissionDTO)
         {
             if (RolPermissionDTO == null)
             {
                 throw new Utilities.Exeptions.ValidationException("El objeto puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(RolPermissionDTO.name))
+            if (RolPermissionDTO.RolId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar  con Name vacío");
+                _logger.LogWarning("Se intentó crear/actualizar  con RolId inválido: {RolId}", RolPermissionDTO.RolId);
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name  obligatorio");
             }
         }
+
+
+// Metodo para mapear de entidad  DTO
+private RolPermissionDTO MapToDTO(RolPermission rolPermission)
+{
+    return new RolPermissionDTO
+    {
+        Id = rolPermission.Id,
+        RolId = rolPermission.RolId,
+        PermissionId = rolPermission.PermissionId,
+       
+    };
+}
+
+
+// Metodo para mapear de DTO a entidad 
+
+private RolPermission MapToEntity(RolPermissionDTO rolPermissionDTO)
+
+{
+    return new RolPermission
+    {
+        Id = rolPermissionDTO.Id,
+        RolId = rolPermissionDTO.RolId,
+        PermissionId = rolPermissionDTO.PermissionId,
+
+    };
+}
+
+
+// Método para mapear una lista de entidades a DTOs
+
+
+private IEnumerable<RolPermissionDTO> MapToDTOList(IEnumerable<RolPermission> rolPermissions)
+
+{
+    var rolPermissionsDTO = new List<RolPermissionDTO>();
+    foreach (var rolPermission in rolPermissions)
+    {
+        rolPermissionsDTO.Add(MapToDTO(rolPermission));
+    }
+
+    return rolPermissionsDTO; 
+
+
+}
+
     }
 }
            

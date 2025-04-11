@@ -11,9 +11,6 @@ namespace Entity.Model
         public int Id { get; set; }
         public string PermissionType { get; set; }
 
-        public static void Add(PermissionDTO permissionDTO)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

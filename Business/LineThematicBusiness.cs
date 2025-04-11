@@ -28,20 +28,11 @@ namespace Business
             try
             {
                 var lineThematic = await _lineThematicData.GetAllAsync();
-                var lineThemaDTO = new List<LineThematicDTO>();
 
 
-                foreach (var LineThematic in lineThematic)
-                {
-                    lineThemaDTO.Add(new LineThematicDTO
-                    {
-                        Id = LineThematic.Id,
-                        Name = LineThematic.Name
-                    });
-                    
-                }
+                return MapToDTOList(lineThematic);
 
-                return lineThemaDTO;
+
             }
             catch (Exception ex)
             {
@@ -68,12 +59,14 @@ namespace Business
                     throw new EntityNotFoundException("LineThematic", id);
                 }
 
-                return new LineThematicDTO
-                {
-                    Id = lineThematic.Id,
-                    Name = lineThematic.Name
-                 
-                };
+
+
+
+                return MapToDTO(lineThematic);
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -87,22 +80,20 @@ namespace Business
         {
             try
             {
+
+
+
+
                 ValidateLineThematic(LineThematicDTO);
 
-                var lineThematic = new LineThematic
-                {
-                    Name = LineThematicDTO.Name,
-                    
-                };
+                var lineThematic = MapToEntity(LineThematicDTO);
 
                 var createdLineThematic = await _lineThematicData.CreateAsync(lineThematic);
 
-                return new LineThematicDTO
-                {
-                    Id = createdLineThematic.Id,
-                    Name = createdLineThematic.Name,
-                    
-                };
+                return MapToDTO(createdLineThematic);
+
+
+
             }
             catch (Exception ex)
             {
@@ -125,5 +116,50 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la línea temática es obligatorio");
             }
         }
+
+        // Método para mapear una entidad a un DTO
+
+        private LineThematicDTO MapToDTO(LineThematic lineThematic)
+        {
+            return new LineThematicDTO
+            {
+                Id = lineThematic.Id,
+                Name = lineThematic.Name,
+              
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+
+        private LineThematic MapToEntity(LineThematicDTO lineThematicDTO)
+        {
+            return new LineThematic
+            {
+                Id = lineThematicDTO.Id,
+                Name = lineThematicDTO.Name,
+
+            };
+        }
+
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+
+        private IEnumerable<LineThematicDTO> MapToDTOList(IEnumerable<LineThematic> lineThematics)
+        {
+           
+            var lineThematicDTOs = new List<LineThematicDTO>();
+            foreach (var lineThematic in lineThematics)
+            {
+                lineThematicDTOs.Add(MapToDTO(lineThematic));
+            }
+            return lineThematicDTOs;
+
+
+        }
+
+
+
+
+
     }
 }

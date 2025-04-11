@@ -28,7 +28,7 @@ namespace Business
             {
                 var evaluations = await _evaluationData.GetAllAsync();
                 
-                 return MapToDTO(evaluations);
+                 return MapToDTOList(evaluations);
 
                 
 
@@ -82,9 +82,9 @@ namespace Business
                 ValidateEvaluation(EvaluationDTO);
 
 
-               var evaluation = EvaluationDTO;
+               var evaluation = MapToEntity(EvaluationDTO);
 
-                var evaluationCreado = await _evaluationData.CreateEvaluationAsync(evaluation);
+                var evaluationCreado = await _evaluationData.CreateAsync(evaluation);
 
                 return MapToDTO(evaluationCreado);
 
@@ -125,16 +125,16 @@ namespace Business
 
         // Metodo para mapear de Evaluation a RolDTO 
 
-        private RolDTO MapToDTO(Evaluation evaluation)
+        private EvaluationDTO MapToDTO(Evaluation evaluation)
         {
-            return new RolDTO
+            return new EvaluationDTO
             {
                 Id = evaluation.Id,
                 TypeEvaluation = evaluation.TypeEvaluation,
                 Comments = evaluation.Comments,
                 DateTime = evaluation.DateTime,
                 UserId = evaluation.UserId,
-                ExperiencieId = evaluation.ExperimentId,
+                ExperiencieId = evaluation.ExperiencieId,
                 StateId = evaluation.StateId
 
             };
@@ -147,11 +147,11 @@ namespace Business
             {
 
                 Id = evaluationDTO.Id,
-                TypeDocument = evaluationDTO.TypeDocument,
+                TypeEvaluation = evaluationDTO.TypeEvaluation,
                 Comments = evaluationDTO.Comments,
                 DateTime = evaluationDTO.DateTime,
                 UserId = evaluationDTO.UserId,
-                ExperiencieId = evaluationDTO.ExperimentId,
+                ExperiencieId = evaluationDTO.ExperiencieId,
                 StateId = evaluationDTO.StateId
 
             };
@@ -159,10 +159,11 @@ namespace Business
 
         // Metodo para mapear una lista de Document a una lista de  DocumentDTO
 
-        private IEnumerable<EvaluationDTO>MapToDTOList(IEnumerable<Evaluation> Evaluation)
+        private IEnumerable<EvaluationDTO>MapToDTOList(IEnumerable<Evaluation> evaluations)
         {
             var evaluationDTO = new List<EvaluationDTO>();
-            foreach (var evaluation in Evaluation)
+
+            foreach (var evaluation in evaluations)
             {
                 evaluationDTO.Add(MapToDTO(evaluation));
 

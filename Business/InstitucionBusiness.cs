@@ -27,18 +27,12 @@ namespace Business
             try
             {
                 var instituciones = await _institucionData.GetAllAsync();
-                return instituciones.Select(inst => new InstitucionDTO
-                {
-                    Id = inst.Id,
-                    Name = inst.Name,
-                    Address = inst.Address,
-                    Phone = inst.Phone,
-                    EmailInstitution = inst.EmailInstitution,
-                    Department = inst.Department,
-                    Commune = inst.Commune
+
+                return MapToDTOList(instituciones);
 
 
-                });
+
+
             }
             catch (Exception ex)
             {
@@ -65,16 +59,13 @@ namespace Business
                     throw new EntityNotFoundException("Institucion", id);
                 }
 
-                return new InstitucionDTO
-                {
-                    Id = institucion.Id,
-                    Name = institucion.Name,
-                    Address = institucion.Address,
-                    Phone = institucion.Phone,
-                    EmailInstitution = institucion.EmailInstitution,
-                    Department = institucion.Department,
-                    Commune = institucion.Commune
-                };
+
+
+                return MapToDTO(institucion);
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -90,29 +81,14 @@ namespace Business
             {
                 ValidateInstitucion(InstitucionDTO);
 
-                var institucion = new Institucion
-                {
-                   
-                    Name = InstitucionDTO.Name,
-                    Address = InstitucionDTO.Address,
-                    Phone = InstitucionDTO.Phone,
-                    EmailInstitution = InstitucionDTO.EmailInstitution,
-                    Department = InstitucionDTO.Department,
-                    Commune = InstitucionDTO.Commune
-                };
 
-                var createdInstitucion = await _institucionData.CreateAsync(institucion);
+                var institucion = MapToEntity(InstitucionDTO);
 
-                return new InstitucionDTO
-                {
-                    Id = createdInstitucion.Id,
-                    Name = createdInstitucion.Name,
-                    Address = createdInstitucion.Address,
-                    Phone = createdInstitucion.Phone,
-                    EmailInstitution = createdInstitucion.EmailInstitution,
-                    Department = createdInstitucion.Department,
-                    Commune = createdInstitucion.Commune
-                };
+                var institucionCreate = await _institucionData.CreateAsync(institucion);
+
+                return MapToDTO(institucionCreate);
+
+
             }
             catch (Exception ex)
             {
@@ -134,6 +110,59 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar una institución con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la institución es obligatorio");
             }
+        }
+
+
+
+        // Metodo para mapear una entidad a un DTO
+
+        private InstitucionDTO MapToDTO(Institucion inst)
+        {
+            return new InstitucionDTO
+            {
+                Id = inst.Id,
+                Name = inst.Name,
+                Address = inst.Address,
+                Phone = inst.Phone,
+                EmailInstitution = inst.EmailInstitution,
+                Department = inst.Department,
+                Commune = inst.Commune
+            };
+        }
+
+
+        //Metodo para mapear una DTO a una entidad
+
+
+        private Institucion MapToEntity(InstitucionDTO instDTO)
+        {
+            return new Institucion
+            {
+                Id = instDTO.Id,
+                Name = instDTO.Name,
+                Address = instDTO.Address,
+                Phone = instDTO.Phone,
+                EmailInstitution = instDTO.EmailInstitution,
+                Department = instDTO.Department,
+                Commune = instDTO.Commune
+            };
+        }
+
+
+
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+
+        private IEnumerable<InstitucionDTO> MapToDTOList(IEnumerable<Institucion> instituciones)
+        {
+
+            var institucionDTOs = new List<InstitucionDTO>();
+            foreach (var inst in instituciones)
+            {
+                institucionDTOs.Add(MapToDTO(inst));
+            }
+
+            return institucionDTOs;
         }
     }
 }

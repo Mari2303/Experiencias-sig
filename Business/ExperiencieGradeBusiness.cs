@@ -27,13 +27,11 @@ namespace Business
             try
             {
                 var experienceGrades = await _experienceGradeData.GetAllAsync();
-                return experienceGrades.Select(experienceGrade => new ExperiencieGradeDTO
-                {
-                    Id = experienceGrade.Id,
-                    GradeId = experienceGrade.GradeId,
-                    ExperiencieId = experienceGrade.ExperiencieId
+               
+                return MapToDTOList(experienceGrades);
 
-                }).ToList();
+
+
             }
             catch (Exception ex)
             {
@@ -60,12 +58,13 @@ namespace Business
                     throw new EntityNotFoundException("ExperienceGrade", id);
                 }
 
-                return new ExperiencieGradeDTO
-                {
-                    Id = experienceGrade.Id,
-                    GradeId = experienceGrade.GradeId,
-                    ExperiencieId = experienceGrade.ExperiencieId
-                };
+
+
+                return MapToDTO(experienceGrade);
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -81,21 +80,18 @@ namespace Business
             {
                 ValidateExperienceGrade(ExperiencieGradeDTO);
 
-                var experiencieGrade = new ExperiencieGrade
-                {
-                    
-                    GradeId = ExperiencieGradeDTO.GradeId,
-                    ExperiencieId = ExperiencieGradeDTO.ExperiencieId
-                    
-                };
+                var experiencieGrade = MapToEntity(ExperiencieGradeDTO);
 
-                var createdExperiencieGrade = await  _experienceGradeData.CreateAsync(experiencieGrade);
-                return new ExperiencieGradeDTO
-                {
-                    Id = createdExperiencieGrade.Id,
-                    GradeId = createdExperiencieGrade.GradeId,
-                    ExperiencieId = createdExperiencieGrade.ExperiencieId
-                };
+                var experiencieGradeCreate = await _experienceGradeData.CreateAsync(experiencieGrade);
+
+                return MapToDTO(experiencieGradeCreate);
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -120,9 +116,47 @@ namespace Business
             
         }
 
-        // Metodo para mapear de experienceGrade a experienceGrade
+        // Metodo para mapear de experienceGrade a experienceGradeDTO
 
-      
+        private ExperiencieGradeDTO MapToDTO(ExperiencieGrade experienceGrade)
+        {
+            return new ExperiencieGradeDTO
+            {
+                Id = experienceGrade.Id,
+                GradeId = experienceGrade.GradeId,
+                ExperiencieId = experienceGrade.ExperiencieId,
+           
+            };
+        }
+
+        // Método para mapear de experienceGradeDTO a experienceGrade
+        private ExperiencieGrade MapToEntity(ExperiencieGradeDTO experienceGradeDTO)
+        {
+            return new ExperiencieGrade
+            {
+                Id = experienceGradeDTO.Id,
+                GradeId = experienceGradeDTO.GradeId,
+                ExperiencieId = experienceGradeDTO.ExperiencieId,
+            };
+        }
+
+
+        // Método para mapear una lista de experienceGrade a una lista de experienceGradeDTO
+
+        private IEnumerable<ExperiencieGradeDTO> MapToDTOList(IEnumerable<ExperiencieGrade> experienceGrades)
+        {
+            
+            var experienceGradeDTOs = new List<ExperiencieGradeDTO>();
+            foreach (var experienceGrade in experienceGrades)
+            {
+                experienceGradeDTOs.Add(MapToDTO(experienceGrade));
+            }
+
+            return experienceGradeDTOs;
+
+
+
+        }
 
 
 

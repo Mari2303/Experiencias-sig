@@ -2,6 +2,7 @@ using Data;
 using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
@@ -17,7 +18,7 @@ namespace Business
         private readonly PersonData _personData;
         private readonly ILogger _logger;
 
-        public PersonBusiness (PersonData PersonData, ILogger logger)
+        public PersonBusiness(PersonData PersonData, ILogger logger)
         {
             _personData = PersonData;
 
@@ -30,22 +31,10 @@ namespace Business
             try
             {
                 var person = await _personData.GetAllAsync();
-                var PersonDTO = new List<PersonDTO>();
 
-                foreach (var Person in person)
-                {
-                    PersonDTO.Add(new PersonDTO
-                    {
-                        Id = Person.Id,
-                        Name = Person.Name,
-                        Email = Person.Email, // Si existe en la entidad
-                        Phone = Person.Phone,
-                        Active = Person.Active
 
-                    });
-                }
+                return MapToDTOList(person);
 
-                return PersonDTO;
             }
             catch (Exception ex)
             {
@@ -72,15 +61,13 @@ namespace Business
                     throw new EntityNotFoundException("Person", id);
                 }
 
-                return new PersonDTO
-                {
-                    Id = person.Id,
-                    Name = person.Name,
-                    Email = person.Email, // Si existe en la entidad
-                    Phone = person.Phone,
-                    Active = person.Active
 
-                };
+                return MapToDTO(person);
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -96,26 +83,13 @@ namespace Business
             {
                 ValidatePerson(PersonDTO);
 
-                var person = new Person
-                { 
+                var person = MapToEntity(PersonDTO);
 
-                    Name = PersonDTO.Name,
-                    Email = PersonDTO.Email, // Si existe en la entidad
-                    Phone = PersonDTO.Phone,
-                    Active = PersonDTO.Active
+                var persona = await _personData.CreateAsync(person);
 
-                };
+                return MapToDTO(person);
 
-                var personCreado = await _personData.CreateAsync(person);
 
-                return new PersonDTO
-                {
-                    Id = personCreado.Id,
-                    Name = personCreado.Name,
-                    Email = personCreado.Email, 
-                    Phone = personCreado.Phone,
-                    Active = personCreado.Active
-                };
             }
             catch (Exception ex)
 
@@ -139,8 +113,58 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name no es obligatorio");
             }
         }
+
+
+        // Metodo para mapear una entidad a DTO 
+
+        private PersonDTO MapToDTO(Person person)
+        {
+            return new PersonDTO
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Email = person.Email,
+                Phone = person.Phone,
+                Active = person.Active,
+                UserId = person.UserId
+            };
+        }
+
+
+        // Metodo para mapear un DTO a entidad 
+
+        private Person MapToEntity(PersonDTO personDTO)
+        {
+            return new Person
+            {
+                Id = personDTO.Id,
+                Name = personDTO.Name,
+                Email = personDTO.Email,
+                Phone = personDTO.Phone,
+                Active = personDTO.Active,
+                UserId = personDTO.UserId
+            };
+        }
+
+
+
+        // Método para mapear una lista de entidades a DTOs
+
+        private IEnumerable<PersonDTO> MapToDTOList(IEnumerable<Person> persons)
+        {
+            var personDTOs = new List<PersonDTO>();
+            foreach (var person in persons)
+            {
+                personDTOs.Add(MapToDTO(person));
+            }
+            return personDTOs;
+
+
+
+
+
+        }
     }
+
 }
-
-
 

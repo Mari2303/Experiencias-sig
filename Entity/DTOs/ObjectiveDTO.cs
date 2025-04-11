@@ -14,5 +14,6 @@ public    class ObjectiveDTO
         public string Results { get; set; }
         public string Sustainability { get; set; }
         public int ExperienceId { get; set; }
+        public int ExperienceName { get; set; }
     }
 }

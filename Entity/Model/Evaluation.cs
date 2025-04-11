@@ -21,8 +21,8 @@ namespace Entity.Model
         public int StateId { get; set; }
         public State State { get; set; }
 
-        public int ExperienceId { get; set; }
-        public Experience Experience { get; set; }
+        public int ExperiencieId { get; set; }
+        public Experiencie Experiencie { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }

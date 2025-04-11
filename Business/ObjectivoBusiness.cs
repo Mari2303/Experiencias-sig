@@ -28,26 +28,14 @@ namespace Business
             try
             {
                 var objectives = await _objectiveData.GetAllAsync();
-                var objectiveDTO = new List<ObjectiveDTO>();
 
-                foreach (var objective in objectives)
 
-                    objectiveDTO.Add(new ObjectiveDTO
-
-                    {
-                     Id = objective.Id,
-                     ObjetiveDescription = objective.ObjectiveDescription,
-                     Innovation = objective.Innovation,
-                     Results = objective.Results,
-                     Sustainability = objective.Sustainability,
-                     ExperienceId = objective.ExperienceId
+                return MapToDTOList(objectives);
 
 
 
 
-                    });
 
-                return objectiveDTO;
             }
             catch (Exception ex)
             {
@@ -74,15 +62,8 @@ namespace Business
                     throw new EntityNotFoundException("Objective", id);
                 }
 
-                return new ObjectiveDTO
-                {
-                    Id = objective.Id,
-                    ObjetiveDescription = objective.ObjectiveDescription,
-                    Innovation = objective.Innovation,
-                    Results = objective.Results,
-                    Sustainability = objective.Sustainability,
-                    ExperienceId = objective.ExperienceId
-                };
+
+                return MapToDTO(objective);
             }
             catch (Exception ex)
             {
@@ -98,27 +79,19 @@ namespace Business
             {
                 ValidateObjective(ObjectiveDTO);
 
-                var objective = new Objective
-                {
-                    Id = ObjectiveDTO.Id,
-                    ObjectiveDescription = ObjectiveDTO.ObjetiveDescription,
-                    Innovation = ObjectiveDTO.Innovation,
-                    Results = ObjectiveDTO.Results,
-                    Sustainability = ObjectiveDTO.Sustainability,
-                    ExperienceId = ObjectiveDTO.ExperienceId
-                };
+                var objective = MapToEntity(ObjectiveDTO);
 
-                var createdObjective = await _objectiveData.CreateAsync(objective);
+                var objectiveCreate = await _objectiveData.CreateAsync(objective);
 
-                return new ObjectiveDTO
-                {
-                    Id = createdObjective.Id,
-                    ObjetiveDescription = createdObjective.ObjectiveDescription,
-                    Innovation = createdObjective.Innovation,
-                    Results = createdObjective.Results,
-                    Sustainability = createdObjective.Sustainability,
-                    ExperienceId = createdObjective.ExperienceId
-                };
+                return MapToDTO(objectiveCreate);
+
+
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -141,5 +114,50 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del objetivo es obligatorio");
             }
         }
+    
+        // Metodo para mapear de entidad a DTO
+
+        private ObjectiveDTO MapToDTO(Objective objective)
+        {
+            return new ObjectiveDTO
+
+            {
+                Id = objective.Id,
+                ObjetiveDescription = objective.ObjectiveDescription,
+                Innovation = objective.Innovation,
+                Results = objective.Results,
+                Sustainability = objective.Sustainability,
+                ExperienceId = objective.ExperienceId
+            };
+        }
+
+
+        // Método para mapear de DTO a entidad
+
+
+        private Objective MapToEntity(ObjectiveDTO objectiveDTO)
+        {
+            return new Objective
+            {
+                Id = objectiveDTO.Id,
+                ObjectiveDescription = objectiveDTO.ObjetiveDescription,
+                Innovation = objectiveDTO.Innovation,
+                Results = objectiveDTO.Results,
+                Sustainability = objectiveDTO.Sustainability,
+                ExperienceId = objectiveDTO.ExperienceId
+            };
+        }
+        // Método para mapear una lista de entidades a DTOs
+
+        private IEnumerable<ObjectiveDTO> MapToDTOList(IEnumerable<Objective> objectives)
+        {
+          var objectiveDTOs = new List<ObjectiveDTO>();
+            foreach (var objective in objectives)
+            {
+                objectiveDTOs.Add(MapToDTO(objective));
+            }
+            return objectiveDTOs;
+        }
+
     }
 }

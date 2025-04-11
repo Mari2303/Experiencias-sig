@@ -44,7 +44,7 @@ builder.Services.AddScoped<ExperiencePopulationData>();
 builder.Services.AddScoped<ExperiencePopulationBusiness>();
 
 builder.Services.AddScoped<ExperiencieGradeData>();
-builder.Services.AddScoped<ExperienceGradeBusiness>();
+builder.Services.AddScoped<ExperiencieGradeBusiness>();
 
 builder.Services.AddScoped<PopulationGradeData>();
 builder.Services.AddScoped<PopulationGradeBusiness>();

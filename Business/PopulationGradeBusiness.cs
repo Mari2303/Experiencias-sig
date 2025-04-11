@@ -27,22 +27,8 @@ namespace Business
             try
             {
                 var grades = await _populationGradeData.GetAllAsync();
-                var gradesDTO = new List<PopulationGradeDTO>();
-
-                foreach (var grade in grades)
-                {
-                    gradesDTO.Add(new PopulationGradeDTO
-
-                    {
-
-                        Id = grade.Id,
-                        Name = grade.Name
-
-                    });
-                }
-
-
-                return gradesDTO;
+             
+                return MapToDTOList(grades);
             }
 
             catch (Exception ex)
@@ -70,12 +56,13 @@ namespace Business
                     throw new EntityNotFoundException("PopulationGrade", id);
                 }
 
-                return new PopulationGradeDTO
-                {
-                    Id = grade.Id,
-                    Name = grade.Name,
-                   
-                };
+
+                return MapToDTO(grade);
+
+
+
+
+
             }
             catch (Exception ex)
             {
@@ -85,47 +72,82 @@ namespace Business
         }
 
         // Método para crear un grado de población desde un DTO
-        public async Task<PopulationGradeDTO> CreatePopulationGradeAsync(PopulationGradeDTO gradeDto)
+        public async Task<PopulationGradeDTO> CreatePopulationGradeAsync(PopulationGradeDTO gradeDTO)
         {
             try
             {
-                ValidatePopulationGrade(gradeDto);
+                ValidatePopulationGrade(gradeDTO);
 
-                var grade = new PopulationGrade
-                {
-                    Name = gradeDto.Name,
-                    
-                };
+               var grade = MapToEntity(gradeDTO);
 
                 var createdGrade = await _populationGradeData.CreateAsync(grade);
 
-                return new PopulationGradeDTO
-                {
-                    Id = createdGrade.Id,
-                    Name = createdGrade.Name,
-                   
-                };
+                return MapToDTO(createdGrade);
+
+
+
+
+
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear un nuevo grado de población: {GradeName}", gradeDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear un nuevo grado de población: {GradeName}", gradeDTO?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el grado de población", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidatePopulationGrade(PopulationGradeDTO gradeDto)
+        private void ValidatePopulationGrade(PopulationGradeDTO gradeDTO)
         {
-            if (gradeDto == null)
+            if (gradeDTO == null)
             {
                 throw new Utilities.Exeptions.ValidationException("El objeto grado de población no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(gradeDto.Name))
+            if (string.IsNullOrWhiteSpace(gradeDTO.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un grado de población con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del grado de población es obligatorio");
             }
         }
+
+
+        // Metodo para  mapear de entidad a DTO
+         
+        private PopulationGradeDTO MapToDTO(PopulationGrade grade)
+        {
+            return new PopulationGradeDTO
+            {
+                Id = grade.Id,
+                Name = grade.Name
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+
+        private PopulationGrade MapToEntity(PopulationGradeDTO gradeDTO)
+        {
+            return new PopulationGrade
+            {
+                Id = gradeDTO.Id,
+                Name = gradeDTO.Name
+            };
+        }
+
+
+        // Método para mapear una lista de entidades a DTOs
+
+        private IEnumerable<PopulationGradeDTO> MapToDTOList(IEnumerable<PopulationGrade> grades)
+        {
+           var gradeDTOs = new List<PopulationGradeDTO>();
+            foreach (var grade in grades)
+            {
+                gradeDTOs.Add(MapToDTO(grade));
+            }
+            return gradeDTOs;
+        }
+
+
     }
 }

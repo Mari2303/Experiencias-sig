@@ -24,7 +24,7 @@ namespace Business
         }
 
         // Método para obtener  los DTOs
-        public async Task<IEnumerable<EvaluationCriteriaDTO>> GetAllEvaluationCriteriaAsync(EvaluationCriteria evaluationCriteria)
+        public async Task<IEnumerable<EvaluationCriteriaDTO>> GetAllEvaluationCriteriaAsync()
         {
             try
             {
@@ -84,7 +84,7 @@ namespace Business
 
                 var evaluationCriteria = MapToEntity(EvaluationCriteriaDTO);
 
-                var evaluationCriteriaCreated = await _evaluationCriteriaData.CreateAsync();
+                var evaluationCriteriaCreated = await _EvaluationCriteriaData.CreateAsync(evaluationCriteria);
 
                 return MapToDTO(evaluationCriteriaCreated);
 
@@ -101,14 +101,14 @@ namespace Business
         }
 
         // Método para validar el DTO
-        private void ValidateEvaluationCriteria(EvaluationCriteriaDTO EvaluationCriteriaDTO, EvaluationCriteriaDTO evaluationCriteriaDTO)
+        private void ValidateEvaluationCriteria(EvaluationCriteriaDTO evaluationCriteriaDTO )
         {
             if (evaluationCriteriaDTO == null)
             {
                 throw new Utilities.Exeptions.ValidationException("El objeto rol no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(EvaluationCriteriaDTO.Score))
+            if (string.IsNullOrWhiteSpace(  evaluationCriteriaDTO.Score))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un rol con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
@@ -155,16 +155,16 @@ namespace Business
 
         //Metodo para mapear una lista de EvaluationCriteria a una lista de EvaluationCriteriaDTO
 
-        private IEnumerable<EvaluationCriteriaDTO> MapToDTOList(IEnumerable<EvaluationCriteria> evaluationCriteria)
+        private IEnumerable<EvaluationCriteriaDTO> MapToDTOList(IEnumerable<EvaluationCriteria> evaluationCri)
         {
-            var EvaluationCriteriaDTO = new List<EvaluationCriteria>();
+            var evaluationCriDTO = new List<EvaluationCriteriaDTO>();
 
-            foreach (var evaluationCriteria in evaluationCriteria)
+            foreach (var evaluationCriteria in evaluationCri)
             {
-                evaluationCriteriaDTO.Add(MapToDTO(evaluationCriteria));
+                evaluationCriDTO.Add(MapToDTO(evaluationCriteria));
             }
 
-            return EvaluationCriteriaDTO;
+            return evaluationCriDTO;
         }
     }
 }

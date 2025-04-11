@@ -3,7 +3,7 @@ using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
-using Utilities.Exceptions;
+using Utilities.Exeptions;
 
 namespace Business
 {
@@ -22,12 +22,17 @@ namespace Business
         }
 
         // Método para obtener todas las poblaciones de experiencia como DTOs
-        public async Task<IEnumerable<ExperiencePopulationDto>> GetAllExperiencePopulationsAsync()
+        public async Task<IEnumerable<ExperienciePopulationDTO>> GetAllExperiencePopulationsAsync()
         {
             try
             {
-                var Experienciepopulations = await _experiencePopulationData.GetAllAsync();
-                
+                var ExperienciePopulations = await _experiencePopulationData.GetAllAsync();
+
+
+                return MapToDTOList(ExperienciePopulations);
+
+
+
             }
             catch (Exception ex)
             {
@@ -37,12 +42,12 @@ namespace Business
         }
 
         // Método para obtener una población de experiencia por ID como DTO
-        public async Task<ExperiencePopulationDto> GetExperiencePopulationByIdAsync(int id)
+        public async Task<ExperienciePopulationDTO> GetExperiencePopulationByIdAsync(int id)
         {
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener una población de experiencia con ID inválido: {PopulationId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la población de experiencia debe ser mayor que cero");
+                throw new Utilities.Exeptions.ValidationException("id", "El ID de la población de experiencia debe ser mayor que cero");
             }
 
             try
@@ -54,11 +59,10 @@ namespace Business
                     throw new EntityNotFoundException("ExperiencePopulation", id);
                 }
 
-                return new ExperiencePopulationDto
-                {
-                    Id = population.Id,
-                   
-                };
+
+                return MapToDTO(population);
+
+
             }
             catch (Exception ex)
             {
@@ -68,45 +72,84 @@ namespace Business
         }
 
         // Método para crear una población de experiencia desde un DTO
-        public async Task<ExperiencePopulationDto> CreateExperiencePopulationAsync(ExperiencePopulationDto populationDto)
+        public async Task<ExperienciePopulationDTO> CreateExperiencePopulationAsync(ExperienciePopulationDTO populationDTO)
         {
             try
             {
-                ValidateExperiencePopulation(populationDto);
+                ValidateExperiencePopulation(populationDTO);
 
-                var population = new ExperiencePopulation
-                {
-                  
-                };
+
+                var population = MapToEntity(populationDTO);
 
                 var createdPopulation = await _experiencePopulationData.CreateAsync(population);
 
-                return new ExperiencePopulationDto
-                {
-                    Id = createdPopulation.Id,
-                  
-                };
+                return MapToDTO(createdPopulation);
+
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear una nueva población de experiencia: {PopulationName}", populationDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear una nueva población de experiencia: {PopulationName}", populationDTO?.PopulationGradeName ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear la población de experiencia", ex);
             }
         }
 
         // Método para validar el DTO
-        private void ValidateExperiencePopulation(ExperiencePopulationDto populationDto)
+        private void ValidateExperiencePopulation(ExperienciePopulationDTO populationDto)
         {
             if (populationDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto población de experiencia no puede ser nulo");
+                throw new Utilities.Exeptions.ValidationException("El objeto población de experiencia no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(populationDto.Name))
+            if (string.IsNullOrWhiteSpace(populationDto.ExperiencieName))
             {
                 _logger.LogWarning("Se intentó crear/actualizar una población de experiencia con Name vacío");
-                throw new Utilities.Exceptions.ValidationException("Name", "El Name de la población de experiencia es obligatorio");
+                throw new Utilities.Exeptions.ValidationException("Name", "El Name de la población de experiencia es obligatorio");
             }
+        }
+
+
+        // Método para mapear una entidad a un DTO
+        
+        private ExperienciePopulationDTO MapToDTO(ExperiencePopulation population)
+        {
+            return new ExperienciePopulationDTO
+            {
+                Id = population.Id,
+               ExperiencieId = population.ExperiencieId,
+                PopulationGradeId = population.PopulationGradeId,
+                
+            };
+        }
+
+        // Metodo para mapear de DTO a entidad
+
+        private ExperiencePopulation MapToEntity(ExperienciePopulationDTO populationDto)
+        {
+            return new ExperiencePopulation
+            {
+                Id = populationDto.Id,
+                ExperiencieId = populationDto.ExperiencieId,
+                PopulationGradeId = populationDto.PopulationGradeId,
+             
+            };
+        }
+
+        // Método para mapear una lista de entidades a una lista de DTOs
+        private IEnumerable<ExperienciePopulationDTO> MapToDTOList(IEnumerable<ExperiencePopulation> populations)
+        {      
+            var populationDtos = new List<ExperienciePopulationDTO>();
+
+            foreach (var population in populations)
+            {
+                populationDtos.Add(MapToDTO(population));
+            }
+            return populationDtos;
+
+
+
+
         }
     }
 }
