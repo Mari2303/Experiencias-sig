@@ -9,14 +9,14 @@ namespace Data
  public   class VerificationData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<Verification> _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public VerificationData(ApplicationDbContext context, ILogger logger)
+        public VerificationData(ApplicationDbContext context, ILogger<Verification> logger)
         {
             _context = context;
             _logger = logger;

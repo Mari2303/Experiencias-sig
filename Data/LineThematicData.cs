@@ -9,14 +9,14 @@ namespace Data
  public   class LineThematicData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<LineThematic> _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public LineThematicData(ApplicationDbContext context, ILogger logger)
+        public LineThematicData(ApplicationDbContext context, ILogger<LineThematic> logger)
         {
             _context = context;
             _logger = logger;

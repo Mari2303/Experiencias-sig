@@ -9,14 +9,14 @@ namespace Data
   public  class PopulationGradeData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<PopulationGrade>       _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public PopulationGradeData(ApplicationDbContext context, ILogger logger)
+        public PopulationGradeData(ApplicationDbContext context, ILogger<PopulationGrade> logger)
         {
             _context = context;
             _logger = logger;

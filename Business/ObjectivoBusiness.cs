@@ -14,9 +14,9 @@ namespace Business
     public class ObjectiveBusiness
     {
         private readonly ObjectiveData _objectiveData;
-        private readonly ILogger _logger;
+        private readonly ILogger<Objective> _logger;
 
-        public ObjectiveBusiness(ObjectiveData objectiveData, ILogger logger)
+        public ObjectiveBusiness(ObjectiveData objectiveData, ILogger<Objective> logger)
         {
             _objectiveData = objectiveData;
             _logger = logger;

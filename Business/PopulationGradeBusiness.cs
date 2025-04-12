@@ -13,9 +13,9 @@ namespace Business
     public class PopulationGradeBusiness
     {
         private readonly PopulationGradeData _populationGradeData;
-        private readonly ILogger _logger;
+        private readonly ILogger<PopulationGrade> _logger;
 
-        public PopulationGradeBusiness(PopulationGradeData populationGradeData, ILogger logger)
+        public PopulationGradeBusiness(PopulationGradeData populationGradeData, ILogger<PopulationGrade> logger)
         {
             _populationGradeData = populationGradeData;
             _logger = logger;

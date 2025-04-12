@@ -13,9 +13,9 @@ namespace Business
     public class HistoryExperienceBusiness
     {
         private readonly HistoryExperienceData _historyExperienceData;
-        private readonly ILogger _logger;
+        private readonly ILogger<HistoryExperience> _logger;
 
-        public HistoryExperienceBusiness(HistoryExperienceData historyExperienceData, ILogger logger)
+        public HistoryExperienceBusiness(HistoryExperienceData historyExperienceData, ILogger<HistoryExperience> logger)
         {
             _historyExperienceData = historyExperienceData;
             _logger = logger;

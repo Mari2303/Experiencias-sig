@@ -13,9 +13,9 @@ namespace Business
     public class GradeBusiness
     {
         private readonly GradeData _gradeData;
-        private readonly ILogger _logger;
+        private readonly ILogger<Grade> _logger;
 
-        public GradeBusiness(GradeData gradeData, ILogger logger)
+        public GradeBusiness(GradeData gradeData, ILogger<Grade> logger)
         {
             _gradeData = gradeData;
             _logger = logger;

@@ -13,9 +13,9 @@ using Microsoft.Extensions.Logging;
 public class StateBusiness
 {
     private readonly StateData _stateData;
-    private readonly ILogger _logger;
+    private readonly ILogger<State> _logger;
 
-    public StateBusiness(StateData stateData, ILogger logger)
+    public StateBusiness(StateData stateData, ILogger<State> logger)
     {
         _stateData = stateData;
         _logger = logger;

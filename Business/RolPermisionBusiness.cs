@@ -13,9 +13,9 @@ namespace Business
     public class RolPermisionBusiness
     {
         private readonly RolPermissionData  _rolPermisionData;
-        private readonly ILogger _logger;
+        private readonly ILogger<RolPermission> _logger;
 
-        public RolPermisionBusiness(RolPermissionData rolPermisionData, ILogger logger)
+        public RolPermisionBusiness(RolPermissionData rolPermisionData, ILogger<RolPermission> logger)
         {
             _rolPermisionData = rolPermisionData;
             _logger = logger;

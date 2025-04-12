@@ -14,9 +14,9 @@ namespace Business
     public class LineThematicBusiness
     {
         private readonly LineThematicData _lineThematicData;
-        private readonly ILogger _logger;
+        private readonly ILogger<LineThematic> _logger;
 
-        public LineThematicBusiness(LineThematicData lineThematicData, ILogger logger)
+        public LineThematicBusiness(LineThematicData lineThematicData, ILogger<LineThematic> logger)
         {
             _lineThematicData = lineThematicData;
             _logger = logger;

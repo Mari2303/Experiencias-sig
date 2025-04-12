@@ -13,9 +13,9 @@ namespace Business
     public class InstitucionBusiness
     {
         private readonly InstitucionData _institucionData;
-        private readonly ILogger _logger;
+        private readonly ILogger<Institucion> _logger;
 
-        public InstitucionBusiness(InstitucionData institucionData, ILogger logger)
+        public InstitucionBusiness(InstitucionData institucionData, ILogger<Institucion> logger)
         {
             _institucionData = institucionData;
             _logger = logger;

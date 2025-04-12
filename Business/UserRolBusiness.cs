@@ -16,9 +16,9 @@ namespace Business
     public class UserRolBusiness
     {
         private readonly UserRolData _userRolData;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserRol> _logger;
 
-        public UserRolBusiness(UserRolData userRolData, ILogger logger)
+        public UserRolBusiness(UserRolData userRolData, ILogger<UserRol> logger)
         {
             _userRolData = userRolData;
             _logger = logger;
