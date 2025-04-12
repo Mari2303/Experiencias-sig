@@ -24,7 +24,7 @@ namespace Business
         }
 
         // Método para obtener todos los roles como DTOs
-        public async Task<IEnumerable<RolDTO>> GetAllRolesAsync()
+        public async Task<IEnumerable<RolDTO>> GetAllRolAsync()
         {
             try
             {
