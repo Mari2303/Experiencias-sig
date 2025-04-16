@@ -1545,7 +1545,7 @@
     </edmx:Options>
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="2193804cac444c92bffe46c188414224" Name="Diagram1" ZoomLevel="95">
+      <Diagram DiagramId="2193804cac444c92bffe46c188414224" Name="Diagram1" ZoomLevel="59">
         <EntityTypeShape EntityType="Model1.User" Width="1.5" PointX="7" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="Model1.Rol" Width="1.5" PointX="14" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model1.RolPermission" Width="1.5" PointX="16.875" PointY="0.625" IsExpanded="true" />
