@@ -47,10 +47,10 @@ namespace Data
         }
 
         ///<summary>
-        ///Crea un nuevo rol en la base de datos.
+        ///Crea un nuevo  base de datos.
         ///</summary>
-        ///<param name="evaluationCriteria">Instancia del rol a crear</param>
-        ///<returns>El rol creado</returns>
+        ///<param name="evaluationCriteria">Instanci crear</param>
+        ///<returns>El creado</returns>
 
         public async Task<EvaluationCriteria> CreateAsync(EvaluationCriteria evaluationCriteria)
         {
