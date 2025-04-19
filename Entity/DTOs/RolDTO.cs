@@ -9,9 +9,9 @@ namespace Entity.Model
     public class RolDTO
     {
         public int Id { get; set; }
-        public string typeRol { get; set; }
-        public string Name { get; set; }
-        public  bool Active { get; set; }
-
+        public string typeRol { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+       
+        public bool Active { get; set; }
     }
 }

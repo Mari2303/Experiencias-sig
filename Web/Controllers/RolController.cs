@@ -118,5 +118,61 @@ namespace Web.Controllers
             }
 
         }
+
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+       
+        public async Task<IActionResult> PatchRol(int id, [FromBody] RolDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _RolBusiness.RolAsync(id, dto.Name, dto.typeRol, dto.Active);
+                if (!updated)
+                    return NotFound(new { message = "Rol no encontrado" });
+
+                return Ok(new { message = "Rol actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Rol no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchRol");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

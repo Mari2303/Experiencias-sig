@@ -120,6 +120,31 @@ namespace Data
         }
 
 
+        public async Task<bool> RolAsync(int id, string name, string typeRol, bool active)
+        {
+            try
+            {
+                var rol = await _context.Set<Rol>().FindAsync(id);
+                if (rol == null)
+                    return false;
+
+                rol.Name = name;
+                rol.typeRol = typeRol;
+                rol.Active = active;
+
+                _context.Entry(rol).Property(r => r.Name).IsModified = true;
+                _context.Entry(rol).Property(r => r.typeRol).IsModified = true;
+                _context.Entry(rol).Property(r => r.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar patch al rol con ID {id}");
+                return false;
+            }
+        }
 
 
 

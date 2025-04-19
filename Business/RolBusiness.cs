@@ -115,7 +115,35 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
             }
         }
-        
+
+
+
+
+        // Metodo para modificar un rol 
+
+
+        public async Task<bool> RolAsync(int id, string name, string typeRol, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre del rol es obligatorio.");
+
+            var result = await _rolData.RolAsync(id, name, typeRol, active);
+
+            if (!result)
+                throw new EntityNotFoundException("Rol", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
 
 
 
@@ -130,7 +158,7 @@ namespace Business
                 Id = rol.Id,
                 Name = rol.Name,
                 typeRol = rol.typeRol, // Si existe en la entidad
-                Active = rol.Active
+                Active = rol.Active // Si existe en la entidad
             };
         }
 
@@ -142,7 +170,7 @@ namespace Business
                 Id = rolDTO.Id,
                 Name = rolDTO.Name,
                 typeRol = rolDTO.typeRol, // Si existe en la entidad
-                Active = rolDTO.Active
+                Active = rolDTO.Active // Si existe en la entidad
             };
         }
 
