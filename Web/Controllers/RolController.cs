@@ -160,12 +160,72 @@ namespace Web.Controllers
 
 
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+
+        public async Task<IActionResult> PutRol(int id, [FromBody] RolDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _RolBusiness.PutRolAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Rol no encontrado" });
+
+                return Ok(new { message = "Rol actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Rol no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutRol");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
 
 
 
 
 
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+
+        public async Task<IActionResult> DeleteRol(int id)
+        {
+            try
+            {
+                await _RolBusiness.DeleteRolAsync(id);
+                return NoContent(); // 204 si todo salió bien
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar (lógicamente) el rol");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
 
 
 

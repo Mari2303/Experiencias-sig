@@ -139,10 +139,38 @@ namespace Business
         }
 
 
+        // Metodo put 
+
+        public async Task<bool> PutRolAsync(int id, RolDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Rol", "Datos de rol inválidos.");
+
+            var result = await _rolData.PutRolAsync(id, dto.Name, dto.typeRol, dto.Active);
+
+            if (!result)
+                throw new EntityNotFoundException("Rol", id);
+
+            return true;
+        }
 
 
+        //metodo delete logico
+        public async Task<bool> DeleteRolAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
+            var deleted = await _rolData.DeleteAsync(id);
 
+            if (!deleted)
+                throw new EntityNotFoundException("Rol", id);
+
+            return true;
+        }
 
 
 

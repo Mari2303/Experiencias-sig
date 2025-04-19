@@ -106,18 +106,19 @@ namespace Data
                 if (rol == null)
                     return false;
 
-                _context.Set<Rol>().Remove(rol);
+                rol.Active = false;
+                _context.Entry(rol).Property(r => r.Active).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
+                _logger.LogError(ex, $"Error al eliminar (lógicamente) el rol con ID {id}");
+                return false;
             }
         }
+
 
 
         public async Task<bool> RolAsync(int id, string name, string typeRol, bool active)
@@ -145,6 +146,44 @@ namespace Data
                 return false;
             }
         }
+
+
+
+
+
+        public async Task<bool> PutRolAsync(int id, string name, string typeRol, bool active)
+        {
+            try
+            {
+                var rol = await _context.Rol.FindAsync(id);
+                if (rol == null)
+                    return false;
+
+                rol.Name = name;
+                rol.typeRol = typeRol;
+                rol.Active = active;
+
+                _context.Entry(rol).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar el rol con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 
