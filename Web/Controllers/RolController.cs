@@ -122,13 +122,12 @@ namespace Web.Controllers
 
 
 
-
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-       
+
         public async Task<IActionResult> PatchRol(int id, [FromBody] RolDTO dto)
         {
             if (!ModelState.IsValid)
@@ -193,6 +192,7 @@ namespace Web.Controllers
                 return StatusCode(500, new { error = "Error interno del servidor" });
             }
         }
+
 
 
 

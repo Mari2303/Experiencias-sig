@@ -119,5 +119,85 @@ namespace WebApplication1
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchCriteria(int id, [FromBody] CriteriaDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _criteriaBusiness.PatchCriteriaNameAsync(id, dto.Name);
+                if (!updated)
+                    return NotFound(new { message = "Criterio no encontrado" });
+
+                return Ok(new { message = "Criterio actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Criterio no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchCriteria");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutCriteria(int id, [FromBody] CriteriaDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _criteriaBusiness.PutCriteriaAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Criterio no encontrado" });
+
+                return Ok(new { message = "Criterio actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Criterio no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutCriteria");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
     }
 }

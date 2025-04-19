@@ -114,6 +114,78 @@ namespace Data
                 }
             }
         }
+
+
+
+
+
+        public async Task<bool> PatchCriteriaNameAsync(int id, string name)
+        {
+            try
+            {
+                var criteria = await _context.Set<Criteria>().FindAsync(id);
+                if (criteria == null)
+                    return false;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    criteria.Name = name;
+                    _context.Entry(criteria).Property(c => c.Name).IsModified = true;
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar patch a Criteria con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+        public async Task<bool> PutCriteriaAsync(int id, Criteria updatedCriteria)
+        {
+            try
+            {
+                var criteria = await _context.Set<Criteria>().FindAsync(id);
+                if (criteria == null)
+                    return false;
+
+                criteria.Name = updatedCriteria.Name;
+                _context.Entry(criteria).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar Criteria con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 

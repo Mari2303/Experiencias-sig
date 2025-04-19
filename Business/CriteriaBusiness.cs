@@ -116,8 +116,55 @@ namespace Business
             }
         }
 
-        // Método para mapear un DTO a una entidad
-        private CriteriaDTO MapToDTO(Criteria criteria)
+
+
+        // Metodo patch 
+
+        public async Task<bool> PatchCriteriaNameAsync(int id, string name)
+        {
+            if (id <= 0)
+                throw new Utilities.Exeptions.ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new Utilities.Exeptions.ValidationException("name", "El nombre no puede estar vacío.");
+
+            var criteria = await _criteriaData.GetByIdAsync(id);
+            if (criteria == null)
+                throw new EntityNotFoundException("Criteria", id);
+
+            criteria.Name = name;
+
+            return await _criteriaData.UpdateAsync(criteria);
+        }
+
+
+
+
+
+
+        // Metodo put
+        public async Task<bool> PutCriteriaAsync(int id, Criteria updatedCriteria)
+        {
+            if (id != updatedCriteria.Id)
+                throw new Utilities.Exeptions.ValidationException("id", "El ID de la URL y del cuerpo deben coincidir.");
+
+            var existing = await _criteriaData.GetByIdAsync(id);
+            if (existing == null )
+                throw new EntityNotFoundException("Criteria", id);
+
+            // Aquí se reemplaza completamente
+            existing.Name = updatedCriteria.Name;
+
+            return await _criteriaData.UpdateAsync(existing);
+        }
+  
+
+
+
+
+
+// Método para mapear un DTO a una entidad
+private CriteriaDTO MapToDTO(Criteria criteria)
         {
             return new CriteriaDTO
             {
