@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -143,28 +144,34 @@ namespace Business
 
 
         // Metodo put
-        public async Task<bool> PutCriteriaAsync(int id, Criteria updatedCriteria)
+        public async Task<bool> PutCriteriaAsync(int id, CriteriaDTO dto)
         {
-            if (id != updatedCriteria.Id)
-                throw new Utilities.Exeptions.ValidationException("id", "El ID de la URL y del cuerpo deben coincidir.");
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
-            var existing = await _criteriaData.GetByIdAsync(id);
-            if (existing == null )
+            if (dto == null || string.IsNullOrWhiteSpace(dto.Name))
+                throw new ValidationException("Criteria", "El nombre del criterio es obligatorio.");
+
+            var result = await _criteriaData.UpdateAsync(new Criteria
+            {
+                Id = id,
+                Name = dto.Name
+            });
+
+            if (!result)
                 throw new EntityNotFoundException("Criteria", id);
 
-            // Aquí se reemplaza completamente
-            existing.Name = updatedCriteria.Name;
-
-            return await _criteriaData.UpdateAsync(existing);
+            return true;
         }
-  
 
 
 
 
 
-// Método para mapear un DTO a una entidad
-private CriteriaDTO MapToDTO(Criteria criteria)
+
+
+        // Método para mapear un DTO a una entidad
+        private CriteriaDTO MapToDTO(Criteria criteria)
         {
             return new CriteriaDTO
             {

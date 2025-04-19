@@ -112,6 +112,75 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Title", "El Title del documento es obligatorio");
             }
         }
+
+
+        // METODO PATCH 
+        public async Task<bool> PatchDocumentAsync(int id, string name, string url)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(url))
+                throw new ValidationException("document", "Debe proporcionar al menos un atributo para actualizar.");
+
+            var existingDocument = await _documentData.GetByIdAsync(id);
+            if (existingDocument == null)
+                throw new EntityNotFoundException("Document", id);
+
+            return await _documentData.PatchDocumentAsync(id, name, url);
+        }
+
+
+        // METODO PUT 
+
+        public async Task<bool> PutDocumentAsync(int id, DocumentDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Document", "Datos del documento inválidos.");
+
+            if (string.IsNullOrWhiteSpace(dto.Name))
+                throw new ValidationException("Name", "El nombre no puede estar vacío.");
+
+            if (string.IsNullOrWhiteSpace(dto.Url))
+                throw new ValidationException("Url", "La URL no puede estar vacía.");
+
+            var result = await _documentData.UpdateAsync(new Document
+            {
+                Id = id,
+                Name = dto.Name,
+                Url = dto.Url
+            });
+
+            if (!result)
+                throw new EntityNotFoundException("Document", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Metodo para mapear de document a documentDTO 
 
         private DocumentDTO MapToDTO(Document document)

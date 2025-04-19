@@ -114,5 +114,76 @@ namespace Data
                 }
             }
         }
+
+
+
+        public async Task<bool> PatchDocumentAsync(int id, string name, string url)
+        {
+            try
+            {
+                var document = await _context.Set<Document>().FindAsync(id);
+                if (document == null)
+                    return false;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    document.Name = name;
+                    _context.Entry(document).Property(d => d.Name).IsModified = true;
+                }
+
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    document.Url = url;
+                    _context.Entry(document).Property(d => d.Url).IsModified = true;
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar patch al documento con ID {id}");
+                return false;
+            }
+        }
+
+
+
+        public async Task<bool> PutDocumentAsync(int id, string name, string url)
+        {
+            try
+            {
+                var document = await _context.Set<Document>().FindAsync(id);
+                if (document == null)
+                    return false;
+
+                document.Name = name;
+                document.Url = url;
+
+                _context.Entry(document).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar el documento con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

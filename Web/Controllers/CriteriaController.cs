@@ -1,6 +1,7 @@
 ﻿using Business;
 using Data;
 using Entity.DTOs;
+using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Exeptions;
 
