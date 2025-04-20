@@ -122,6 +122,111 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchGrade(int id, [FromBody] GradeDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _GradeBusiness.GradeAsync(id, dto.Name, dto.Active);
+                if (!updated)
+                    return NotFound(new { message = "Grade no encontrada" });
+
+                return Ok(new { message = "Grade actualizada correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Grade no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchGrade");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutGrade(int id, [FromBody] GradeDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _GradeBusiness.PutGradeAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Grade no encontrada" });
+
+                return Ok(new { message = "Grade actualizada correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Grade no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutGrade");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteGrade(int id)
+        {
+            try
+            {
+                await _GradeBusiness.DeleteGradeAsync(id);
+                return NoContent(); // 204 si todo salió bien
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar (lógicamente) la grade");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
     }
 }
 

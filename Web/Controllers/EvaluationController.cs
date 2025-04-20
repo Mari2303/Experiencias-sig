@@ -120,5 +120,80 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutEvaluationAsync(int id, [FromBody] EvaluationDTO evaluationDTO)
+        {
+            if (id <= 0 || evaluationDTO == null)
+            {
+                return BadRequest("ID o datos de evaluación inválidos");
+            }
+
+            try
+            {
+                var updatedEvaluation = await _evaluationBusiness.PutEvaluationAsync(id, evaluationDTO);
+
+                if (updatedEvaluation == null)
+                {
+                    return NotFound($"No se encontró evaluación con ID {id}");
+                }
+
+                return Ok(updatedEvaluation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar la evaluación");
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchEvaluationAsync(int id, [FromBody] EvaluationDTO evaluationDTO)
+        {
+            if (id <= 0 || evaluationDTO == null)
+            {
+                return BadRequest("ID o datos de evaluación inválidos");
+            }
+
+            try
+            {
+                var partialUpdateEvaluation = await _evaluationBusiness.PatchEvaluationAsync(id, evaluationDTO);
+
+                if (partialUpdateEvaluation == null)
+                {
+                    return NotFound($"No se encontró evaluación con ID {id}");
+                }
+
+                return Ok(partialUpdateEvaluation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente la evaluación");
+                return StatusCode(500, "Error interno del servidor");
+            }
+        }
+
+
+
+
+
+
+
+
+
     }
 }

@@ -2,6 +2,7 @@
 using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Utilities.Exeptions;
 
 namespace Data
 {
@@ -114,5 +115,100 @@ namespace Data
                 }
             }
         }
+
+
+        public async Task<Evaluation> EaluationPutAsync(Evaluation evaluation)
+        {
+            try
+            {
+                var existingEvaluation = await _context.Evaluation.FindAsync(evaluation.Id);
+                if (existingEvaluation == null)
+                    return null;
+
+                // Actualiza todos los campos de la evaluación
+                existingEvaluation.TypeEvaluation = evaluation.TypeEvaluation;
+                existingEvaluation.Comments = evaluation.Comments;
+                existingEvaluation.DateTime = evaluation.DateTime;
+                existingEvaluation.UserId = evaluation.UserId;
+                existingEvaluation.ExperiencieId = evaluation.ExperiencieId;
+                existingEvaluation.StateId = evaluation.StateId;
+
+                // Guardar cambios
+                _context.Evaluation.Update(existingEvaluation);
+                await _context.SaveChangesAsync();
+
+                return existingEvaluation;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar la evaluación");
+                throw new ExternalServiceException("Base de datos", "Error al actualizar la evaluación", ex);
+            }
+        }
+
+
+
+
+
+        public async Task<Evaluation> UpdatePartialAsync(int id, Evaluation evaluation)
+        {
+            try
+            {
+                var existingEvaluation = await _context.Evaluation.FindAsync(id);
+                if (existingEvaluation == null)
+                    return null;
+
+                // Actualización parcial: solo se actualizan los campos no nulos
+                if (!string.IsNullOrEmpty(evaluation.TypeEvaluation))
+                    existingEvaluation.TypeEvaluation = evaluation.TypeEvaluation;
+
+                if (!string.IsNullOrEmpty(evaluation.Comments))
+                    existingEvaluation.Comments = evaluation.Comments;
+
+                if (evaluation.DateTime != default)
+                    existingEvaluation.DateTime = evaluation.DateTime;
+
+                if (evaluation.UserId != 0)
+                    existingEvaluation.UserId = evaluation.UserId;
+
+                if (evaluation.ExperiencieId != 0)
+                    existingEvaluation.ExperiencieId = evaluation.ExperiencieId;
+
+                if (evaluation.StateId != 0)
+                    existingEvaluation.StateId = evaluation.StateId;
+
+                // Guardar cambios
+                _context.Evaluation.Update(existingEvaluation);
+                await _context.SaveChangesAsync();
+
+                return existingEvaluation;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente la evaluación");
+                throw new ExternalServiceException("Base de datos", "Error al actualizar parcialmente la evaluación", ex);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

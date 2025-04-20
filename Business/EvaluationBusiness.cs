@@ -117,7 +117,96 @@ namespace Business
 
 
 
-        
+        public async Task<EvaluationDTO> PutEvaluationAsync(int id, EvaluationDTO evaluationDTO)
+        {
+            try
+            {
+                var existingEvaluation = await _evaluationData.GetByIdAsync(id);
+                if (existingEvaluation == null)
+                {
+                    _logger.LogWarning($"Evaluación con ID {id} no encontrada");
+                    return null;
+                }
+
+                // Actualiza los valores completos
+                existingEvaluation.TypeEvaluation = evaluationDTO.TypeEvaluation;
+                existingEvaluation.Comments = evaluationDTO.Comments;
+                existingEvaluation.DateTime = evaluationDTO.DateTime;
+                existingEvaluation.UserId = evaluationDTO.UserId;
+                existingEvaluation.ExperiencieId = evaluationDTO.ExperiencieId;
+                existingEvaluation.StateId = evaluationDTO.StateId;
+
+                await _evaluationData.UpdateAsync(existingEvaluation);
+
+                return MapToDTO(existingEvaluation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar la evaluación");
+                throw new ExternalServiceException("Base de datos", "Error al actualizar la evaluación", ex);
+            }
+        }
+
+
+
+
+
+
+        public async Task<EvaluationDTO> PatchEvaluationAsync(int id, EvaluationDTO evaluationDTO)
+        {
+            try
+            {
+                var existingEvaluation = await _evaluationData.GetByIdAsync(id);
+                if (existingEvaluation == null)
+                {
+                    _logger.LogWarning($"Evaluación con ID {id} no encontrada");
+                    return null;
+                }
+
+                // Actualización parcial: solo se actualizan los campos no nulos del DTO
+                if (!string.IsNullOrEmpty(evaluationDTO.TypeEvaluation))
+                    existingEvaluation.TypeEvaluation = evaluationDTO.TypeEvaluation;
+
+                if (!string.IsNullOrEmpty(evaluationDTO.Comments))
+                    existingEvaluation.Comments = evaluationDTO.Comments;
+
+                if (evaluationDTO.DateTime != null)
+                    existingEvaluation.DateTime = evaluationDTO.DateTime;
+
+                if (evaluationDTO.UserId != 0)
+                    existingEvaluation.UserId = evaluationDTO.UserId;
+
+                if (evaluationDTO.ExperiencieId != 0)
+                    existingEvaluation.ExperiencieId = evaluationDTO.ExperiencieId;
+
+                if (evaluationDTO.StateId != 0)
+                    existingEvaluation.StateId = evaluationDTO.StateId;
+
+                await _evaluationData.UpdateAsync(existingEvaluation);
+
+                return MapToDTO(existingEvaluation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente la evaluación");
+                throw new ExternalServiceException("Base de datos", "Error al actualizar la evaluación", ex);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -135,7 +224,14 @@ namespace Business
                 DateTime = evaluation.DateTime,
                 UserId = evaluation.UserId,
                 ExperiencieId = evaluation.ExperiencieId,
-                StateId = evaluation.StateId
+                StateId = evaluation.StateId,
+
+
+                // Estos vienen de las propiedades de navegación
+                UserName = evaluation.User?.Name,
+                ExperiencieName = evaluation.Experiencie?.NameExperience,
+                StateName = evaluation.State?.Name
+                
 
             };
         }

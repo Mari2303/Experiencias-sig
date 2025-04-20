@@ -1,9 +1,11 @@
 using Data;
 using Entity.DTOs;
 using Entity.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -117,6 +119,72 @@ namespace Business
            
         }
 
+
+
+        // Método PATCH para modificar parcialmente una grade
+        public async Task<bool> GradeAsync(int id, string name, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre de la grade es obligatorio.");
+
+            var result = await _gradeData.PatchGradeAsync(id, name, active);
+
+            if (!result)
+                throw new EntityNotFoundException("Grade", id);
+
+            return true;
+        }
+
+        // Método PUT para modificar completamente una grade
+        public async Task<bool> PutGradeAsync(int id, GradeDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Grade", "Datos de grade inválidos.");
+
+            var result = await _gradeData.PutGradeAsync(id, dto.Name, dto.Active);
+
+            if (!result)
+                throw new EntityNotFoundException("Grade", id);
+
+            return true;
+        }
+
+        // Método DELETE lógico
+        public async Task<bool> DeleteGradeAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _gradeData.DeleteAsync(id);
+
+            if (!deleted)
+                throw new EntityNotFoundException("Grade", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         //  Metodo para mapear de entidad a DTO 
 
         private GradeDTO MapToDTO(Grade grade)
@@ -125,7 +193,7 @@ namespace Business
             {
                 Id = grade.Id,
                 Name = grade.Name,
-                
+                Active = grade.Active
             };
         }
 
@@ -136,6 +204,7 @@ namespace Business
             {
                 Id = gradeDTO.Id,
                 Name = gradeDTO.Name,
+                Active = gradeDTO.Active
               
             };
         }

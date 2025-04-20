@@ -103,17 +103,83 @@ namespace Data
                 if (grade == null)
                     return false;
 
-                _context.Set<Grade>().Remove(grade);
+                grade.Active = false;
+                _context.Entry(grade).Property(g => g.Active).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
+                _logger.LogError(ex, $"Error al eliminar (lógicamente) la grade con ID {id}");
+                return false;
             }
         }
+
+
+
+        public async Task<bool> PatchGradeAsync(int id, string name, bool active)
+        {
+            try
+            {
+                var grade = await _context.Set<Grade>().FindAsync(id);
+                if (grade == null)
+                    return false;
+
+                grade.Name = name;
+                grade.Active = active;
+
+                _context.Entry(grade).Property(g => g.Name).IsModified = true;
+                _context.Entry(grade).Property(g => g.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar patch a la grade con ID {id}");
+                return false;
+            }
+        }
+
+
+
+        public async Task<bool> PutGradeAsync(int id, string name, bool active)
+        {
+            try
+            {
+                var grade = await _context.Grade.FindAsync(id);
+                if (grade == null)
+                    return false;
+
+                grade.Name = name;
+                grade.Active = active;
+
+                _context.Entry(grade).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar la grade con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

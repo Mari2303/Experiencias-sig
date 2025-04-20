@@ -9,16 +9,16 @@ namespace Entity.Model
   public  class Evaluation
     {
         public int Id { get; set; }
-        public string TypeEvaluation  { get; set; }
+        public string TypeEvaluation  { get; set; } = string.Empty;
 
-        public string Comments { get; set; }
+        public string Comments { get; set; } = string.Empty;
 
         public DateTime DateTime { get; set; }
 
-        public int UserId { get; set; }
+        public int UserId { get; set; } 
         public User User { get; set; }
 
-        public int StateId { get; set; }
+        public int StateId { get; set; } 
         public State State { get; set; }
 
         public int ExperiencieId { get; set; }

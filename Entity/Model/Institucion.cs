@@ -10,17 +10,19 @@ public class Institucion
     {
         public int Id { get; set; }
     
-        public string Name { get; set; } 
+        public string Name { get; set; } = string.Empty;
 
-        public string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
 
-        public string Phone { get; set; }
+        public string Phone { get; set; }  = string.Empty;
 
-        public string EmailInstitution { get; set; }
+        public string EmailInstitution { get; set; } = string.Empty;
 
-        public string Department { get; set; }
+        public string Department { get; set; } = string.Empty;
 
-        public string Commune { get; set; }       
+        public string Commune { get; set; } = string.Empty;
+        
+        public bool Active { get; set; }
         public DateTime DeleteAt { get; set; }
         public DateTime CreateAt { get; set; }
 
