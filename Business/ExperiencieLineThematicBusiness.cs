@@ -151,7 +151,7 @@ namespace Business
             if (lineThematicId <= 0)
                 throw new ValidationException("lineThematicId", "El ID de la línea temática es obligatorio.");
 
-            var result = await _ExperiencieLineThematicData.PutExperiencieLineThematicAsync(id, experiencieId, lineThematicId);
+            var result = await _ExperiencieLineThematicData.PutExperienceLineThematicAsync(id, experiencieId, lineThematicId);
 
             if (!result)
                 throw new EntityNotFoundException("ExperiencieLineThematic", id);

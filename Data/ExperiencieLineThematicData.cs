@@ -151,7 +151,7 @@ namespace Data
 
 
 
-        public async Task<bool> PutExperiencieLineThematicAsync(int id, int experiencieId, int lineThematicId)
+        public async Task<bool> PutExperienceLineThematicAsync(int id, int experiencieId, int lineThematicId)
         {
             try
             {

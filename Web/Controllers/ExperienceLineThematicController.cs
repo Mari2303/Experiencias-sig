@@ -133,7 +133,7 @@ namespace Web
 
             try
             {
-                var updated = await _ExperienceLineThematicBusiness.PutExperiencieLineThematicAsync(id, dto);
+                var updated = await _ExperienceLineThematicBusiness.PutExperiencieLineThematicAsync(id, dto.ExperiencieId, dto.LineThematicId);
                 return Ok(new { message = "Actualizado correctamente", id });
             }
             catch (ValidationException ex)
@@ -150,6 +150,7 @@ namespace Web
                 return StatusCode(500, new { error = "Error interno del servidor" });
             }
         }
+
 
         [HttpPatch("{id}")]
         [ProducesResponseType(200)]
