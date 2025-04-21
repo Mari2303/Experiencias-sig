@@ -95,25 +95,103 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        // PATCH: Actualización parcial
+        public async Task<bool> UpdatePartialAsync(int id, InstitucionDTO dto)
         {
             try
             {
-                var Institucion = await _context.Set<Institucion>().FindAsync(id);
-                if (Institucion == null)
+                var institution = await _context.Institution.FindAsync(id);
+                if (institution == null)
                     return false;
 
-                _context.Set<Institucion>().Remove(Institucion);
+                institution.Name = dto.Name;
+                institution.Address = dto.Address;
+                institution.Phone = dto.Phone;
+                institution.EmailInstitution = dto.EmailInstitution;
+                institution.Department = dto.Department;
+                institution.Commune = dto.Commune;
+                institution.Active = dto.Active;
+
+
+                _context.Entry(institution).Property(x => x.Name).IsModified = true;
+                _context.Entry(institution).Property(x => x.Address).IsModified = true;
+                _context.Entry(institution).Property(x => x.Phone).IsModified = true;
+                _context.Entry(institution).Property(x => x.EmailInstitution).IsModified = true;
+                _context.Entry(institution).Property(x => x.Department).IsModified = true;
+                _context.Entry(institution).Property(x => x.Commune).IsModified = true;
+                _context.Entry(institution).Property(x => x.Active).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
+                _logger.LogError(ex, $"Error en PATCH de Institution con ID {id}");
+                return false;
             }
         }
+
+        // PUT: Actualización completa
+        public async Task<bool> UpdateFullAsync(int id, InstitucionDTO dto)
+        {
+            try
+            {
+                var institution = await _context.Institution.FindAsync(id);
+                if (institution == null)
+                    return false;
+
+                institution.Name = dto.Name;
+                institution.Address = dto.Address;
+                institution.Phone = dto.Phone;
+                institution.EmailInstitution = dto.EmailInstitution;
+                institution.Department = dto.Department;
+                institution.Commune = dto.Commune;
+                institution.Active = dto.Active;
+
+                _context.Entry(institution).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error en PUT de Institution con ID {id}");
+                return false;
+            }
+        }
+
+        // Eliminación lógica
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            try
+            {
+                var institution = await _context.Institution.FindAsync(id);
+                if (institution == null)
+                    return false;
+
+                // Asegúrate de que la entidad Institution tenga el campo "Active"
+                institution.Active = false;
+                _context.Entry(institution).Property(x => x.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar lógicamente la Institution con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
 }

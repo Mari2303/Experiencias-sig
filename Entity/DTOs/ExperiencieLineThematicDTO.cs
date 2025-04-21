@@ -11,8 +11,8 @@ namespace Entity.DTOs
         public int Id { get; set; }
        
         public int ExperiencieId { get; set; }
-       
-
+        public string ExperiencieName { get; set; } = string.Empty;
         public int LineThematicId { get; set; }
+        public string LineThematicName { get; set; } = string.Empty;
     }
 }

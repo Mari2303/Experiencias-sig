@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -112,15 +113,65 @@ namespace Business
             }
         }
 
+        
+
+
+
+
+
+        public async Task<bool> PutPopulationGradeAsync(int id, PopulationGradeDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("PopulationGrade", "Datos inválidos.");
+
+            return await _populationGradeData.PutPopulationGradeAsync(id, dto.Name, dto.Active)
+                ?? throw new EntityNotFoundException("PopulationGrade", id);
+        }
+
+        public async Task<bool> PatchPopulationGradeAsync(int id, string name, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre es obligatorio.");
+
+            return await _populationGradeData.PatchPopulationGradeAsync(id, name, active)
+                ?? throw new EntityNotFoundException("PopulationGrade", id);
+        }
+
+        public async Task<bool> DeletePopulationGradeAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _populationGradeData.DeletePopulationGradeAsync(id)
+                ?? throw new EntityNotFoundException("PopulationGrade", id);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         // Metodo para  mapear de entidad a DTO
-         
+
         private PopulationGradeDTO MapToDTO(PopulationGrade grade)
         {
             return new PopulationGradeDTO
             {
                 Id = grade.Id,
-                Name = grade.Name
+                Name = grade.Name,
+                Active = grade.Active
             };
         }
 
@@ -131,7 +182,8 @@ namespace Business
             return new PopulationGrade
             {
                 Id = gradeDTO.Id,
-                Name = gradeDTO.Name
+                Name = gradeDTO.Name,
+                Active = gradeDTO.Active
             };
         }
 

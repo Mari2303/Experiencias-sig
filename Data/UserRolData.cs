@@ -96,25 +96,37 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool?> PatchUserRolAsync(int id, int rolId, int userId)
         {
-            try
-            {
-                var userRol = await _context.Set<UserRol>().FindAsync(id);
-                if (userRol == null)
-                    return false;
+            var entity = await _context.UserRol.FindAsync(id);
+            if (entity == null)
+                return null;
 
-                _context.Set<UserRol>().Remove(userRol);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
-            }
+            entity.RolId = rolId;
+            entity.UserId = userId;
+
+            _context.Entry(entity).Property(e => e.RolId).IsModified = true;
+            _context.Entry(entity).Property(e => e.UserId).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool?> PutUserRolAsync(int id, int rolId, int userId)
+        {
+            var entity = await _context.UserRol.FindAsync(id);
+            if (entity == null)
+                return null;
+
+            entity.RolId = rolId;
+            entity.UserId = userId;
+
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }

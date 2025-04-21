@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -12,12 +13,12 @@ namespace Business
     /// </summary>
     public class HistoryExperienceBusiness
     {
-        private readonly HistoryExperienceData _historyExperienceData;
+        private readonly HistoryExperienceData _HistoryExperienceData;
         private readonly ILogger<HistoryExperience> _logger;
 
         public HistoryExperienceBusiness(HistoryExperienceData historyExperienceData, ILogger<HistoryExperience> logger)
         {
-            _historyExperienceData = historyExperienceData;
+            _HistoryExperienceData = historyExperienceData;
             _logger = logger;
         }
 
@@ -26,7 +27,7 @@ namespace Business
         {
             try
             {
-                var histories = await _historyExperienceData.GetAllAsync();
+                var histories = await _HistoryExperienceData.GetAllAsync();
                 
 
                 return MapToDTOList(histories);
@@ -51,7 +52,7 @@ namespace Business
 
             try
             {
-                var history = await _historyExperienceData.GetByIdAsync(id);
+                var history = await _HistoryExperienceData.GetByIdAsync(id);
                 if (history == null)
                 {
                     _logger.LogInformation("No se encontró ningún historial de experiencia con ID: {HistoryId}", id);
@@ -84,7 +85,7 @@ namespace Business
 
                 var history = MapToEntity(HistoryDTO);
 
-                var historyCreate = await _historyExperienceData.CreateAsync(history);
+                var historyCreate = await _HistoryExperienceData.CreateAsync(history);
 
                 return MapToDTO(historyCreate);
 
@@ -115,6 +116,42 @@ namespace Business
         }
 
 
+
+
+
+        public async Task<bool> PutHistoryExperienceAsync(int id, HistoryExperienceDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("HistoryExperience", "Datos inválidos.");
+
+            return await _HistoryExperienceData.PutHistoryExperienceAsync(id, dto)
+                ?? throw new EntityNotFoundException("HistoryExperience", id);
+        }
+
+        public async Task<bool> PatchHistoryExperienceAsync(int id, bool action, DateTime dateTime, string tableName, int experiencieId, int userId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _HistoryExperienceData.PatchHistoryExperienceAsync(id, action, dateTime, tableName, experiencieId, userId)
+                ?? throw new EntityNotFoundException("HistoryExperience", id);
+        }
+
+        public async Task<bool> DeleteHistoryExperienceAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _HistoryExperienceData.DeleteHistoryExperienceAsync(id)
+                ?? throw new EntityNotFoundException("HistoryExperience", id);
+        }
+
+
+
+
+
         // Método para mapear una lista de entidades a DTOs
         private HistoryExperienceDTO MapToDTO(HistoryExperience history)
         {
@@ -123,8 +160,10 @@ namespace Business
                 Id = history.Id,
                 DateTime = history.DateTime,
                 UserId = history.UserId,
+                UserName = history.UserName,
                 TableName = history.TableName,
                 ExperiencieId = history.ExperiencieId,
+                ExperiencieName = history.ExperiencieName,
                 Action = history.Action
             };
         }

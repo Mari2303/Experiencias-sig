@@ -122,5 +122,106 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchRolPermission(int id, [FromBody] RolPermissionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _RolPermissionBusiness.PatchRolPermissionAsync(id, dto.RolId, dto.PermissionId);
+                if (!updated)
+                    return NotFound(new { message = "RolPermission no encontrado" });
+
+                return Ok(new
+                {
+                    message = "RolPermission actualizado correctamente",
+                    id,
+                    rolId = dto.RolId,
+                    rolName = dto.RolName,
+                    permissionId = dto.PermissionId,
+                    permissionName = dto.PermissionName
+                });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "RolPermission no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchRolPermission");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutRolPermission(int id, [FromBody] RolPermissionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _RolPermissionBusiness.PutRolPermissionAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "RolPermission no encontrado" });
+
+                return Ok(new
+                {
+                    message = "RolPermission actualizado correctamente",
+                    id,
+                    rolId = dto.RolId,
+                    rolName = dto.RolName,
+                    permissionId = dto.PermissionId,
+                    permissionName = dto.PermissionName
+                });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "RolPermission no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutRolPermission");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

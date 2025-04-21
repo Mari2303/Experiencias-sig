@@ -1,4 +1,5 @@
 ﻿using Entity.Context;
+using Entity.DTOs;
 using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
- public   class HistoryExperienceData
+    public class HistoryExperienceData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<HistoryExperience> _logger;
@@ -95,25 +96,46 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool?> PutHistoryExperienceAsync(int id, HistoryExperienceDTO dto)
         {
-            try
-            {
-                var historyExperience = await _context.Set<HistoryExperience>().FindAsync(id);
-                if (historyExperience == null)
-                    return false;
+            var entity = await _context.HistoryExperience.FindAsync(id);
+            if (entity == null) return null;
 
-                _context.Set<HistoryExperience>().Remove(historyExperience);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
-            }
+            entity.Action = dto.Action;
+            entity.DateTime = dto.DateTime;
+            entity.TableName = dto.TableName;
+            entity.ExperiencieId = dto.ExperiencieId;
+            entity.UserId = dto.UserId;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool?> PatchHistoryExperienceAsync(int id, bool action, DateTime dateTime, string tableName, int experiencieId, int userId)
+        {
+            var entity = await _context.HistoryExperience.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Action = action;
+            entity.DateTime = dateTime;
+            entity.TableName = tableName;
+            entity.ExperiencieId = experiencieId;
+            entity.UserId = userId;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool?> DeleteHistoryExperienceAsync(int id)
+        {
+            var entity = await _context.HistoryExperience.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Action = false;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -114,7 +115,46 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del objetivo es obligatorio");
             }
         }
-    
+
+
+        public async Task<bool> PutObjectiveAsync(int id, ObjectiveDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("Objective", "Datos inválidos.");
+
+            return await _objectiveData.PutObjectiveAsync(
+                id, dto.ObjetiveDescription, dto.Innovation, dto.Results, dto.Sustainability, dto.ExperiencieId)
+                ?? throw new EntityNotFoundException("Objective", id);
+        }
+
+        public async Task<bool> PatchObjectiveAsync(int id, string objetiveDescription, string innovation, string results, string sustainability, int experiencieId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _objectiveData.PatchObjectiveAsync(id, objetiveDescription, innovation, results, sustainability, experiencieId)
+                ?? throw new EntityNotFoundException("Objective", id);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Metodo para mapear de entidad a DTO
 
         private ObjectiveDTO MapToDTO(Objective objective)
@@ -127,7 +167,8 @@ namespace Business
                 Innovation = objective.Innovation,
                 Results = objective.Results,
                 Sustainability = objective.Sustainability,
-                ExperienceId = objective.ExperienceId
+                ExperiencieId = objective.ExperiencieId,
+                ExperiencieName = objective.ExperiencieName
             };
         }
 
@@ -144,7 +185,7 @@ namespace Business
                 Innovation = objectiveDTO.Innovation,
                 Results = objectiveDTO.Results,
                 Sustainability = objectiveDTO.Sustainability,
-                ExperienceId = objectiveDTO.ExperienceId
+                ExperiencieId = objectiveDTO.ExperiencieId
             };
         }
         // Método para mapear una lista de entidades a DTOs

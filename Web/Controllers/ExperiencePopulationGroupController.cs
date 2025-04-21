@@ -120,5 +120,71 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutExperienciePopulation(int id, [FromBody] ExperienciePopulationDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _ExperiencePopulationGroupBusiness.PutExperienciePopulationAsync(id, dto);
+                return Ok(new { message = "Actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { field = ex.PropertyName, error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutExperienciePopulation");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchExperienciePopulation(int id, [FromBody] ExperienciePopulationDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _ExperiencePopulationGroupBusiness.PatchExperienciePopulationAsync(id, dto.PopulationGradeId, dto.ExperiencieId);
+                return Ok(new { message = "Actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { field = ex.PropertyName, error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchExperienciePopulation");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

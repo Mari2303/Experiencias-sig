@@ -120,6 +120,73 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutHistoryExperience(int id, [FromBody] HistoryExperienceDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _HistoryExperienceBusiness.PutHistoryExperienceAsync(id, dto);
+                return Ok(updated);
+            }
+            catch (ValidationException ex) { return BadRequest(new { error = ex.Message }); }
+            catch (EntityNotFoundException ex) { return NotFound(new { message = ex.Message }); }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutHistoryExperience");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchHistoryExperience(int id, [FromBody] HistoryExperienceDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _HistoryExperienceBusiness.PatchHistoryExperienceAsync(id, dto.Action, dto.DateTime, dto.TableName, dto.ExperiencieId, dto.UserId);
+                return Ok(updated);
+            }
+            catch (ValidationException ex) { return BadRequest(new { error = ex.Message }); }
+            catch (EntityNotFoundException ex) { return NotFound(new { message = ex.Message }); }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchHistoryExperience");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteHistoryExperience(int id)
+        {
+            try
+            {
+                await _HistoryExperienceBusiness.DeleteHistoryExperienceAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException ex) { return BadRequest(new { message = ex.Message }); }
+            catch (EntityNotFoundException ex) { return NotFound(new { message = ex.Message }); }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en DeleteHistoryExperience");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
     }
 
 }

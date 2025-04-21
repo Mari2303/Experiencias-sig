@@ -2,6 +2,7 @@
 using Data;
 using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Utilities.Exeptions;
 
 
@@ -120,5 +121,56 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchUserRol(int id, [FromBody] UserRolDTO dto)
+        {
+            try
+            {
+                var result = await _UserRolBusiness.PatchUserRolAsync(id, dto.RolId, dto.UserId);
+                return Ok(new { message = "UserRol actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "UserRol no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchUserRol");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUserRol(int id, [FromBody] UserRolDTO dto)
+        {
+            try
+            {
+                var result = await _UserRolBusiness.PutUserRolAsync(id, dto);
+                return Ok(new { message = "UserRol actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "UserRol no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutUserRol");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+     
+
+
     }
+
 }
+

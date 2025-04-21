@@ -9,11 +9,11 @@ namespace Entity.DTOs
 public    class ObjectiveDTO
     {
         public int Id { get; set; }
-        public string ObjetiveDescription { get; set; }
-        public string Innovation { get; set; }
-        public string Results { get; set; }
-        public string Sustainability { get; set; }
-        public int ExperienceId { get; set; }
-        public int ExperienceName { get; set; }
+        public string ObjetiveDescription { get; set; } = string.Empty;
+        public string Innovation { get; set; } = string.Empty;
+        public string Results { get; set; } = string.Empty;
+        public string Sustainability { get; set; } = string.Empty;
+        public int ExperiencieId { get; set; }
+        public string ExperiencieName { get; set; } = string.Empty;
     }
 }

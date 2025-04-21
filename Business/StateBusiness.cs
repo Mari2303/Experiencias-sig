@@ -5,6 +5,7 @@ using Entity.DTOs;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
 using Microsoft.Extensions.Logging;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 
 /// <summary>
@@ -112,6 +113,57 @@ public class StateBusiness
     }
 
 
+
+    public async Task<bool> PatchStateAsync(int id, string name, int historyExperienceId, bool active)
+    {
+        if (id <= 0)
+            throw new ValidationException("id", "El ID debe ser mayor que cero.");
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ValidationException("name", "El nombre es obligatorio.");
+
+        var result = await _stateData.PatchStateAsync(id, name, historyExperienceId, active);
+        if (!result)
+            throw new EntityNotFoundException("State", id);
+
+        return true;
+    }
+
+    public async Task<bool> PutStateAsync(int id, StateDTO dto)
+    {
+        if (id <= 0)
+            throw new ValidationException("id", "El ID debe ser mayor que cero.");
+        if (dto == null)
+            throw new ValidationException("State", "Datos inválidos.");
+
+        var result = await _stateData.PutStateAsync(id, dto.Name, dto.HistoryExperienceId, dto.Active);
+        if (!result)
+            throw new EntityNotFoundException("State", id);
+
+        return true;
+    }
+
+    public async Task<bool> DeleteStateAsync(int id)
+    {
+        if (id <= 0)
+            throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+        var deleted = await _stateData.DeleteStateAsync(id);
+        if (!deleted)
+            throw new EntityNotFoundException("State", id);
+
+        return true;
+    }
+
+
+
+
+
+
+
+
+
+
+
     // Metodo para mapear de la entidad a DTO 
 
     private StateDTO MapToDTO(State state)
@@ -119,7 +171,10 @@ public class StateBusiness
         return new StateDTO
         {
             Id = state.Id,
-            Name = state.Name
+            Name = state.Name,
+            HistoryExperienceId = state.HistoryExperienceId,
+            HistoryExperienceName = state.HistoryExperienceName,
+            Active = state.Active
         };
     }
 
@@ -130,7 +185,9 @@ public class StateBusiness
         return new State
         {
             Id = stateDTO.Id,
-            Name = stateDTO.Name
+            Name = stateDTO.Name,
+            HistoryExperienceId = stateDTO.HistoryExperienceId,
+            Active = stateDTO.Active
         };
     }
 

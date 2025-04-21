@@ -116,7 +116,32 @@ namespace Business
         }
 
 
+        public async Task<bool> PutEvaluationCriteriaAsync(int id, EvaluationCriteriaDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
+            if (dto == null)
+                throw new ValidationException("dto", "Datos inválidos.");
+
+            var result = await _EvaluationCriteriaData.PutEvaluationCriteriaAsync(id, dto.Score, dto.EvaluationId, dto.CriteriaId);
+            if (!result)
+                throw new EntityNotFoundException("EvaluationCriteria", id);
+
+            return true;
+        }
+
+        public async Task<bool> PatchEvaluationCriteriaAsync(int id, string score, int evaluationId, int criteriaId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var result = await _EvaluationCriteriaData.PatchEvaluationCriteriaAsync(id, score, evaluationId, criteriaId);
+            if (!result)
+                throw new EntityNotFoundException("EvaluationCriteria", id);
+
+            return true;
+        }
 
 
 
@@ -132,7 +157,9 @@ namespace Business
                 Id = evaluationCriteria.Id,
                 Score = evaluationCriteria.Score,
                 CriteriaId = evaluationCriteria.CriteriaId,
-                EvaluationId = evaluationCriteria.EvaluationId
+                CriteriaName = evaluationCriteria.Criteria.Name,
+                EvaluationId = evaluationCriteria.EvaluationId,
+                EvaluationName = evaluationCriteria.EvaluationName
 
             };
         }

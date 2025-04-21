@@ -118,5 +118,74 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+
+
+
+        // PUT - Actualizar ExperiencieGrade
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutExperiencieGrade(int id, [FromBody] ExperiencieGradeDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _ExperienceGradeBusiness.PutExperiencieGradeAsync(id, dto);
+                return Ok(new { message = "Actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutExperiencieGrade");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        // PATCH - Actualizar parcialmente ExperiencieGrade
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchExperiencieGrade(int id, [FromBody] ExperiencieGradeDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _ExperienceGradeBusiness.ExperiencieGradeAsync(id, dto.GradeId, dto.ExperiencieId);
+                return Ok(new { message = "Actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchExperiencieGrade");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
     }
 }

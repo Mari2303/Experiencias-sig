@@ -95,25 +95,79 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+
+
+        // PATCH: Actualización parcial
+        public async Task<bool> UpdatePartialAsync(int id, string name, bool active)
         {
             try
             {
-                var lineThematic = await _context.Set<LineThematic>().FindAsync(id);
-                if (lineThematic == null)
+                var line = await _context.LineThematic.FindAsync(id);
+                if (line == null)
                     return false;
 
-                _context.Set<LineThematic>().Remove(lineThematic);
+                line.Name = name;
+                line.Active = active;
+
+                _context.Entry(line).Property(x => x.Name).IsModified = true;
+                _context.Entry(line).Property(x => x.Active).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
+                _logger.LogError(ex, $"Error al hacer PATCH de LineThematic con ID {id}");
+                return false;
             }
         }
+
+        // PUT: Actualización completa
+        public async Task<bool> UpdateFullAsync(int id, string name, bool active)
+        {
+            try
+            {
+                var line = await _context.LineThematic.FindAsync(id);
+                if (line == null)
+                    return false;
+
+                line.Name = name;
+                line.Active = active;
+
+                _context.Entry(line).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al hacer PUT de LineThematic con ID {id}");
+                return false;
+            }
+        }
+
+        // DELETE lógico
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            try
+            {
+                var line = await _context.LineThematic.FindAsync(id);
+                if (line == null)
+                    return false;
+
+                line.Active = false;
+                _context.Entry(line).Property(x => x.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar lógicamente LineThematic con ID {id}");
+                return false;
+            }
+        }
+
+
     }
 }

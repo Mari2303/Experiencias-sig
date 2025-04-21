@@ -95,25 +95,40 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool?> PutPopulationGradeAsync(int id, string name, bool active)
         {
-            try
-            {
-                var populationGrade = await _context.Set<PopulationGrade>().FindAsync(id);
-                if (populationGrade == null)
-                    return false;
+            var entity = await _context.PopulationGrade.FindAsync(id);
+            if (entity == null) return null;
 
-                _context.Set<PopulationGrade>().Remove(populationGrade);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
-            }
+            entity.Name = name;
+            entity.Active = active;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool?> PatchPopulationGradeAsync(int id, string name, bool active)
+        {
+            var entity = await _context.PopulationGrade.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Name = name;
+            entity.Active = active;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool?> DeletePopulationGradeAsync(int id)
+        {
+            var entity = await _context.PopulationGrade.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Active = false;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

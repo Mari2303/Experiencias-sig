@@ -123,5 +123,99 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchPermission(int id, [FromBody] PermissionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _PermissionBusiness.UpdatePartialAsync(id, dto.PermissionType, dto.Active);
+                return Ok(new { message = "Permiso actualizado parcialmente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Permiso no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchPermission");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutPermission(int id, [FromBody] PermissionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _PermissionBusiness.UpdateFullAsync(id, dto.PermissionType, dto.Active);
+                return Ok(new { message = "Permiso actualizado completamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Permiso no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutPermission");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeletePermission(int id)
+        {
+            try
+            {
+                await _PermissionBusiness.DeleteLogicalAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Permiso no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar lógicamente el permiso");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
+
     }
 }

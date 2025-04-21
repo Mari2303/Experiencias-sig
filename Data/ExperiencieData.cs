@@ -115,5 +115,85 @@ public    class ExperiencieData
                 }
             }
         }
+
+
+
+        // PATCH - solo modifica campos específicos
+        public async Task<bool> ExperiencieAsync(int id, string nameExperience, string summary, string methodologies, string transfer, string dataRegistration, int userId, int institutionId)
+        {
+            try
+            {
+                var experiencie = await _context.Experience.FindAsync(id);
+                if (experiencie == null)
+                    return false;
+
+                experiencie.NameExperience = nameExperience;
+                experiencie.Summary = summary;
+                experiencie.Methodologies = methodologies;
+                experiencie.Transfer = transfer;
+                experiencie.DataRegistration = dataRegistration;
+                experiencie.UserId = userId;
+                experiencie.InstitutionId = institutionId;
+
+                _context.Entry(experiencie).Property(e => e.NameExperience).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.Summary).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.Methodologies).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.Transfer).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.DataRegistration).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.UserId).IsModified = true;
+                _context.Entry(experiencie).Property(e => e.InstitutionId).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar patch a la experiencia con ID {id}");
+                return false;
+            }
+        }
+
+        // PUT - reemplaza todos los campos
+        public async Task<bool> PutExperiencieAsync(int id, string nameExperience, string summary, string methodologies, string transfer, string dataRegistration, int userId, int institutionId)
+        {
+            try
+            {
+                var experiencie = await _context.Experience.FindAsync(id);
+                if (experiencie == null)
+                    return false;
+
+                experiencie.NameExperience = nameExperience;
+                experiencie.Summary = summary;
+                experiencie.Methodologies = methodologies;
+                experiencie.Transfer = transfer;
+                experiencie.DataRegistration = dataRegistration;
+                experiencie.UserId = userId;
+                experiencie.InstitutionId = institutionId;
+
+                _context.Entry(experiencie).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar la experiencia con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

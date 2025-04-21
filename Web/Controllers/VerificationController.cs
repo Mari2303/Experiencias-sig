@@ -118,5 +118,117 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+
+        public async Task<IActionResult> Patch(int id, [FromBody] VerificationDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _VerificationBusiness.UpdatePartialAsync(id, dto.Name, dto.Description, dto.Active);
+                return Ok(new { message = "Actualización parcial exitosa", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Verification no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en Patch");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Put(int id, [FromBody] VerificationDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _VerificationBusiness.UpdateFullAsync(id, dto);
+                return Ok(new { message = "Actualización completa exitosa", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Verification no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en Put");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _VerificationBusiness.DeleteLogicalAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en eliminación lógica");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

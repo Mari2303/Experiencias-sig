@@ -11,9 +11,9 @@ namespace Entity.DTOs
         public int Id { get; set; }
 
         public int PopulationGradeId { get; set; }
-        public string PopulationGradeName { get; set; }
+        public string PopulationGradeName { get; set; } = string.Empty;
 
         public int ExperiencieId { get; set; }
-        public string ExperiencieName{ get; set; }
+        public string ExperiencieName{ get; set; } = string.Empty;
     }
 }

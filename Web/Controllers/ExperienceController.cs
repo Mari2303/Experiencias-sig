@@ -121,5 +121,82 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchExperiencie(int id, [FromBody] ExperiencieDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _ExperienceBusiness.ExperiencieAsync(
+                    id,
+                    dto.NameExperience,
+                    dto.Summary,
+                    dto.Methodologies,
+                    dto.Transfer,
+                    dto.DataRegistration,
+                    dto.UserId,
+                    dto.InstitutionId
+                );
+
+                return Ok(new { message = "Experiencia modificada correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchExperiencie");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutExperiencie(int id, [FromBody] ExperiencieDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _ExperienceBusiness.PutExperiencieAsync(id, dto);
+                if (!result)
+                    return NotFound($"No se encontró la experiencia con ID {id}");
+
+                return Ok(new { message = "Experiencia actualizada correctamente." });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { field = ex.PropertyName, error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error inesperado al actualizar la experiencia.");
+                return StatusCode(500, "Ocurrió un error inesperado.");
+            }
+        }
     }
 }

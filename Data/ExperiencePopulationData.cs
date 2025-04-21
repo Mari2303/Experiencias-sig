@@ -115,5 +115,37 @@ namespace Data
                 }
             }
         }
+
+
+
+
+        public async Task<bool> PutExperienciePopulationAsync(int id, int populationGradeId, int experiencieId)
+        {
+            var entity = await _context.ExperiencePopulation.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.PopulationGradeId = populationGradeId;
+            entity.ExperiencieId = experiencieId;
+
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> PatchExperienciePopulationAsync(int id, int populationGradeId, int experiencieId)
+        {
+            var entity = await _context.ExperiencePopulation.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.PopulationGradeId = populationGradeId;
+            entity.ExperiencieId = experiencieId;
+
+            _context.Entry(entity).Property(e => e.PopulationGradeId).IsModified = true;
+            _context.Entry(entity).Property(e => e.ExperiencieId).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

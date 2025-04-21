@@ -95,25 +95,49 @@ public    class StateData
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> PatchStateAsync(int id, string name, int historyExperienceId, bool active)
         {
-            try
-            {
-                var state = await _context.Set<State>().FindAsync(id);
-                if (state == null)
-                    return false;
+            var state = await _context.State.FindAsync(id);
+            if (state == null) return false;
 
-                _context.Set<State>().Remove(state);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
-            }
+            state.Name = name;
+            state.HistoryExperienceId = historyExperienceId;
+            state.Active = active;
+
+            _context.Entry(state).Property(s => s.Name).IsModified = true;
+            _context.Entry(state).Property(s => s.HistoryExperienceId).IsModified = true;
+            _context.Entry(state).Property(s => s.Active).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool> PutStateAsync(int id, string name, int historyExperienceId, bool active)
+        {
+            var state = await _context.State.FindAsync(id);
+            if (state == null) return false;
+
+            state.Name = name;
+            state.HistoryExperienceId = historyExperienceId;
+            state.Active = active;
+
+            _context.Entry(state).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteStateAsync(int id)
+        {
+            var state = await _context.State.FindAsync(id);
+            if (state == null) return false;
+
+            state.Active = false;
+            _context.Entry(state).Property(s => s.Active).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

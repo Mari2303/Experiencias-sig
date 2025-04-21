@@ -95,24 +95,72 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+
+        public async Task<bool> UpdatePartialAsync(int id, string permissionType, bool active)
         {
             try
             {
-                var permission = await _context.Set<Permission>().FindAsync(id);
+                var permission = await _context.Permission.FindAsync(id);
                 if (permission == null)
                     return false;
 
-                _context.Set<Permission>().Remove(permission);
+                permission.PermissionType = permissionType;
+                permission.Active = active;
+
+                _context.Entry(permission).Property(p => p.PermissionType).IsModified = true;
+                _context.Entry(permission).Property(p => p.Active).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
+                _logger.LogError(ex, $"Error al actualizar parcialmente el permiso con ID {id}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFullAsync(int id, string permissionType, bool active)
+        {
+            try
+            {
+                var permission = await _context.Permission.FindAsync(id);
+                if (permission == null)
                     return false;
-                }
+
+                permission.PermissionType = permissionType;
+                permission.Active = active;
+
+                _context.Entry(permission).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al actualizar completamente el permiso con ID {id}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            try
+            {
+                var permission = await _context.Permission.FindAsync(id);
+                if (permission == null)
+                    return false;
+
+                permission.Active = false;
+                _context.Entry(permission).Property(p => p.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar lógicamente el permiso con ID {id}");
+                return false;
             }
         }
     }

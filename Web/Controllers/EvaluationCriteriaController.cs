@@ -120,5 +120,76 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutEvaluationCriteria(int id, [FromBody] EvaluationCriteriaDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _evaluationCriteriaBusiness.PutEvaluationCriteriaAsync(id, dto);
+                return Ok(new { message = "Actualizado correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { field = ex.PropertyName, error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PUT EvaluationCriteria");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchEvaluationCriteria(int id, [FromBody] EvaluationCriteriaDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            try
+            {
+                var result = await _evaluationCriteriaBusiness.PatchEvaluationCriteriaAsync(id, dto.Score, dto.EvaluationId, dto.CriteriaId);
+                return Ok(new { message = "Actualización parcial exitosa", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { field = ex.PropertyName, error = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PATCH EvaluationCriteria");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

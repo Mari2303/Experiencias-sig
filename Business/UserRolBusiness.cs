@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
 using Entity.ModelExperience;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -115,6 +116,30 @@ namespace Business
             }
         }
 
+
+
+        public async Task<bool> PatchUserRolAsync(int id, int rolId, int userId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _userRolData.PatchUserRolAsync(id, rolId, userId)
+                ?? throw new EntityNotFoundException("UserRol", id);
+        }
+
+        public async Task<bool> PutUserRolAsync(int id, UserRolDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("UserRol", "Datos inválidos.");
+
+            return await _userRolData.PutUserRolAsync(id, dto.RolId, dto.UserId)
+                ?? throw new EntityNotFoundException("UserRol", id);
+        }
+
+
+
         // Metodo para mapear la entidad a DTO
 
         private UserRolDTO MapToDTO(UserRol userRol)
@@ -123,7 +148,9 @@ namespace Business
             {
                 Id = userRol.Id,
                 RolId = userRol.RolId,
-                UserId = userRol.UserId
+                UserId = userRol.UserId,
+                UserName = userRol.UserName,
+                RolName = userRol.RolName
             };
         }
 

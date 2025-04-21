@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -115,6 +116,38 @@ namespace Business
         }
 
 
+
+        public async Task<bool> PutPersonAsync(int id, PersonDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("Person", "Datos inválidos.");
+
+            return await _personData.PutPersonAsync(id, dto.Name, dto.Email, dto.Phone, dto.Active, dto.UserId)
+                ?? throw new EntityNotFoundException("Person", id);
+        }
+
+        public async Task<bool> PatchPersonAsync(int id, string name, string email, string phone, bool active, int userId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _personData.PatchPersonAsync(id, name, email, phone, active, userId)
+                ?? throw new EntityNotFoundException("Person", id);
+        }
+
+        public async Task<bool> DeletePersonAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            return await _personData.DeletePersonAsync(id)
+                ?? throw new EntityNotFoundException("Person", id);
+        }
+
+
+
         // Metodo para mapear una entidad a DTO 
 
         private PersonDTO MapToDTO(Person person)
@@ -126,7 +159,8 @@ namespace Business
                 Email = person.Email,
                 Phone = person.Phone,
                 Active = person.Active,
-                UserId = person.UserId
+                UserId = person.UserId,
+                UserName = person.UserName
             };
         }
 

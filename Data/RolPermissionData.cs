@@ -116,5 +116,53 @@ namespace Data
                 }
             }
         }
+
+
+
+
+
+        public async Task<bool> PatchRolPermissionAsync(int id, int rolId, int permissionId)
+        {
+            var entity = await _context.RolPermissions.FindAsync(id);
+            if (entity == null)
+                return false;
+
+            entity.RolId = rolId;
+            entity.PermissionId = permissionId;
+
+            _context.Entry(entity).Property(x => x.RolId).IsModified = true;
+            _context.Entry(entity).Property(x => x.PermissionId).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> PutRolPermissionAsync(int id, int rolId, int permissionId)
+        {
+            var entity = await _context.RolPermissions.FindAsync(id);
+            if (entity == null)
+                return false;
+
+            entity.RolId = rolId;
+            entity.PermissionId = permissionId;
+
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

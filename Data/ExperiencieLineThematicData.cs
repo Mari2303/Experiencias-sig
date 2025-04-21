@@ -115,5 +115,69 @@ namespace Data
                 }
             }
         }
+
+
+
+
+
+        public async Task<bool> PatchExperiencieLineThematicAsync(int id, int experiencieId, int lineThematicId)
+        {
+            try
+            {
+                var entity = await _context.ExperienceLineThematic.FindAsync(id);
+                if (entity == null)
+                {
+                    _logger.LogWarning($"No se encontró ExperiencieLineThematic con ID {id} para aplicar PATCH.");
+                    return false;
+                }
+
+                entity.ExperiencieId = experiencieId;
+                entity.LineThematicId = lineThematicId;
+
+                _context.Entry(entity).Property(e => e.ExperiencieId).IsModified = true;
+                _context.Entry(entity).Property(e => e.LineThematicId).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar PATCH a ExperiencieLineThematic con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+        public async Task<bool> PutExperiencieLineThematicAsync(int id, int experiencieId, int lineThematicId)
+        {
+            try
+            {
+                var entity = await _context.ExperienceLineThematic.FindAsync(id);
+                if (entity == null)
+                {
+                    _logger.LogWarning($"No se encontró ExperiencieLineThematic con ID {id} para aplicar PUT.");
+                    return false;
+                }
+
+                entity.ExperiencieId = experiencieId;
+                entity.LineThematicId = lineThematicId;
+
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar PUT a ExperiencieLineThematic con ID {id}");
+                return false;
+            }
+        }
+
+
+
     }
 }

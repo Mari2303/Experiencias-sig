@@ -9,8 +9,9 @@ namespace Entity.Model
     public class PermissionDTO
     {
         public int Id { get; set; }
-        public string PermissionType { get; set; }
+        public string PermissionType { get; set; } = string.Empty;
+        public bool Active { get; set; }
 
-      
+
     }
 }

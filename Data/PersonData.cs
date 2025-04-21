@@ -95,25 +95,46 @@ public    class PersonData
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool?> PutPersonAsync(int id, string name, string email, string phone, bool active, int userId)
         {
-            try
-            {
-                var person = await _context.Set<Person>().FindAsync(id);
-                if (person == null)
-                    return false;
+            var entity = await _context.Person.FindAsync(id);
+            if (entity == null) return null;
 
-                _context.Set<Person>().Remove(person);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
-            }
+            entity.Name = name;
+            entity.Email = email;
+            entity.Phone = phone;
+            entity.Active = active;
+            entity.UserId = userId;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
+
+        public async Task<bool?> PatchPersonAsync(int id, string name, string email, string phone, bool active, int userId)
+        {
+            var entity = await _context.Person.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Name = name;
+            entity.Email = email;
+            entity.Phone = phone;
+            entity.Active = active;
+            entity.UserId = userId;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool?> DeletePersonAsync(int id)
+        {
+            var entity = await _context.Person.FindAsync(id);
+            if (entity == null) return null;
+
+            entity.Active = false;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

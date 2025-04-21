@@ -95,24 +95,83 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId, string personName)
         {
             try
             {
-                var user = await _context.Set<User>().FindAsync(id);
+                var user = await _context.User.FindAsync(id);
                 if (user == null)
                     return false;
 
-                _context.Set<User>().Remove(user);
+                user.Name = name;
+                user.Email = email;
+                user.Password = password;
+                user.Active = active;
+                user.PersonId = personId;
+                user.PersonName = personName;
+
+                _context.Entry(user).Property(u => u.Name).IsModified = true;
+                _context.Entry(user).Property(u => u.Email).IsModified = true;
+                _context.Entry(user).Property(u => u.Password).IsModified = true;
+                _context.Entry(user).Property(u => u.Active).IsModified = true;
+                _context.Entry(user).Property(u => u.PersonId).IsModified = true;
+                _context.Entry(user).Property(u => u.PersonName).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
+                _logger.LogError(ex, $"Error al aplicar PATCH al usuario con ID {id}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateFullAsync(int id, string name, string email, string password, bool active, int personId, string personName)
+        {
+            try
+            {
+                var user = await _context.User.FindAsync(id);
+                if (user == null)
                     return false;
-                }
+
+                user.Name = name;
+                user.Email = email;
+                user.Password = password;
+                user.Active = active;
+                user.PersonId = personId;
+                user.PersonName = personName;
+
+                _context.Entry(user).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar PUT al usuario con ID {id}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            try
+            {
+                var user = await _context.User.FindAsync(id);
+                if (user == null)
+                    return false;
+
+                user.Active = false;
+                _context.Entry(user).Property(u => u.Active).IsModified = true;
+
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar lógicamente el usuario con ID {id}");
+                return false;
             }
         }
     }

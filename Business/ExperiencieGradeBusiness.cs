@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -116,6 +117,48 @@ namespace Business
             
         }
 
+
+        // PATCH
+        public async Task<bool> ExperiencieGradeAsync(int id, int gradeId, int experiencieId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (gradeId <= 0)
+                throw new ValidationException("gradeId", "El ID del grado es obligatorio.");
+
+            if (experiencieId <= 0)
+                throw new ValidationException("experiencieId", "El ID de la experiencia es obligatorio.");
+
+            var result = await _experienceGradeData.ExperiencieGradeAsync(id, gradeId, experiencieId);
+
+            if (!result)
+                throw new EntityNotFoundException("ExperiencieGrade", id);
+
+            return true;
+        }
+
+        // PUT
+        public async Task<bool> PutExperiencieGradeAsync(int id, ExperiencieGradeDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("ExperiencieGrade", "Datos inválidos.");
+
+            var result = await _experienceGradeData.PutExperiencieGradeAsync(id, dto.GradeId, dto.ExperiencieId);
+
+            if (!result)
+                throw new EntityNotFoundException("ExperiencieGrade", id);
+
+            return true;
+        }
+
+
+
+
+
         // Metodo para mapear de experienceGrade a experienceGradeDTO
 
         private ExperiencieGradeDTO MapToDTO(ExperiencieGrade experienceGrade)
@@ -124,8 +167,10 @@ namespace Business
             {
                 Id = experienceGrade.Id,
                 GradeId = experienceGrade.GradeId,
+                GradeName = experienceGrade.GradeName,
                 ExperiencieId = experienceGrade.ExperiencieId,
-           
+                ExperiencieName = experienceGrade.ExperiencieName,
+
             };
         }
 

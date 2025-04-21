@@ -112,6 +112,59 @@ namespace Business
             }
         }
 
+
+        public async Task<bool> UpdatePartialAsync(int id, string permissionType, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(permissionType))
+                throw new ValidationException("permissionType", "El tipo de permiso es obligatorio.");
+
+            var updated = await _permisionData.UpdatePartialAsync(id, permissionType, active);
+            if (!updated)
+                throw new EntityNotFoundException("Permission", id);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateFullAsync(int id, string permissionType, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(permissionType))
+                throw new ValidationException("permissionType", "El tipo de permiso es obligatorio.");
+
+            var updated = await _permisionData.UpdateFullAsync(id, permissionType, active);
+            if (!updated)
+                throw new EntityNotFoundException("Permission", id);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _permisionData.DeleteLogicalAsync(id);
+            if (!deleted)
+                throw new EntityNotFoundException("Permission", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
         //Metodo para mapear de entidades a DTO 
 
         private PermissionDTO MapToDTO(Permission permission)
@@ -119,7 +172,8 @@ namespace Business
             return new PermissionDTO
             {
                 Id = permission.Id,
-                PermissionType = permission.PermissionType
+                PermissionType = permission.PermissionType,
+                Active = permission.Active
             };
         }
 
@@ -129,7 +183,8 @@ namespace Business
             return new Permission
             {
                 Id = permissionDTO.Id,
-                PermissionType = permissionDTO.PermissionType
+                PermissionType = permissionDTO.PermissionType,
+                Active = permissionDTO.Active
             };
         }
 
@@ -145,5 +200,9 @@ namespace Business
             return permissionDTOs;
         }
 
+        public async Task PutPermissionAsync(int id, string permissionType, bool active)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

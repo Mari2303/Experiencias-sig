@@ -1,9 +1,11 @@
 using Data;
 using Entity.DTOs;
 using Entity.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -116,6 +118,53 @@ namespace Business
         }
 
 
+
+        public async Task<bool> PatchExperiencieLineThematicAsync(int id, int experiencieId, int lineThematicId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (experiencieId <= 0)
+                throw new ValidationException("experiencieId", "El ID de la experiencia es obligatorio.");
+
+            if (lineThematicId <= 0)
+                throw new ValidationException("lineThematicId", "El ID de la línea temática es obligatorio.");
+
+            var result = await _ExperiencieLineThematicData.PatchExperiencieLineThematicAsync(id, experiencieId, lineThematicId);
+
+            if (!result)
+                throw new EntityNotFoundException("ExperiencieLineThematic", id);
+
+            return true;
+        }
+
+
+
+        public async Task<bool> PutExperiencieLineThematicAsync(int id, int experiencieId, int lineThematicId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (experiencieId <= 0)
+                throw new ValidationException("experiencieId", "El ID de la experiencia es obligatorio.");
+
+            if (lineThematicId <= 0)
+                throw new ValidationException("lineThematicId", "El ID de la línea temática es obligatorio.");
+
+            var result = await _ExperiencieLineThematicData.PutExperiencieLineThematicAsync(id, experiencieId, lineThematicId);
+
+            if (!result)
+                throw new EntityNotFoundException("ExperiencieLineThematic", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
         // Método para mapear una entidad a un DTO
 
 
@@ -125,8 +174,10 @@ namespace Business
             {
                 Id = lineThematic.Id,
                 LineThematicId = lineThematic.LineThematicId,
+                LineThematicName = lineThematic.LineThematicName,
                 ExperiencieId = lineThematic.ExperiencieId,
-                
+                ExperiencieName = lineThematic.ExperiencieName
+
             };
         }
 

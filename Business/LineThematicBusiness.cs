@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -116,6 +117,55 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la línea temática es obligatorio");
             }
         }
+
+
+        // PATCH
+        public async Task<bool> UpdatePartialAsync(int id, string name, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre es obligatorio.");
+
+            var updated = await _lineThematicData.UpdatePartialAsync(id, name, active);
+            if (!updated)
+                throw new EntityNotFoundException("LineThematic", id);
+
+            return true;
+        }
+
+        // PUT
+        public async Task<bool> UpdateFullAsync(int id, string name, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre es obligatorio.");
+
+            var updated = await _lineThematicData.UpdateFullAsync(id, name, active);
+            if (!updated)
+                throw new EntityNotFoundException("LineThematic", id);
+
+            return true;
+        }
+
+        // DELETE lógico
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _lineThematicData.DeleteLogicalAsync(id);
+            if (!deleted)
+                throw new EntityNotFoundException("LineThematic", id);
+
+            return true;
+        }
+
+
+
 
         // Método para mapear una entidad a un DTO
 

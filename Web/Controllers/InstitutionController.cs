@@ -120,5 +120,102 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchInstitution(int id, [FromBody] InstitucionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _InstitucionBusiness.UpdatePartialAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Institución no encontrada" });
+
+                return Ok(new { message = "Institución actualizada correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Institución no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchInstitution");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutInstitution(int id, [FromBody] InstitucionDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _InstitucionBusiness.UpdateFullAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Institución no encontrada" });
+
+                return Ok(new { message = "Institución actualizada correctamente", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Institución no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutInstitution");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteInstitution(int id)
+        {
+            try
+            {
+                await _InstitucionBusiness.DeleteLogicalAsync(id);
+                return NoContent(); // 204 si todo salió bien
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar (lógicamente) la institución");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
     }
 }

@@ -4,6 +4,7 @@ using Entity.DTOs;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 namespace Business
 {
     /// <summary>
@@ -108,6 +109,72 @@ namespace Business
             }
         }
 
+
+
+        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId, string personName)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre es obligatorio.");
+
+            var result = await _UserData.UpdatePartialAsync(id, name, email, password, active, personId, personName);
+            if (!result)
+                throw new EntityNotFoundException("User", id);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateFullAsync(int id, UserDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("User", "Datos inválidos.");
+
+            var result = await _UserData.UpdateFullAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId, dto.PersonName);
+            if (!result)
+                throw new EntityNotFoundException("User", id);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _UserData.DeleteLogicalAsync(id);
+            if (!deleted)
+                throw new EntityNotFoundException("User", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Metodo para mapear de una entidad  UN DTO
 
         private UserDTO MapToDTO(User user)
@@ -118,7 +185,8 @@ namespace Business
                 Name = user.Name,
                 Email = user.Email,
                 Password = user.Password,
-                PersonId = user.PersonId
+                PersonId = user.PersonId,
+                PersonName = user.PersonName
             };
         }
 

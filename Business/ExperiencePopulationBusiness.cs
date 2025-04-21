@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -110,16 +111,50 @@ namespace Business
         }
 
 
+
+        public async Task<bool> PutExperienciePopulationAsync(int id, ExperienciePopulationDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("dto", "Datos inválidos.");
+
+            var result = await _experiencePopulationData.PutExperienciePopulationAsync(id, dto.PopulationGradeId, dto.ExperiencieId);
+            if (!result)
+                throw new EntityNotFoundException("ExperienciePopulation", id);
+
+            return true;
+        }
+
+        public async Task<bool> PatchExperienciePopulationAsync(int id, int populationGradeId, int experiencieId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var result = await _experiencePopulationData.PatchExperienciePopulationAsync(id, populationGradeId, experiencieId);
+            if (!result)
+                throw new EntityNotFoundException("ExperienciePopulation", id);
+
+            return true;
+        }
+
+
+
+
+
         // Método para mapear una entidad a un DTO
-        
+
         private ExperienciePopulationDTO MapToDTO(ExperiencePopulation population)
         {
             return new ExperienciePopulationDTO
             {
                 Id = population.Id,
                ExperiencieId = population.ExperiencieId,
+                ExperiencieName = population.ExperiencieName,
                 PopulationGradeId = population.PopulationGradeId,
-                
+                PopulationGradeName = population.PopulationGradeName,
+
             };
         }
 

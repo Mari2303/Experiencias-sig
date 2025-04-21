@@ -120,5 +120,107 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+
+
+        // PATCH
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchUser(int id, [FromBody] UserDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _UserBusiness.UpdatePartialAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId, dto.PersonName);
+                if (!updated)
+                    return NotFound(new { message = "Usuario no encontrado" });
+
+                return Ok(new { message = "Usuario actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchUser");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        // PUT
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutUser(int id, [FromBody] UserDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _UserBusiness.UpdateFullAsync(id, dto);
+                if (!updated)
+                    return NotFound(new { message = "Usuario no encontrado" });
+
+                return Ok(new { message = "Usuario actualizado correctamente", id = id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "Usuario no encontrado" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutUser");
+                return StatusCode(500, new { error = "Error interno del servidor" });
+            }
+        }
+
+        // DELETE lógico
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                await _UserBusiness.DeleteLogicalAsync(id);
+                return NoContent(); // 204
+            }
+            catch (EntityNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar (lógicamente) el usuario");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
     }
 }

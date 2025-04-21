@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -121,6 +122,57 @@ namespace Business
             }
         }
 
+
+
+        public async Task<bool> UpdatePartialAsync(int id, string name, string description, bool active)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ValidationException("name", "El nombre es obligatorio.");
+
+            var result = await _verificationData.UpdatePartialAsync(id, name, description, active);
+            if (!result)
+                throw new EntityNotFoundException("Verification", id);
+
+            return true;
+        }
+
+        public async Task<bool> UpdateFullAsync(int id, VerificationDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+            if (dto == null)
+                throw new ValidationException("Verification", "Datos inválidos.");
+
+            var result = await _verificationData.UpdateFullAsync(id, dto.Name, dto.Description, dto.Active);
+            if (!result)
+                throw new EntityNotFoundException("Verification", id);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _verificationData.DeleteLogicalAsync(id);
+            if (!deleted)
+                throw new EntityNotFoundException("Verification", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
         // Metodo para mapear una entidad a DTO
 
         private VerificationDTO MapToDTO(Verification verification)
@@ -130,6 +182,7 @@ namespace Business
                 Id = verification.Id,
                 Name = verification.Name,
                 Description = verification.Description
+
             };
         }
 

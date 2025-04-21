@@ -120,5 +120,108 @@ namespace Web
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PatchLineThematic(int id, [FromBody] LineThematicDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _lineThematicBusiness.UpdatePartialAsync(id, dto.Name, dto.Active);
+                return Ok(new { message = "Actualización parcial exitosa", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "LineThematic no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PatchLineThematic");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> PutLineThematic(int id, [FromBody] LineThematicDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var updated = await _lineThematicBusiness.UpdateFullAsync(id, dto.Name, dto.Active);
+                return Ok(new { message = "Actualización completa exitosa", id });
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "LineThematic no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en PutLineThematic");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteLineThematic(int id)
+        {
+            try
+            {
+                await _lineThematicBusiness.DeleteLogicalAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException)
+            {
+                return NotFound(new { message = "LineThematic no encontrada" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar lógicamente LineThematic");
+                return StatusCode(500, new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

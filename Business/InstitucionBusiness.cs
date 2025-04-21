@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -110,6 +111,52 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar una institución con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name de la institución es obligatorio");
             }
+        }
+
+
+        // PATCH
+        public async Task<bool> UpdatePartialAsync(int id, InstitucionDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Institution", "Datos inválidos para actualizar.");
+
+            var updated = await _institucionData.UpdatePartialAsync(id, dto);
+            if (!updated)
+                throw new EntityNotFoundException("Institution", id);
+
+            return true;
+        }
+
+        // PUT
+        public async Task<bool> UpdateFullAsync(int id, InstitucionDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Institution", "Datos inválidos para actualizar.");
+
+            var updated = await _institucionData.UpdateFullAsync(id, dto);
+            if (!updated)
+                throw new EntityNotFoundException("Institution", id);
+
+            return true;
+        }
+
+        // DELETE lógico
+        public async Task<bool> DeleteLogicalAsync(int id)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var deleted = await _institucionData.DeleteLogicalAsync(id);
+            if (!deleted)
+                throw new EntityNotFoundException("Institution", id);
+
+            return true;
         }
 
 

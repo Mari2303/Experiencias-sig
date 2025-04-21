@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -113,6 +114,53 @@ namespace Business
         }
 
 
+
+        // PATCH - actualizar campos individuales
+        public async Task<bool> ExperiencieAsync(int id, string nameExperience, string summary, string methodologies, string transfer, string dataRegistration, int userId, int institutionId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (string.IsNullOrWhiteSpace(nameExperience))
+                throw new ValidationException("nameExperience", "El nombre de la experiencia es obligatorio.");
+
+            var result = await _experiencieData.ExperiencieAsync(id, nameExperience, summary, methodologies, transfer, dataRegistration, userId, institutionId);
+
+            if (!result)
+                throw new EntityNotFoundException("Experiencie", id);
+
+            return true;
+        }
+
+        // PUT - actualizar todos los campos usando DTO
+        public async Task<bool> PutExperiencieAsync(int id, ExperiencieDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("Experiencie", "Datos de experiencia inválidos.");
+
+            var result = await _experiencieData.PutExperiencieAsync(id, dto.NameExperience, dto.Summary, dto.Methodologies, dto.Transfer, dto.DataRegistration, dto.UserId, dto.InstitutionId);
+
+            if (!result)
+                throw new EntityNotFoundException("Experiencie", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Método para mapear una entidad a un DTO
 
 
@@ -127,7 +175,9 @@ namespace Business
                 Transfer = experiencie.Transfer,
                 DataRegistration = experiencie.DataRegistration,
                 UserId = experiencie.UserId,
-                InstitutionId = experiencie.InstitutionId
+                UserName = experiencie.UserName,
+                InstitutionId = experiencie.InstitutionId,
+                InstitutionName = experiencie.InstitutionName
             };
         }
 

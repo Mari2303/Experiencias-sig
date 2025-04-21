@@ -14,11 +14,13 @@ namespace Entity.Model
         public int HistoryExperienceId { get; set; }
 
         public HistoryExperience HistoryExperience { get; set; }
-        
-       public DateTime CreateAt { get; set; }
+
+        public string HistoryExperienceName { get; set; } 
+        public bool Active { get; set; } 
+        public DateTime CreateAt { get; set; }
         public DateTime DeleteAt { get; set; }
-        public string Name { get; set; }        
-        
+        public string Name { get; set; } = string.Empty;
+
 
     }
 }

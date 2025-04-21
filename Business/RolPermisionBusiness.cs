@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
+using ValidationException = Utilities.Exeptions.ValidationException;
 
 namespace Business
 {
@@ -114,15 +115,66 @@ namespace Business
         }
 
 
-// Metodo para mapear de entidad  DTO
-private RolPermissionDTO MapToDTO(RolPermission rolPermission)
+
+
+        public async Task<bool> PatchRolPermissionAsync(int id, int rolId, int permissionId)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            var result = await _rolPermisionData.PatchRolPermissionAsync(id, rolId, permissionId);
+            if (!result)
+                throw new EntityNotFoundException("RolPermission", id);
+
+            return true;
+        }
+
+        public async Task<bool> PutRolPermissionAsync(int id, RolPermissionDTO dto)
+        {
+            if (id <= 0)
+                throw new ValidationException("id", "El ID debe ser mayor que cero.");
+
+            if (dto == null)
+                throw new ValidationException("RolPermission", "Datos inválidos.");
+
+            var result = await _rolPermisionData.PutRolPermissionAsync(id, dto.RolId, dto.PermissionId);
+            if (!result)
+                throw new EntityNotFoundException("RolPermission", id);
+
+            return true;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Metodo para mapear de entidad  DTO
+        private RolPermissionDTO MapToDTO(RolPermission rolPermission)
 {
     return new RolPermissionDTO
     {
         Id = rolPermission.Id,
         RolId = rolPermission.RolId,
         PermissionId = rolPermission.PermissionId,
-       
+        RolName = rolPermission.RolName,
+        PermissionName = rolPermission.PermissionName
+
     };
 }
 

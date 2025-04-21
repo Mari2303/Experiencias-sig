@@ -12,8 +12,10 @@ namespace Entity.Model
         public int ExperiencieId { get; set; }
 
         public Experiencie Experiencie { get; set; }
-        
+        public string ExperiencieName { get; set; } = string.Empty;
+
         public int PopulationGradeId { get; set; }
+        public string PopulationGradeName { get; set; } = string.Empty;
 
         public PopulationGrade PopulationGrade { get; set; }
 

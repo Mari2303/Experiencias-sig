@@ -114,5 +114,47 @@ namespace Data
                 }
             }
         }
+
+
+
+
+
+        public async Task<bool> PutEvaluationCriteriaAsync(int id, string score, int evaluationId, int criteriaId)
+        {
+            var entity = await _context.EvaluationCriteria.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Score = score;
+            entity.EvaluationId = evaluationId;
+            entity.CriteriaId = criteriaId;
+
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> PatchEvaluationCriteriaAsync(int id, string score, int evaluationId, int criteriaId)
+        {
+            var entity = await _context.EvaluationCriteria.FindAsync(id);
+            if (entity == null) return false;
+
+            entity.Score = score;
+            entity.EvaluationId = evaluationId;
+            entity.CriteriaId = criteriaId;
+
+            _context.Entry(entity).Property(e => e.Score).IsModified = true;
+            _context.Entry(entity).Property(e => e.EvaluationId).IsModified = true;
+            _context.Entry(entity).Property(e => e.CriteriaId).IsModified = true;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+
+
+
+
+
     }
 }

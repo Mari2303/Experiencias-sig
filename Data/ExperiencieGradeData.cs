@@ -1,4 +1,5 @@
 ﻿using Entity.Context;
+using Entity.DTOs;
 using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -95,25 +96,55 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> DeleteAsync(int id)
+        // PATCH
+        public async Task<bool> ExperiencieGradeAsync(int id, int gradeId, int experiencieId)
         {
             try
             {
-                var experienceGrade = await _context.Set<ExperiencieGrade>().FindAsync(id);
-                if (experienceGrade == null)
+                var entity = await _context.ExperiencieGrade.FindAsync(id);
+                if (entity == null)
                     return false;
 
-                _context.Set<ExperiencieGrade>().Remove(experienceGrade);
+                entity.GradeId = gradeId;
+                entity.ExperiencieId = experiencieId;
+
+                _context.Entry(entity).Property(x => x.GradeId).IsModified = true;
+                _context.Entry(entity).Property(x => x.ExperiencieId).IsModified = true;
+
                 await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                {
-                    Console.WriteLine($"Error al eliminar el rol: {ex.Message}");
-                    return false;
-                }
+                _logger.LogError(ex, $"Error al aplicar PATCH a ExperiencieGrade con ID {id}");
+                return false;
             }
         }
+
+        // PUT
+        public async Task<bool> PutExperiencieGradeAsync(int id, int gradeId, int experiencieId)
+        {
+            try
+            {
+                var entity = await _context.ExperiencieGrade.FindAsync(id);
+                if (entity == null)
+                    return false;
+
+                entity.GradeId = gradeId;
+                entity.ExperiencieId = experiencieId;
+
+                _context.Entry(entity).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al aplicar PUT a ExperiencieGrade con ID {id}");
+                return false;
+            }
+        }
+
+
     }
 }
