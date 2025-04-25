@@ -32,7 +32,8 @@ namespace Business
                 {
                     Id = verification.Id,
                     Name = verification.Name,
-                    Description = verification.Description
+                    Description = verification.Description,
+                    Active =  verification.Active
                 });
 
             }
@@ -183,7 +184,8 @@ namespace Business
             {
                 Id = verification.Id,
                 Name = verification.Name,
-                Description = verification.Description
+                Description = verification.Description,
+                Active = verification.Active
 
 
             };
