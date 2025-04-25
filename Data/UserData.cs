@@ -95,7 +95,7 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId, string personName)
+        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId)
         {
             try
             {
@@ -108,14 +108,14 @@ namespace Data
                 user.Password = password;
                 user.Active = active;
                 user.PersonId = personId;
-                user.PersonName = personName;
+
 
                 _context.Entry(user).Property(u => u.Name).IsModified = true;
                 _context.Entry(user).Property(u => u.Email).IsModified = true;
                 _context.Entry(user).Property(u => u.Password).IsModified = true;
                 _context.Entry(user).Property(u => u.Active).IsModified = true;
                 _context.Entry(user).Property(u => u.PersonId).IsModified = true;
-                _context.Entry(user).Property(u => u.PersonName).IsModified = true;
+             
 
                 await _context.SaveChangesAsync();
                 return true;
@@ -127,7 +127,7 @@ namespace Data
             }
         }
 
-        public async Task<bool> UpdateFullAsync(int id, string name, string email, string password, bool active, int personId, string personName)
+        public async Task<bool> UpdateFullAsync(int id, string name, string email, string password, bool active, int personId)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace Data
                 user.Password = password;
                 user.Active = active;
                 user.PersonId = personId;
-                user.PersonName = personName;
+               
 
                 _context.Entry(user).State = EntityState.Modified;
                 await _context.SaveChangesAsync();

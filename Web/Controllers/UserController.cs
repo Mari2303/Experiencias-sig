@@ -137,7 +137,7 @@ namespace Web
 
             try
             {
-                var updated = await _UserBusiness.UpdatePartialAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId, dto.PersonName);
+                var updated = await _UserBusiness.UpdatePartialAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId);
                 if (!updated)
                     return NotFound(new { message = "Usuario no encontrado" });
 

@@ -33,7 +33,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todos los roles");
+                _logger.LogError(ex, "Error al obtener todos los user");
                 throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de roles", ex);
             }
         }
@@ -111,7 +111,7 @@ namespace Business
 
 
 
-        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId, string personName)
+        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId)
         {
             if (id <= 0)
                 throw new ValidationException("id", "El ID debe ser mayor que cero.");
@@ -119,7 +119,7 @@ namespace Business
             if (string.IsNullOrWhiteSpace(name))
                 throw new ValidationException("name", "El nombre es obligatorio.");
 
-            var result = await _UserData.UpdatePartialAsync(id, name, email, password, active, personId, personName);
+            var result = await _UserData.UpdatePartialAsync(id, name, email, password, active, personId);
             if (!result)
                 throw new EntityNotFoundException("User", id);
 
@@ -134,7 +134,7 @@ namespace Business
             if (dto == null)
                 throw new ValidationException("User", "Datos inválidos.");
 
-            var result = await _UserData.UpdateFullAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId, dto.PersonName);
+            var result = await _UserData.UpdateFullAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId);
             if (!result)
                 throw new EntityNotFoundException("User", id);
 
@@ -186,7 +186,7 @@ namespace Business
                 Email = user.Email,
                 Password = user.Password,
                 PersonId = user.PersonId,
-                PersonName = user.PersonName
+              
             };
         }
 

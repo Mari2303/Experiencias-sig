@@ -9,7 +9,7 @@ namespace Entity.Model
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public bool Active { get; set; } 
+        public bool? Active { get; set; } 
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public int PersonId { get; set; }
@@ -17,6 +17,6 @@ namespace Entity.Model
 
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }
-        public string PersonName { get; set; } = string.Empty;
+       
     }
 }

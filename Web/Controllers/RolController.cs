@@ -2,6 +2,7 @@
 using Data;
 using Entity.DTOs;
 using Entity.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Exeptions;
 
@@ -135,7 +136,7 @@ namespace Web.Controllers
 
             try
             {
-                var updated = await _RolBusiness.RolAsync(id, dto.Name, dto.typeRol, dto.Active);
+                var updated = await _RolBusiness.RolAsync(id, dto.Name, dto.TypeRol, dto.Active);
                 if (!updated)
                     return NotFound(new { message = "Rol no encontrado" });
 

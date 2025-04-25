@@ -81,22 +81,36 @@ builder.Services.AddScoped<PersonData>();
 builder.Services.AddScoped<PersonBusiness>();
 
 //Agregar CORS
-var OrigenesPermitidos = builder.Configuration.GetValue<string>("OrigenesPermitidos")!.Split(",");
+// Agregar CORS
+
+var OrigenesPermitidos = builder.Configuration
+    .GetValue<string>("OrigenesPermitidos")!
+    .Split(",");
+
 builder.Services.AddCors(opciones =>
 {
-    opciones.AddDefaultPolicy(politica =>
+    opciones.AddPolicy("AllowSpecificOrigins", politica =>
     {
-        politica.WithOrigins(OrigenesPermitidos)
-         .AllowAnyHeader()
-         .AllowAnyMethod();
+        politica.WithOrigins(OrigenesPermitidos.Concat(new[] { "http://127.0.0.1:5500" }).ToArray())
+                .AllowAnyHeader()
+                .AllowAnyMethod();
     });
 });
+
 
 //Agregar DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer("name=DefaultConnection"));
 
+
+
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigins");
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -105,10 +119,29 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+
+
+
+// Usar la politica del CORS  combinada 
+
+app.UseCors("AllowSpecificOrigins");
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+
+
+
+
+
+
+
+
+
+
 

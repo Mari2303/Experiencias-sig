@@ -87,6 +87,7 @@ namespace Business
                 {
                     Name = verificationDto.Name,
                     Description = verificationDto.Description,
+                    Active = verificationDto.Active
                    
                 };
 
@@ -97,6 +98,7 @@ namespace Business
                     Id = createdVerification.Id,
                     Name = createdVerification.Name,
                     Description = createdVerification.Description,
+                    Active = createdVerification.Active
                     
                 };
             }
@@ -182,6 +184,7 @@ namespace Business
                 Id = verification.Id,
                 Name = verification.Name,
                 Description = verification.Description
+
 
             };
         }

@@ -122,7 +122,7 @@ namespace Business
         // Metodo para modificar un rol 
 
 
-        public async Task<bool> RolAsync(int id, string name, string typeRol, bool active)
+        public async Task<bool> RolAsync(int id, string name, string TypeRol, bool active)
         {
             if (id <= 0)
                 throw new ValidationException("id", "El ID debe ser mayor que cero.");
@@ -130,7 +130,7 @@ namespace Business
             if (string.IsNullOrWhiteSpace(name))
                 throw new ValidationException("name", "El nombre del rol es obligatorio.");
 
-            var result = await _rolData.RolAsync(id, name, typeRol, active);
+            var result = await _rolData.RolAsync(id, name, TypeRol, active);
 
             if (!result)
                 throw new EntityNotFoundException("Rol", id);
@@ -149,7 +149,7 @@ namespace Business
             if (dto == null)
                 throw new ValidationException("Rol", "Datos de rol inválidos.");
 
-            var result = await _rolData.PutRolAsync(id, dto.Name, dto.typeRol, dto.Active);
+            var result = await _rolData.PutRolAsync(id, dto.Name, dto.TypeRol, dto.Active);
 
             if (!result)
                 throw new EntityNotFoundException("Rol", id);
@@ -185,7 +185,7 @@ namespace Business
             {
                 Id = rol.Id,
                 Name = rol.Name,
-                typeRol = rol.typeRol, // Si existe en la entidad
+                TypeRol = rol.TypeRol, // Si existe en la entidad
                 Active = rol.Active // Si existe en la entidad
             };
         }
@@ -197,7 +197,7 @@ namespace Business
             {
                 Id = rolDTO.Id,
                 Name = rolDTO.Name,
-                typeRol = rolDTO.typeRol, // Si existe en la entidad
+                TypeRol = rolDTO.TypeRol, // Si existe en la entidad
                 Active = rolDTO.Active // Si existe en la entidad
             };
         }

@@ -14,6 +14,6 @@ namespace Entity.Model
         public string Password { get; set; } = string.Empty;
         public bool Active { get; set; }
         public int PersonId { get; set; }
-        public string PersonName { get; set; } = string.Empty;
+        
     }
 }

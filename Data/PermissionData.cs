@@ -1,7 +1,7 @@
-﻿using Entity.Context;
-using Entity.Model;
+﻿using Entity.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Entity.Context;
 
 
 namespace Data

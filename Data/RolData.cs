@@ -121,7 +121,7 @@ namespace Data
 
 
 
-        public async Task<bool> RolAsync(int id, string name, string typeRol, bool active)
+        public async Task<bool> RolAsync(int id, string name, string TypeRol, bool active)
         {
             try
             {
@@ -130,11 +130,11 @@ namespace Data
                     return false;
 
                 rol.Name = name;
-                rol.typeRol = typeRol;
+                rol.TypeRol = TypeRol;
                 rol.Active = active;
 
                 _context.Entry(rol).Property(r => r.Name).IsModified = true;
-                _context.Entry(rol).Property(r => r.typeRol).IsModified = true;
+                _context.Entry(rol).Property(r => r.TypeRol).IsModified = true;
                 _context.Entry(rol).Property(r => r.Active).IsModified = true;
 
                 await _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace Data
 
 
 
-        public async Task<bool> PutRolAsync(int id, string name, string typeRol, bool active)
+        public async Task<bool> PutRolAsync(int id, string name, string TypeRol, bool active)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace Data
                     return false;
 
                 rol.Name = name;
-                rol.typeRol = typeRol;
+                rol.TypeRol = TypeRol;
                 rol.Active = active;
 
                 _context.Entry(rol).State = EntityState.Modified;
