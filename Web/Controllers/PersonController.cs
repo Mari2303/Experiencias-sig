@@ -2,6 +2,7 @@
 using Data;
 using Entity.DTOs;
 using Entity.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Utilities.Exeptions;
 
@@ -71,7 +72,7 @@ namespace Web
         {
             try
             {
-                var person = await _personBusiness.GetAllPersonAsync();
+                var person = await _personBusiness.GetRolByIdAsync(id);
                 return Ok(person);
             }
             catch (ValidationException ex)
@@ -165,7 +166,7 @@ namespace Web
 
             try
             {
-                var updated = await _personBusiness.PatchPersonAsync(id, dto.Name, dto.Email, dto.Phone, dto.Active, dto.UserId);
+                var updated = await _personBusiness.PatchPersonAsync(id, dto.Name, dto.Email, dto.Phone, dto.Surname, dto.Document, dto.codeDane, dto.Password, dto.Active);
                 return Ok(new { message = "Actualizado correctamente", id });
             }
             catch (ValidationException ex)
@@ -211,6 +212,33 @@ namespace Web
         }
 
 
+
+
+
+        [HttpDelete("permanent/{id}")]
+        public async Task<IActionResult> DeletePersonPermanent(int id)
+        {
+            try
+            {
+                var result = await _personBusiness.DeletePermanentAsync(id);
+
+                if (result == null) // Si el resultado es nulo
+                    return NotFound(new { message = $"No se encontró ninguna persona con ID {id}." });
+
+
+                return Ok(new { message = $"Persona con ID {id} eliminada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error en el controlador al eliminar la persona con ID {PersonId}", id);
+                return StatusCode(500, new { message = "Error interno del servidor." });
+            }
+        }
+
+
+
+        
+        
 
 
 

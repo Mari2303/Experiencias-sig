@@ -11,10 +11,10 @@ public  class RolPermission
         public int Id { get; set; }
         public int RolId { get; set; }
         public Rol Rol { get; set; }
-        public string RolName { get; set; } = string.Empty;
+   
         public int PermissionId { get; set; }
         public Permission  Permission  { get; set; }
-        public string PermissionName { get; set; } = string.Empty;
+   
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }
     }

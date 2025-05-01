@@ -21,7 +21,7 @@ public class UserRol
 
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }
-        public string UserName { get; set; } = string.Empty;
-        public string RolName { get; set; } = string.Empty;
+      
+       
     }
 }

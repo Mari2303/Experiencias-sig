@@ -96,7 +96,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo rol: {RolNombre}", RolDTO?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo rol: {RolNombre}", RolDTO?.TypeRol ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el rol", ex);
             }
         }
@@ -109,7 +109,7 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("El objeto rol no puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(RolDTO.Name))
+            if (string.IsNullOrWhiteSpace(RolDTO.TypeRol))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un rol con Name vacío");
                 throw new Utilities.Exeptions.ValidationException("Name", "El Name del rol es obligatorio");
@@ -122,15 +122,15 @@ namespace Business
         // Metodo para modificar un rol 
 
 
-        public async Task<bool> RolAsync(int id, string name, string TypeRol, bool active)
+        public async Task<bool> RolAsync(int id,  string TypeRol, bool active)
         {
             if (id <= 0)
                 throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(TypeRol))
                 throw new ValidationException("name", "El nombre del rol es obligatorio.");
 
-            var result = await _rolData.RolAsync(id, name, TypeRol, active);
+            var result = await _rolData.RolAsync(id,  TypeRol, active);
 
             if (!result)
                 throw new EntityNotFoundException("Rol", id);
@@ -149,7 +149,7 @@ namespace Business
             if (dto == null)
                 throw new ValidationException("Rol", "Datos de rol inválidos.");
 
-            var result = await _rolData.PutRolAsync(id, dto.Name, dto.TypeRol, dto.Active);
+            var result = await _rolData.PutRolAsync(id, dto.TypeRol, dto.Active);
 
             if (!result)
                 throw new EntityNotFoundException("Rol", id);
@@ -184,7 +184,7 @@ namespace Business
             return new RolDTO
             {
                 Id = rol.Id,
-                Name = rol.Name,
+                
                 TypeRol = rol.TypeRol, // Si existe en la entidad
                 Active = rol.Active // Si existe en la entidad
             };
@@ -196,7 +196,7 @@ namespace Business
             return new Rol
             {
                 Id = rolDTO.Id,
-                Name = rolDTO.Name,
+                
                 TypeRol = rolDTO.TypeRol, // Si existe en la entidad
                 Active = rolDTO.Active // Si existe en la entidad
             };
@@ -212,5 +212,33 @@ namespace Business
             }
             return rolesDTO;
         }
+    
+
+
+    public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                return await _rolData.DeletePermanentAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error en la capa Business al eliminar permanentemente el rol con ID {id}");
+                throw;
+            }
+        }
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
 }

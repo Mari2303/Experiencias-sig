@@ -8,15 +8,15 @@ namespace Entity.Model
   public class User
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public bool? Active { get; set; } 
+
+        public bool Active { get; set; } 
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public int PersonId { get; set; }
         public Person Person { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime DeleteAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? DeleteAt { get; set; }
        
     }
 }

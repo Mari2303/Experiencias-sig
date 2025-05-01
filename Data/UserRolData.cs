@@ -128,5 +128,31 @@ namespace Data
         }
 
 
+
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                var userRol = await _context.UserRol.FindAsync(id);
+                if (userRol == null)
+                    return false;
+
+                _context.UserRol.Remove(userRol);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar permanentemente la relación UserRol con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
     }
 }

@@ -149,7 +149,10 @@ namespace Business
 
 
 
-
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            return await _rolPermisionData.DeletePermanentAsync(id);
+        }
 
 
 
@@ -171,9 +174,8 @@ namespace Business
     {
         Id = rolPermission.Id,
         RolId = rolPermission.RolId,
-        PermissionId = rolPermission.PermissionId,
-        RolName = rolPermission.RolName,
-        PermissionName = rolPermission.PermissionName
+        PermissionId = rolPermission.PermissionId
+      
 
     };
 }
@@ -188,7 +190,7 @@ private RolPermission MapToEntity(RolPermissionDTO rolPermissionDTO)
     {
         Id = rolPermissionDTO.Id,
         RolId = rolPermissionDTO.RolId,
-        PermissionId = rolPermissionDTO.PermissionId,
+        PermissionId = rolPermissionDTO.PermissionId
 
     };
 }

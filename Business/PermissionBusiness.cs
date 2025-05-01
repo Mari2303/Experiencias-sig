@@ -11,12 +11,12 @@ namespace Business
     /// </summary>
     public class PermissionBusiness
     {
-        private readonly PermissionData _permisionData;
+        private readonly PermissionData _permissionData;
         private readonly ILogger<Permission> _logger;
 
         public PermissionBusiness(PermissionData permissionData, ILogger<Permission> logger)
         {
-            _permisionData = permissionData;
+            _permissionData = permissionData;
             _logger = logger;
         }
 
@@ -25,7 +25,7 @@ namespace Business
         {
             try
             {
-                var permisions = await _permisionData.GetAllAsync();
+                var permisions = await _permissionData.GetAllAsync();
 
 
               
@@ -52,7 +52,7 @@ namespace Business
 
             try
             {
-                var permision = await _permisionData.GetByIdAsync(id);
+                var permision = await _permissionData.GetByIdAsync(id);
                 if (permision == null)
                 {
                     _logger.LogInformation("No se encontró ningún permiso con ID: {PermisionId}", id);
@@ -83,7 +83,7 @@ namespace Business
 
                 var permision = MapToEntity(permisionDTO);
 
-                var createdPermision = await _permisionData.CreateAsync(permision);
+                var createdPermision = await _permissionData.CreateAsync(permision);
 
                 return MapToDTO(createdPermision);
 
@@ -121,7 +121,7 @@ namespace Business
             if (string.IsNullOrWhiteSpace(permissionType))
                 throw new ValidationException("permissionType", "El tipo de permiso es obligatorio.");
 
-            var updated = await _permisionData.UpdatePartialAsync(id, permissionType, active);
+            var updated = await _permissionData.UpdatePartialAsync(id, permissionType, active);
             if (!updated)
                 throw new EntityNotFoundException("Permission", id);
 
@@ -136,7 +136,7 @@ namespace Business
             if (string.IsNullOrWhiteSpace(permissionType))
                 throw new ValidationException("permissionType", "El tipo de permiso es obligatorio.");
 
-            var updated = await _permisionData.UpdateFullAsync(id, permissionType, active);
+            var updated = await _permissionData.UpdateFullAsync(id, permissionType, active);
             if (!updated)
                 throw new EntityNotFoundException("Permission", id);
 
@@ -148,7 +148,7 @@ namespace Business
             if (id <= 0)
                 throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
-            var deleted = await _permisionData.DeleteLogicalAsync(id);
+            var deleted = await _permissionData.DeleteLogicalAsync(id);
             if (!deleted)
                 throw new EntityNotFoundException("Permission", id);
 
@@ -158,7 +158,12 @@ namespace Business
 
 
 
-
+        ///<summary>
+        ///Elimina permanentemente un permiso de la base de datos.
+        ///</summary>
+        ///<param name="id">ID del permiso</param>
+        ///<returns>True si la eliminación fue exitosa, False en caso contrario</returns>
+        public Task<bool> DeletePermanentAsync(int id) => _permissionData.DeletePermanentAsync(id);
 
 
 
@@ -200,9 +205,6 @@ namespace Business
             return permissionDTOs;
         }
 
-        public async Task PutPermissionAsync(int id, string permissionType, bool active)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

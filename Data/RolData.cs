@@ -121,7 +121,7 @@ namespace Data
 
 
 
-        public async Task<bool> RolAsync(int id, string name, string TypeRol, bool active)
+        public async Task<bool> RolAsync(int id,  string TypeRol, bool active)
         {
             try
             {
@@ -129,11 +129,11 @@ namespace Data
                 if (rol == null)
                     return false;
 
-                rol.Name = name;
+               
                 rol.TypeRol = TypeRol;
                 rol.Active = active;
 
-                _context.Entry(rol).Property(r => r.Name).IsModified = true;
+             
                 _context.Entry(rol).Property(r => r.TypeRol).IsModified = true;
                 _context.Entry(rol).Property(r => r.Active).IsModified = true;
 
@@ -151,7 +151,7 @@ namespace Data
 
 
 
-        public async Task<bool> PutRolAsync(int id, string name, string TypeRol, bool active)
+        public async Task<bool> PutRolAsync(int id,  string TypeRol, bool active)
         {
             try
             {
@@ -159,7 +159,6 @@ namespace Data
                 if (rol == null)
                     return false;
 
-                rol.Name = name;
                 rol.TypeRol = TypeRol;
                 rol.Active = active;
 
@@ -177,6 +176,24 @@ namespace Data
 
 
 
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                var rol = await _context.Set<Rol>().FindAsync(id);
+                if (rol == null)
+                    return false;
+
+                _context.Set<Rol>().Remove(rol);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar permanentemente el rol con ID {id}");
+                return false;
+            }
+        }
 
 
 

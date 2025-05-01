@@ -140,6 +140,29 @@ namespace Business
 
 
 
+
+        // Método para eliminar permanentemente el rol de usuario
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                return await _userRolData.DeletePermanentAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error al eliminar permanentemente el rol de usuario con ID {id}: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
         // Metodo para mapear la entidad a DTO
 
         private UserRolDTO MapToDTO(UserRol userRol)
@@ -148,9 +171,8 @@ namespace Business
             {
                 Id = userRol.Id,
                 RolId = userRol.RolId,
-                UserId = userRol.UserId,
-                UserName = userRol.UserName,
-                RolName = userRol.RolName
+                UserId = userRol.UserId
+             
             };
         }
 

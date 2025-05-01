@@ -153,6 +153,32 @@ namespace Data
         }
 
 
+        /// <summary>
+        /// Elimina permanentemente un rol-permiso de la base de datos.
+        /// </summary>
+        /// <param name="id">Identificador único del rol-permiso a eliminar.</param>
+        /// <returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                var entity = await _context.Set<RolPermission>().FindAsync(id);
+                if (entity == null)
+                {
+                    _logger.LogWarning("No se encontró RolPermission con ID {RolPermissionId} para eliminar.", id);
+                    return false;
+                }
+
+                _context.Set<RolPermission>().Remove(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar permanentemente RolPermission con ID {RolPermissionId}", id);
+                return false;
+            }
+        }
 
 
 

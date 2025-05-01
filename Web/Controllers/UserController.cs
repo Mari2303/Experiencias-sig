@@ -70,7 +70,7 @@ namespace Web
         {
             try
             {
-                var user = await _UserBusiness.GetAllUserAsync();
+                var user = await _UserBusiness.GetUserByIdAsync(id);
                 return Ok(user);
             }
             catch (ValidationException ex)
@@ -106,7 +106,7 @@ namespace Web
         {
             try
             {
-                var createdUser = await _UserBusiness.CreateUserlAsync(user);
+                var createdUser = await _UserBusiness.CreateUserAsync(user);
                 return CreatedAtAction(nameof(GetUserById), new { id = createdUser.Id }, createdUser);
             }
             catch (ValidationException ex)
@@ -137,7 +137,7 @@ namespace Web
 
             try
             {
-                var updated = await _UserBusiness.UpdatePartialAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId);
+                var updated = await _UserBusiness.UpdatePartialAsync(id,  dto.Email, dto.Password, dto.Active, dto.PersonId);
                 if (!updated)
                     return NotFound(new { message = "Usuario no encontrado" });
 
@@ -219,6 +219,31 @@ namespace Web
                 return StatusCode(500, new { message = "Error interno del servidor" });
             }
         }
+
+
+
+
+        [HttpDelete("delete/{id}/Permanente")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                var result = await _UserBusiness.DeleteAsync(id);
+                if (!result)
+                    return NotFound($"Usuario con ID {id} no encontrado.");
+
+                return Ok($"Usuario con ID {id} eliminado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar el usuario con ID {id}");
+                return StatusCode(500, "Error interno del servidor.");
+            }
+        }
+
+
+
+
 
 
 

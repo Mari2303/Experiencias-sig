@@ -21,6 +21,11 @@ namespace Business
             _logger = logger;
         }
 
+
+
+
+
+
         // Método para obtener todos los roles como DTOs
         public async Task<IEnumerable<UserDTO>> GetAllUserAsync()
         {
@@ -39,7 +44,7 @@ namespace Business
         }
 
         // Método para obtener un rol por ID como DTO
-        public async Task<UserDTO> GetRolByIdAsync(int id)
+        public async Task<UserDTO> GetUserByIdAsync(int id)
         {
             if (id <= 0)
             {
@@ -73,7 +78,7 @@ namespace Business
 
 
         // Método para crear un rol desde un DTO
-        public async Task<UserDTO> CreateUserlAsync(UserDTO UserDTO)
+        public async Task<UserDTO> CreateUserAsync(UserDTO UserDTO)
         {
             try
             {
@@ -89,7 +94,7 @@ namespace Business
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo User: {UserNombre}", UserDTO?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo User: {UserNombre}", UserDTO?.Email ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el User", ex);
             }
         }
@@ -102,24 +107,24 @@ namespace Business
                 throw new Utilities.Exeptions.ValidationException("El objeto  puede ser nulo");
             }
 
-            if (string.IsNullOrWhiteSpace(UserDTO.Name))
+            if (string.IsNullOrWhiteSpace(UserDTO.Email))
             {
-                _logger.LogWarning("Se intentó crear/actualizar con Name vacío");
-                throw new Utilities.Exeptions.ValidationException("Name", "El Name es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar con email vacío");
+                throw new Utilities.Exeptions.ValidationException("email", "El Name es obligatorio");
             }
         }
 
 
 
-        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId)
+        public async Task<bool> UpdatePartialAsync(int id, string email, string password, bool active, int personId)
         {
             if (id <= 0)
                 throw new ValidationException("id", "El ID debe ser mayor que cero.");
 
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(email))
                 throw new ValidationException("name", "El nombre es obligatorio.");
 
-            var result = await _UserData.UpdatePartialAsync(id, name, email, password, active, personId);
+            var result = await _UserData.UpdatePartialAsync(id,  email, password, active, personId);
             if (!result)
                 throw new EntityNotFoundException("User", id);
 
@@ -134,7 +139,7 @@ namespace Business
             if (dto == null)
                 throw new ValidationException("User", "Datos inválidos.");
 
-            var result = await _UserData.UpdateFullAsync(id, dto.Name, dto.Email, dto.Password, dto.Active, dto.PersonId);
+            var result = await _UserData.UpdateFullAsync(id, dto.Email, dto.Password, dto.Active, dto.PersonId);
             if (!result)
                 throw new EntityNotFoundException("User", id);
 
@@ -156,7 +161,54 @@ namespace Business
 
 
 
+            public async Task<bool> DeleteAsync(int id)
+            {
+                try
+                {
+                    return await _UserData.DeleteAsync(id);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error en la capa Business al eliminar permanentemente el usuario con ID {id}");
+                    throw;
+                }
+            }
 
+
+
+
+        public async Task<User?> LoginAsync(string email, string password)
+        {
+            // Validaciones básicas
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            {
+                _logger.LogWarning("Email o contraseña vacíos al intentar login.");
+                throw new ValidationException("Email o Password", "Ambos campos son obligatorios.");
+            }
+
+            try
+            {
+                var users = await _UserData.GetAllAsync(); // Asumiendo que este método ya existe
+
+                var user = users.FirstOrDefault(u =>
+                    u.Email == email &&
+                    u.Password == password &&
+                    u.Active == true
+                );
+
+                if (user == null)
+                {
+                    _logger.LogInformation("Intento fallido de login para el email: {Email}", email);
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al intentar login con el email: {Email}", email);
+                throw new ExternalServiceException("Login", "Ocurrió un error al intentar iniciar sesión.", ex);
+            }
+        }
 
 
 
@@ -182,7 +234,7 @@ namespace Business
             return new UserDTO
             {
                 Id = user.Id,
-                Name = user.Name,
+          
                 Email = user.Email,
                 Password = user.Password,
                 PersonId = user.PersonId,
@@ -197,7 +249,7 @@ namespace Business
             return new User
             {
                 Id = userDTO.Id,
-                Name = userDTO.Name,
+              
                 Email = userDTO.Email,
                 Password = userDTO.Password,
                 PersonId = userDTO.PersonId

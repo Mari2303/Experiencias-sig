@@ -95,7 +95,7 @@ namespace Data
         ///<param name="id">Identificador único del rol a eliminar</param>
         ///<returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdatePartialAsync(int id, string name, string email, string password, bool active, int personId)
+        public async Task<bool> UpdatePartialAsync(int id,  string email, string password, bool active, int personId)
         {
             try
             {
@@ -103,14 +103,14 @@ namespace Data
                 if (user == null)
                     return false;
 
-                user.Name = name;
+            
                 user.Email = email;
                 user.Password = password;
                 user.Active = active;
                 user.PersonId = personId;
 
 
-                _context.Entry(user).Property(u => u.Name).IsModified = true;
+       
                 _context.Entry(user).Property(u => u.Email).IsModified = true;
                 _context.Entry(user).Property(u => u.Password).IsModified = true;
                 _context.Entry(user).Property(u => u.Active).IsModified = true;
@@ -127,7 +127,7 @@ namespace Data
             }
         }
 
-        public async Task<bool> UpdateFullAsync(int id, string name, string email, string password, bool active, int personId)
+        public async Task<bool> UpdateFullAsync(int id,  string email, string password, bool active, int personId)
         {
             try
             {
@@ -135,7 +135,6 @@ namespace Data
                 if (user == null)
                     return false;
 
-                user.Name = name;
                 user.Email = email;
                 user.Password = password;
                 user.Active = active;
@@ -174,5 +173,52 @@ namespace Data
                 return false;
             }
         }
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// Elimina físicamente un usuario de la base de datos.
+        /// </summary>
+        /// <param name="id">ID del usuario a eliminar</param>
+        /// <returns>True si la eliminación fue exitosa, False si no se encontró o hubo error.</returns>
+        public async Task<bool> DeleteAsync(int id)
+        {
+            try
+            {
+                var user = await _context.User.FindAsync(id);
+                if (user == null)
+                    return false;
+
+                _context.User.Remove(user);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar permanentemente el usuario con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

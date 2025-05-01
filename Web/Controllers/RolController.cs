@@ -136,7 +136,7 @@ namespace Web.Controllers
 
             try
             {
-                var updated = await _RolBusiness.RolAsync(id, dto.Name, dto.TypeRol, dto.Active);
+                var updated = await _RolBusiness.RolAsync(id, dto.TypeRol, dto.Active);
                 if (!updated)
                     return NotFound(new { message = "Rol no encontrado" });
 
@@ -230,6 +230,23 @@ namespace Web.Controllers
 
 
 
+        [HttpDelete("delete/permanent/{id}")]
+        public async Task<IActionResult> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                var result = await _RolBusiness.DeletePermanentAsync(id);
+                if (!result)
+                    return NotFound($"Rol con ID {id} no encontrado.");
+
+                return Ok($"Rol con ID {id} eliminado permanentemente.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar permanentemente el rol con ID {id}");
+                return StatusCode(500, "Error interno del servidor.");
+            }
+        }
 
 
 

@@ -167,7 +167,32 @@ namespace Web
             }
         }
 
-     
+
+
+        // Método DELETE para eliminar un rol de usuario permanentemente
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var deleted = await _UserRolBusiness.DeletePermanentAsync(id);
+                if (deleted)
+                    return NoContent(); // 204 No Content
+
+                return NotFound($"Rol de usuario con ID {id} no encontrado para eliminar.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al eliminar el rol de usuario con ID {id}: {ex.Message}");
+            }
+        }
+
+
+
+
+
+
+
 
 
     }

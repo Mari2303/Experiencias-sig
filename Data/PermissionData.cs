@@ -163,5 +163,39 @@ namespace Data
                 return false;
             }
         }
+
+
+
+
+        /// <summary>
+        /// Elimina permanentemente un permiso de la base de datos.
+        /// </summary>
+        /// <param name="id">Identificador único del permiso a eliminar.</param>
+        /// <returns>True si la eliminación fue exitosa, False en caso contrario.</returns>
+        public async Task<bool> DeletePermanentAsync(int id)
+        {
+            try
+            {
+                var permission = await _context.Permission.FindAsync(id);
+                if (permission == null)
+                    return false;
+
+                _context.Permission.Remove(permission);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error al eliminar permanentemente el permiso con ID {id}");
+                return false;
+            }
+        }
+
+
+
+
+
+
+
     }
 }

@@ -228,7 +228,7 @@ namespace Business
 
 
                 // Estos vienen de las propiedades de navegación
-                UserName = evaluation.User?.Name,
+         
                 ExperiencieName = evaluation.Experiencie?.NameExperience,
                 StateName = evaluation.State?.Name
                 

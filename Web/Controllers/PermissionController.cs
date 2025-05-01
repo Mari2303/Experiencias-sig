@@ -73,7 +73,7 @@ namespace Web.Controllers
         {
             try
             {
-                var permission = await _PermissionBusiness.GetAllPermissionsAsync();
+                var permission = await _PermissionBusiness.GetPermissionByIdAsync(id);
                 return Ok(permission);
             }
             catch (ValidationException ex)
@@ -213,6 +213,21 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = "Error interno del servidor" });
             }
         }
+
+
+
+
+
+
+        [HttpDelete("delete-permanent/{id}")]
+        public async Task<IActionResult> DeletePermanent(int id)
+        {
+            var success = await _PermissionBusiness.DeletePermanentAsync(id);
+            return success ? NoContent() : NotFound();
+        }
+
+
+
 
 
 

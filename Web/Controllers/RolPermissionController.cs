@@ -146,9 +146,8 @@ namespace Web.Controllers
                     message = "RolPermission actualizado correctamente",
                     id,
                     rolId = dto.RolId,
-                    rolName = dto.RolName,
-                    permissionId = dto.PermissionId,
-                    permissionName = dto.PermissionName
+                    permissionId = dto.PermissionId
+                   
                 });
             }
             catch (ValidationException ex)
@@ -188,9 +187,9 @@ namespace Web.Controllers
                     message = "RolPermission actualizado correctamente",
                     id,
                     rolId = dto.RolId,
-                    rolName = dto.RolName,
-                    permissionId = dto.PermissionId,
-                    permissionName = dto.PermissionName
+                 
+                    permissionId = dto.PermissionId
+                    
                 });
             }
             catch (ValidationException ex)
@@ -210,7 +209,19 @@ namespace Web.Controllers
 
 
 
-
+        /// <summary>
+        /// Elimina permanentemente un RolPermission.
+        /// </summary>
+        /// <param name="id">ID del RolPermission a eliminar.</param>
+        /// <returns>Código de estado HTTP.</returns>
+        [HttpDelete("permanent/{id}")]
+        public async Task<IActionResult> DeletePermanent(int id)
+        {
+            var result = await _RolPermissionBusiness.DeletePermanentAsync(id);
+            if (!result)
+                return NotFound($"RolPermission con ID {id} no encontrado o error al eliminar.");
+            return NoContent();
+        }
 
 
 
