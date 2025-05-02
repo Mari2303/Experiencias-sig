@@ -210,6 +210,15 @@ namespace Data
 
 
 
+       
+
+
+
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await _context.User
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+        }
 
 
 

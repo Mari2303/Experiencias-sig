@@ -3,7 +3,7 @@ using Data;
 using Entity.DTOs;
 using Entity.Model;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using Utilities.Exeptions;
 
 namespace Web
@@ -240,6 +240,9 @@ namespace Web
                 return StatusCode(500, "Error interno del servidor.");
             }
         }
+
+
+       
 
 
 

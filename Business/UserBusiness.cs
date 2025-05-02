@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exeptions;
 using ValidationException = Utilities.Exeptions.ValidationException;
+using BCrypt.Net;
+using System.Text.RegularExpressions;
 namespace Business
 {
     /// <summary>
@@ -177,37 +179,15 @@ namespace Business
 
 
 
-        public async Task<User?> LoginAsync(string email, string password)
+
+        private bool IsValidBCryptHash(string hash)
         {
-            // Validaciones básicas
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-            {
-                _logger.LogWarning("Email o contraseña vacíos al intentar login.");
-                throw new ValidationException("Email o Password", "Ambos campos son obligatorios.");
-            }
+            if (string.IsNullOrWhiteSpace(hash))
+                return false;
 
-            try
-            {
-                var users = await _UserData.GetAllAsync(); // Asumiendo que este método ya existe
-
-                var user = users.FirstOrDefault(u =>
-                    u.Email == email &&
-                    u.Password == password &&
-                    u.Active == true
-                );
-
-                if (user == null)
-                {
-                    _logger.LogInformation("Intento fallido de login para el email: {Email}", email);
-                }
-
-                return user;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al intentar login con el email: {Email}", email);
-                throw new ExternalServiceException("Login", "Ocurrió un error al intentar iniciar sesión.", ex);
-            }
+            // Expresión regular para validar el formato de un hash BCrypt
+            var bcryptRegex = new Regex(@"^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$");
+            return bcryptRegex.IsMatch(hash);
         }
 
 
@@ -216,10 +196,34 @@ namespace Business
 
 
 
+        public async Task<UserDTO> ValidateCredentialsAsync(string email, string password)
+        {
+            var user = await _UserData.GetByEmailAsync(email);
 
+            // Validar si el usuario existe y está activo
+            if (user == null || !user.Active)
+                return null;
 
+            // Validar si la contraseña almacenada no es nula o vacía
+            if (string.IsNullOrWhiteSpace(user.Password))
+            {
+                _logger.LogWarning("El usuario con email {Email} tiene una contraseña nula o vacía.", email);
+                return null;
+            }
 
+            // Validar si el hash almacenado es un hash válido de BCrypt
+            if (!IsValidBCryptHash(user.Password))
+            {
+                _logger.LogWarning("El hash almacenado para el usuario con email {Email} no es válido.", email);
+                return null;
+            }
 
+            // Verificar la contraseña
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
+                return null;
+
+            return MapToDTO(user);
+        }
 
 
 
