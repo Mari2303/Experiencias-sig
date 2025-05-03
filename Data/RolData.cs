@@ -50,6 +50,37 @@ namespace Data
             }
         }
 
+
+
+
+
+        // Data/RolData.cs
+        public async Task<Rol?> GetByNameAsync(string roleName)
+        {
+            try
+            {
+                return await _context.Rol.FirstOrDefaultAsync(r => r.TypeRol == roleName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al obtener el rol por nombre: {RoleName}", roleName);
+                throw;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ///<summary>
         ///Crea un nuevo rol en la base de datos.
         ///</summary>

@@ -20,8 +20,8 @@ namespace Entity.Model
      
         public User User { get; set; }
 
-        public DateTime? DeleteAt  {get; set; }
-        public DateTime? CreateAt { get; set; }
+        public DateTime DeleteAt  {get; set; }
+        public DateTime CreateAt { get; set; }
 
     }
 }

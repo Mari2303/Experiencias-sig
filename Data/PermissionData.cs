@@ -193,6 +193,15 @@ namespace Data
 
 
 
+        // Fix for the CS1061 error: Replace "Type" with "PermissionType" in the GetByTypeAsync method.  
+        public Task<Permission?> GetByTypeAsync(string permissionType)
+        {
+            return _context.Permission.FirstOrDefaultAsync(p => p.PermissionType == permissionType);
+        }
+
+
+
+
 
 
 

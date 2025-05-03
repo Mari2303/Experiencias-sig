@@ -186,6 +186,23 @@ namespace Data
 
 
 
+        // Add this method to the RolPermissionData class
+        public async Task CreateIfNotExistsAsync(RolPermission rolPermission)
+        {
+            var existing = await _context.RolPermissions
+                .FirstOrDefaultAsync(rp => rp.RolId == rolPermission.RolId && rp.PermissionId == rolPermission.PermissionId);
+
+            if (existing == null)
+            {
+                await _context.RolPermissions.AddAsync(rolPermission);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+
+
+
 
 
 

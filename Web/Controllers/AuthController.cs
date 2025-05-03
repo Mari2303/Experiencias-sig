@@ -1,39 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Business;
-using Entity;
-using Microsoft.AspNetCore.Authorization;
 using Entity.DTOs;
 
-namespace Web.Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly UserBusiness _userBusiness;
-        private readonly IConfiguration _configuration;
 
-        public AuthController(UserBusiness userBusiness, IConfiguration configuration)
+        public AuthController(UserBusiness userBusiness)
         {
             _userBusiness = userBusiness;
-            _configuration = configuration;
         }
-
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest("Datos inválidos.");
+
             var user = await _userBusiness.ValidateCredentialsAsync(loginDto.Email, loginDto.Password);
+
             if (user == null)
-                return BadRequest("Credenciales inválidas");
+                return Unauthorized("Correo o contraseña incorrectos.");
 
-            return Ok(user);
+            // Aquí simplemente devuelves los datos del usuario autenticado
+            return Ok(new
+            {
+                message = "Inicio de sesión exitoso",
+                user = user
+            });
         }
-
     }
 }
-

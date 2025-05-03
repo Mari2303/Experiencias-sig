@@ -7,6 +7,7 @@ using Utilities.Exeptions;
 using ValidationException = Utilities.Exeptions.ValidationException;
 using BCrypt.Net;
 using System.Text.RegularExpressions;
+using Entity.ModelExperience;
 namespace Business
 {
     /// <summary>
@@ -15,11 +16,19 @@ namespace Business
     public class UserBusiness
     {
         private readonly UserData _UserData;
+        private readonly RolData _RolData;
+        private readonly PermissionData _PermissionData;
+        private readonly RolPermissionData _RolPermissionData;
+        private readonly UserRolData _UserRolData;
         private readonly ILogger<User> _logger;
 
-        public UserBusiness(UserData UserData, ILogger<User> logger)
+        public UserBusiness(UserData UserData, RolData RolData, RolPermissionData RolPermissionData, UserRolData UserRolData, PermissionData PermissionData, ILogger<User> logger)
         {
             _UserData = UserData;
+            _RolData = RolData;
+            _RolPermissionData = RolPermissionData;
+            _PermissionData = PermissionData;
+            _UserRolData = UserRolData;
             _logger = logger;
         }
 
@@ -41,7 +50,7 @@ namespace Business
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al obtener todos los user");
-                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de roles", ex);
+                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de user", ex);
             }
         }
 
@@ -79,27 +88,57 @@ namespace Business
 
 
 
-        // Método para crear un rol desde un DTO
-        public async Task<UserDTO> CreateUserAsync(UserDTO UserDTO)
+        // Método para crear un user desde un DTO
+        public async Task<UserDTO> CreateUserAsync(UserDTO userDTO)
         {
             try
             {
-                ValidateUser(UserDTO);
+                ValidateUser(userDTO);
 
-                var User = MapToEntity(UserDTO);
-                
-                var createdUser = await _UserData.CreateAsync(User);
+                var user = MapToEntity(userDTO);
+
+                user.Password = userDTO.Password;
+
+                var createdUser = await _UserData.CreateAsync(user);
+
+                // Asignar rol predeterminado
+                var defaultRole = await _RolData.GetByNameAsync("Profesor");
+                if (defaultRole != null)
+                {
+                    var userRol = new UserRol
+                    {
+                        UserId = createdUser.Id,
+                        RolId = defaultRole.Id
+                    };
+                    await _UserRolData.CreateAsync(userRol);
+                }
+
+                // Asignar permiso predeterminado (por ejemplo: "Ver")
+              
+                // Por esta línea:
+                var defaultPermission = await _PermissionData.GetByTypeAsync("Ver");
+
+                if (defaultPermission != null)
+                {
+                    var rolePermission = new RolPermission
+                    {
+                        RolId = defaultRole.Id,
+                        PermissionId = defaultPermission.Id
+                    };
+
+                    // Opcional: Verifica si ya existe esa relación antes de insertar
+                    await _RolPermissionData.CreateIfNotExistsAsync(rolePermission);
+                }
 
                 return MapToDTO(createdUser);
-
             }
-
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo User: {UserNombre}", UserDTO?.Email ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo User: {UserEmail}", userDTO?.Email ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el User", ex);
             }
         }
+
 
         // Método para validar el DTO
         private void ValidateUser(UserDTO UserDTO)
@@ -180,17 +219,6 @@ namespace Business
 
 
 
-        private bool IsValidBCryptHash(string hash)
-        {
-            if (string.IsNullOrWhiteSpace(hash))
-                return false;
-
-            // Expresión regular para validar el formato de un hash BCrypt
-            var bcryptRegex = new Regex(@"^\$2[aby]?\$\d{2}\$[./A-Za-z0-9]{53}$");
-            return bcryptRegex.IsMatch(hash);
-        }
-
-
 
 
 
@@ -204,26 +232,16 @@ namespace Business
             if (user == null || !user.Active)
                 return null;
 
-            // Validar si la contraseña almacenada no es nula o vacía
-            if (string.IsNullOrWhiteSpace(user.Password))
+            // Comparar directamente las contraseñas sin encriptar
+            if (user.Password != password)
             {
-                _logger.LogWarning("El usuario con email {Email} tiene una contraseña nula o vacía.", email);
+                _logger.LogWarning("Contraseña incorrecta para el usuario con email {Email}.", email);
                 return null;
             }
-
-            // Validar si el hash almacenado es un hash válido de BCrypt
-            if (!IsValidBCryptHash(user.Password))
-            {
-                _logger.LogWarning("El hash almacenado para el usuario con email {Email} no es válido.", email);
-                return null;
-            }
-
-            // Verificar la contraseña
-            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
-                return null;
 
             return MapToDTO(user);
         }
+
 
 
 
