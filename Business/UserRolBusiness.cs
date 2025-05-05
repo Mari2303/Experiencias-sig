@@ -95,7 +95,7 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo rol de usuario: {UserRolNombre}", UserRolDTO?.RolId);
+                _logger.LogError(ex, "Error al crear nuevo rol de usuario: {UserRol}", UserRolDTO?.RolId);
                 throw new ExternalServiceException("Base de datos", "Error al crear el rol de usuario", ex);
             }
         }

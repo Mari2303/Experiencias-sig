@@ -14,9 +14,6 @@ namespace Entity.Model
         public string Password { get; set; } = string.Empty;
         public int PersonId { get; set; }
         public Person Person { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-        public DateTime DeleteAt { get; set; }
        
     }
 }

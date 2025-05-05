@@ -97,7 +97,8 @@ namespace Business
 
                 var user = MapToEntity(userDTO);
 
-                user.Password = userDTO.Password;
+                // 🔐 Encriptar la contraseña antes de guardar
+                user.Password = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
 
                 var createdUser = await _UserData.CreateAsync(user);
 
@@ -232,8 +233,10 @@ namespace Business
             if (user == null || !user.Active)
                 return null;
 
-            // Comparar directamente las contraseñas sin encriptar
-            if (user.Password != password)
+            // Comparar contraseñas usando BCrypt
+            bool passwordValid = BCrypt.Net.BCrypt.Verify(password, user.Password);
+
+            if (!passwordValid)
             {
                 _logger.LogWarning("Contraseña incorrecta para el usuario con email {Email}.", email);
                 return null;
