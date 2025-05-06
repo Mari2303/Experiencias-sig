@@ -14,8 +14,8 @@ public  class RolFromPermission
    
         public int PermissionId { get; set; }
         public Permission  Permission  { get; set; }
-        public int FormId { get; set; }
-        public From Form { get; set; } = new From();
+        public int FromId { get; set; }
+        public From From { get; set; } = new From();
         public DateTime CreatedAt { get; set; }
         public DateTime DeleteAt { get; set; }
     }
