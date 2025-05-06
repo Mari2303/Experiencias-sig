@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Reflection;
+using Module = Entity.Model.Module;
+
+
 
 
 namespace Entity.Context
@@ -35,7 +38,7 @@ namespace Entity.Context
         /// DB SETS
         /// 
         public DbSet<Rol> Rol { get; set; }
-        public DbSet<RolPermission> RolPermissions { get; set; }
+        public DbSet<RolFromPermission> RolPermissions { get; set; }
         public DbSet<Permission> Permission { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<UserRol> UserRol { get; set; }
@@ -56,6 +59,10 @@ namespace Entity.Context
         public DbSet<Criteria> Criteria { get; set; }
         public DbSet<Evaluation> Evaluation { get; set; }
         public DbSet<EvaluationCriteria> EvaluationCriteria { get; set; }
+        public DbSet<From> Form { get; set; }
+        public DbSet<Module> Module { get; set; }
+        public DbSet<FromModule> FormModule { get; set; }
+        public DbSet<RolFromPermission> RolFromPermission { get; set; }
 
 
 

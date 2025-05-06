@@ -18,11 +18,11 @@ namespace Business
         private readonly UserData _UserData;
         private readonly RolData _RolData;
         private readonly PermissionData _PermissionData;
-        private readonly RolPermissionData _RolPermissionData;
+        private readonly RolFromPermissionData _RolPermissionData;
         private readonly UserRolData _UserRolData;
         private readonly ILogger<User> _logger;
 
-        public UserBusiness(UserData UserData, RolData RolData, RolPermissionData RolPermissionData, UserRolData UserRolData, PermissionData PermissionData, ILogger<User> logger)
+        public UserBusiness(UserData UserData, RolData RolData, RolFromPermissionData RolPermissionData, UserRolData UserRolData, PermissionData PermissionData, ILogger<User> logger)
         {
             _UserData = UserData;
             _RolData = RolData;
@@ -121,7 +121,7 @@ namespace Business
 
                 if (defaultPermission != null)
                 {
-                    var rolePermission = new RolPermission
+                    var rolePermission = new RolFromPermission
                     {
                         RolId = defaultRole.Id,
                         PermissionId = defaultPermission.Id

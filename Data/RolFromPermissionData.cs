@@ -7,17 +7,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Data
 {
-  public  class RolPermissionData
+  public  class RolFromPermissionData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<RolPermission> _logger;
+        private readonly ILogger<RolFromPermission> _logger;
 
         ///<summary>
         ///Constructor que recibe el contexto de base de datos.
         ///</summary>
         ///<param name="context">Instancia de <see cref="ApplicationDbContext"/>para la conexión con la base de datos.</param>
 
-        public RolPermissionData(ApplicationDbContext context, ILogger<RolPermission> logger)
+        public RolFromPermissionData(ApplicationDbContext context, ILogger<RolFromPermission> logger)
         {
             _context = context;
             _logger = logger;
@@ -28,18 +28,18 @@ namespace Data
         ///</summary>
         ///<returns> Lista de roles</returns>
 
-        public async Task<IEnumerable<RolPermission>> GetAllAsync()
+        public async Task<IEnumerable<RolFromPermission>> GetAllAsync()
         {
-            return await _context.Set<RolPermission>().ToListAsync();
+            return await _context.Set<RolFromPermission>().ToListAsync();
         }
 
         ///<summary> Obtiene un rol específico por su identificador.
 
-        public async Task<RolPermission?> GetByIdAsync(int id)
+        public async Task<RolFromPermission?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<RolPermission>().FindAsync(id);
+                return await _context.Set<RolFromPermission>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace Data
         ///<param name="rolPermission">Instancia del rol a crear</param>
         ///<returns>El rol creado</returns>
 
-        public async Task<RolPermission> CreateAsync(RolPermission rolPermission)
+        public async Task<RolFromPermission> CreateAsync(RolFromPermission rolPermission)
         {
             try
             {
-                await _context.Set<RolPermission>().AddAsync(rolPermission);
+                await _context.Set<RolFromPermission>().AddAsync(rolPermission);
                 await _context.SaveChangesAsync();
                 return rolPermission;
             }
@@ -75,11 +75,11 @@ namespace Data
         ///<param name="rolPermission">Objeto con la información actualizada</param>
         ///<returns>True si la operación fue exitosa, False en caso contrario.</returns>
 
-        public async Task<bool> UpdateAsync(RolPermission rolPermission)
+        public async Task<bool> UpdateAsync(RolFromPermission rolPermission)
         {
             try
             {
-                _context.Set<RolPermission>().Update(rolPermission);
+                _context.Set<RolFromPermission>().Update(rolPermission);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -100,11 +100,11 @@ namespace Data
         {
             try
             {
-                var rolPermission = await _context.Set<RolPermission>().FindAsync(id);
+                var rolPermission = await _context.Set<RolFromPermission>().FindAsync(id);
                 if (rolPermission == null)
                     return false;
 
-                _context.Set<RolPermission>().Remove(rolPermission);
+                _context.Set<RolFromPermission>().Remove(rolPermission);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -121,7 +121,7 @@ namespace Data
 
 
 
-        public async Task<bool> PatchRolPermissionAsync(int id, int rolId, int permissionId)
+        public async Task<bool> PatchRolPermissionAsync(int id, int rolId, int permissionId, int fromId)
         {
             var entity = await _context.RolPermissions.FindAsync(id);
             if (entity == null)
@@ -137,7 +137,7 @@ namespace Data
             return true;
         }
 
-        public async Task<bool> PutRolPermissionAsync(int id, int rolId, int permissionId)
+        public async Task<bool> PutRolPermissionAsync(int id, int rolId, int permissionId, int fromId)
         {
             var entity = await _context.RolPermissions.FindAsync(id);
             if (entity == null)
@@ -162,14 +162,14 @@ namespace Data
         {
             try
             {
-                var entity = await _context.Set<RolPermission>().FindAsync(id);
+                var entity = await _context.Set<RolFromPermission>().FindAsync(id);
                 if (entity == null)
                 {
                     _logger.LogWarning("No se encontró RolPermission con ID {RolPermissionId} para eliminar.", id);
                     return false;
                 }
 
-                _context.Set<RolPermission>().Remove(entity);
+                _context.Set<RolFromPermission>().Remove(entity);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -187,7 +187,7 @@ namespace Data
 
 
         // Add this method to the RolPermissionData class
-        public async Task CreateIfNotExistsAsync(RolPermission rolPermission)
+        public async Task CreateIfNotExistsAsync(RolFromPermission rolPermission)
         {
             var existing = await _context.RolPermissions
                 .FirstOrDefaultAsync(rp => rp.RolId == rolPermission.RolId && rp.PermissionId == rolPermission.PermissionId);

@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entity.Model
+namespace Entity.DTOs.FormModule
 {
-public    class RolPermissionDTO
+    public class FormModuleDTO
     {
-     
         public int Id { get; set; }
-        public int RolId { get; set; }
+        public int FormId { get; set; }
 
-        public int PermissionId { get; set; }
-       
+        public int ModuleId { get; set; }
     }
 }

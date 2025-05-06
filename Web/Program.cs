@@ -20,8 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Registro de dependencias
 builder.Services.AddScoped<RolData>();
 builder.Services.AddScoped<RolBusiness>();
-builder.Services.AddScoped<RolPermissionData>();
-builder.Services.AddScoped<RolPermisionBusiness>();
+builder.Services.AddScoped<RolFromPermissionData>();
+builder.Services.AddScoped<RolFromPermisionBusiness>();
 builder.Services.AddScoped<PermissionData>();
 builder.Services.AddScoped<PermissionBusiness>();
 builder.Services.AddScoped<UserData>();
@@ -62,6 +62,14 @@ builder.Services.AddScoped<ObjectiveData>();
 builder.Services.AddScoped<ObjectiveBusiness>();
 builder.Services.AddScoped<PersonData>();
 builder.Services.AddScoped<PersonBusiness>();
+builder.Services.AddScoped<FormModuleData>();
+builder.Services.AddScoped<FormModuleBusiness>();
+builder.Services.AddScoped<FromData>();
+builder.Services.AddScoped<FromBusiness>();
+builder.Services.AddScoped<ModuleData>();
+builder.Services.AddScoped<ModuleBusiness>();
+builder.Services.AddScoped<RolFromPermissionData>();
+builder.Services.AddScoped<RolFromPermisionBusiness>();
 
 // Configurar CORS
 var OrigenesPermitidos = builder.Configuration

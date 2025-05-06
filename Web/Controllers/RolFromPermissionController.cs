@@ -15,17 +15,17 @@ namespace Web.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    public class RolPermissionController : ControllerBase
+    public class RolFromPermissionController : ControllerBase
     {
-        private readonly RolPermisionBusiness _RolPermissionBusiness;
-        private readonly ILogger<RolPermissionController> _logger;
+        private readonly RolFromPermisionBusiness _RolPermissionBusiness;
+        private readonly ILogger<RolFromPermissionController> _logger;
 
         /// <summary>
         /// Constructor controlador de permisos.
         /// </summary>
         /// <param name="RolPermissionBusiness">Capa de negocios de permisos.</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public RolPermissionController(RolPermisionBusiness RolPermissionBusiness, ILogger<RolPermissionController> logger)
+        public RolFromPermissionController(RolFromPermisionBusiness RolPermissionBusiness, ILogger<RolFromPermissionController> logger)
         {
             _RolPermissionBusiness = RolPermissionBusiness;
             _logger = logger;
@@ -38,7 +38,7 @@ namespace Web.Controllers
         /// <response code="200">Lista de permisos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<RolPermissionData>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<RolFromPermissionData>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllRolPermissions()
         {
@@ -64,7 +64,7 @@ namespace Web.Controllers
         /// <response code="404">Permiso no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RolPermissionData), 200)]
+        [ProducesResponseType(typeof(RolFromPermissionData), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -101,10 +101,10 @@ namespace Web.Controllers
         /// <response code="400">Datos del permiso no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RolPermissionData), 201)]
+        [ProducesResponseType(typeof(RolFromPermissionData), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRolPermission([FromBody] RolPermissionDTO RolPermission)
+        public async Task<IActionResult> CreateRolPermission([FromBody] RolFromPermissionDTO RolPermission)
         {
             try
             {
@@ -130,14 +130,14 @@ namespace Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> PatchRolPermission(int id, [FromBody] RolPermissionDTO dto)
+        public async Task<IActionResult> PatchRolPermission(int id, [FromBody] RolFromPermissionDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var updated = await _RolPermissionBusiness.PatchRolPermissionAsync(id, dto.RolId, dto.PermissionId);
+                var updated = await _RolPermissionBusiness.PatchRolPermissionAsync(id, dto.RolId, dto.PermissionId, dto.FromId);
                 if (!updated)
                     return NotFound(new { message = "RolPermission no encontrado" });
 
@@ -146,6 +146,7 @@ namespace Web.Controllers
                     message = "RolPermission actualizado correctamente",
                     id,
                     rolId = dto.RolId,
+                    From = dto.FromId,
                     permissionId = dto.PermissionId
                    
                 });
@@ -171,7 +172,7 @@ namespace Web.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> PutRolPermission(int id, [FromBody] RolPermissionDTO dto)
+        public async Task<IActionResult> PutRolPermission(int id, [FromBody] RolFromPermissionDTO dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -187,7 +188,7 @@ namespace Web.Controllers
                     message = "RolPermission actualizado correctamente",
                     id,
                     rolId = dto.RolId,
-                 
+                    FromId = dto.FromId,
                     permissionId = dto.PermissionId
                     
                 });
