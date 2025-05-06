@@ -174,7 +174,7 @@ namespace Business
     {
         Id = rolPermission.Id,
         RolId = rolPermission.RolId,
-        FromId = rolPermission.FormId,
+        FromId = rolPermission.FromId,
         PermissionId = rolPermission.PermissionId
       
 
@@ -191,7 +191,7 @@ private RolFromPermission MapToEntity(RolFromPermissionDTO rolPermissionDTO)
     {
         Id = rolPermissionDTO.Id,
         RolId = rolPermissionDTO.RolId,
-        FormId = rolPermissionDTO.FromId,
+        FromId = rolPermissionDTO.FromId,
         PermissionId = rolPermissionDTO.PermissionId
 
     };

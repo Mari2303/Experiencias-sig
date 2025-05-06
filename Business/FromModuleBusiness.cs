@@ -232,13 +232,13 @@ namespace Business
         /// <summary>
         /// Mapea un objeto FormModule a FormModuleDto.
         /// </summary>
-        private FormModuleDTO MapToDTO(FromModule formModule)
+        private FormModuleDTO MapToDTO(FromModule fromModule)
         {
             return new FormModuleDTO
             {
-                Id = formModule.Id,
-                FormId = formModule.FormId,
-                ModuleId = formModule.ModuleId
+                Id = fromModule.Id,
+                FormId = fromModule.FromId,
+                ModuleId = fromModule.ModuleId
             };
         }
 
@@ -250,7 +250,7 @@ namespace Business
             return new FromModule
             {
                 Id = formModuleDto.Id,
-                FormId = formModuleDto.FormId,
+                FromId = formModuleDto.FormId,
                 ModuleId = formModuleDto.ModuleId
             };
         }
